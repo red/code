@@ -1,6 +1,6 @@
 # Red/Code
 
-This repository contains code written in Red and its dialects by the Red community. There are four sections in the repository, Scripts, ShowCase, Library and Faces. This repository is curated in the sense that contributions are included when they meet the applicable criteria.
+This repository contains code written in Red and its dialects by the Red community. There are four sections in the repository, Apps, Scripts, ShowCase and Library. This repository is curated in the sense that contributions are included when they meet the applicable criteria.
 
 ## Apps
 
