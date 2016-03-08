@@ -10,6 +10,7 @@ Red [
 ]
 
 view [
+	title "Red Livecoding"
 	output: panel 400x600
 	source: area 500x600 wrap font-name "Fixedsys" on-key-up [
 		attempt [output/pane: layout/only load source/text]
