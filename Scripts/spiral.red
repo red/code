@@ -3,7 +3,7 @@ Red [
 	Author:  "Cyphre"
 	Needs:	 'View
 	Date:    "25/03/2016"
-	License: "MIT license"
+	License: "MIT"
 	Notes:	 {
 		Move the mouse around to animate the spirals. Once we get timers support,
 		we wil be able to automate it. ;-)

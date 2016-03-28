@@ -3,7 +3,8 @@ Red [
 	Author:  "Nenad Rakocevic"
 	File: 	 %clock.red
 	Needs:	 'View
-	License: "MIT license"
+	Date:   "27/03/2016"
+	License: "MIT"
 	Notes: 	{
 		This demo simulates the vintage AmigaOS analog clock.
 		
