@@ -4,12 +4,7 @@ Red [
 	Needs:	 'View
 	Date:    "25/03/2016"
 	License: "MIT"
-	Notes:	 {
-		Move the mouse around to animate the spirals. Once we get timers support,
-		we wil be able to automate it. ;-)
-		
-		Ported from Rebol to Red by Pekr, optimized by Nenad Rakocevic.
-	}
+	Notes:	 "Ported from Rebol to Red by Pekr, optimized by Nenad Rakocevic."
 ]
 
 system/view/auto-sync?: no
@@ -37,7 +32,7 @@ d: '-
 xx: random 20.20.20
 
 view [
-	canvas: base size all-over white on-over [
+	canvas: base size all-over white rate 60 on-time [
 		if color < 30.30.30 [d: '+ xx: random 20.20.20]
 		if color > 200.200.200 [d: '- xx: random 20.20.20]
 		color: either d = '+ [color + xx][color - xx]
