@@ -39,60 +39,46 @@ mandelbrot-iter: routine [
 ]
 
 fast-mandelbrot: routine [
-	buffer [binary!] iterations [integer!] width [float!] height [float!]
+	img [image!] iterations [integer!] width [float!] height [float!]
 	xmin [float!] xmax [float!] ymin [float!] ymax [float!]
 	/local
-		i [integer!] c [float!] pix [byte-ptr!] ix iy x y
+		i [integer!] c [float!] pix [int-ptr!] ix iy x y handle b p
 ][
-	pix: binary/rs-head buffer
-	iy:	 0.0
+	iy:	0.0
+	handle: 0
+	pix: image/acquire-buffer img :handle
 	
-	while [iy < height][	
+	while [iy < height][
 		ix: 0.0
 		while [ix < width][
 			x: xmin + ((xmax - xmin) * ix / (width - 1.0))
 			y: ymin + ((ymax - ymin) * iy / (height - 1.0))
 			
 			i: mandelbrot-iter x y iterations
-			either i > iterations [
-				pix/1: as-byte 0
-				pix/2: as-byte 0
-				pix/3: as-byte 0
-			][
+			
+			pix/value: either i > iterations [FF000000h][
 				c: 3.0 * (log integer/to-float i) / log integer/to-float (iterations - 1)
 				case [
-					c < 1.0 [
-						pix/1: as-byte float/to-integer 255.0 * c
-						pix/2: as-byte 0
-						pix/3: as-byte 0
-					]
-					c < 2.0 [
-						pix/1: as-byte 255
-						pix/2: as-byte float/to-integer 255.0 * (c - 1.0)
-						pix/3: as-byte 0
-					]
-					true [
-						pix/1: as-byte 255
-						pix/2: as-byte 255
-						pix/3: as-byte float/to-integer 255.0 * (c - 2.0)
-					]
+					c < 1.0 [FF000000h or (FFh and (float/to-integer 255.0 * c) << 16)]
+					c < 2.0 [FFFF0000h or (FFh and (float/to-integer 255.0 * (c - 1.0)) << 8)]
+					true	[FFFFFF00h or (FFh and (float/to-integer 255.0 * (c - 2.0)))]
 				]
 			]
-			pix: pix + 3
+			pix: pix + 1
 			ix: ix + 1.0
 		]
 		iy: iy + 1.0
 	]
+	image/release-buffer img handle
 ]
 
 mandelbrot: function [image xmin xmax ymin ymax iterations][
 	width:  to float! image/size/x
 	height: to float! image/size/y
-	pix: image/rgb
 	
 	image/rgb: white
-	fast-mandelbrot pix iterations width height xmin xmax ymin ymax
-	image/rgb: pix
+	fast-mandelbrot image iterations width height xmin xmax ymin ymax
+	image/rgb: image/rgb
 ]
 
 view [

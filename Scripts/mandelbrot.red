@@ -49,13 +49,11 @@ mandelbrot: function [img xmin xmax ymin ymax iterations][
 				]
 			]
 			pix: skip pix 3
-			;iy: iy + 1
 			ix: ix + 1
 		]
 		img/image/rgb: head pix
  		show img
- 		do-events/no-wait								;-- allow GUI msgs to be pr
-		;ix: ix + 1
+ 		do-events/no-wait								;-- allow GUI msgs to be processed
 		iy: iy + 1
 	]
 ]
