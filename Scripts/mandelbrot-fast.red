@@ -20,12 +20,9 @@ mandelbrot-iter: routine [
 	cx [float!] cy [float!] max-iter [integer!] return: [integer!]
 	/local x y xx yy xy i
 ][
-	x:  0.0
-	y:  0.0
-	xx: 0.0
-	yy: 0.0
-	xy: 0.0
+	x: 0.0 y: 0.0 xx: 0.0 yy: 0.0 xy: 0.0 
 	i:  max-iter
+	
 	while [all [i > 0 xx + yy <= 4.0]][
 		i: i - 1
 		xy: x * y
@@ -39,7 +36,7 @@ mandelbrot-iter: routine [
 ]
 
 fast-mandelbrot: routine [
-	img [image!] iterations [integer!] width [float!] height [float!]
+	img  [image!] iterations [integer!] width [float!] height [float!]
 	xmin [float!] xmax [float!] ymin [float!] ymax [float!]
 	/local
 		i [integer!] c [float!] pix [int-ptr!] ix iy x y handle b p
@@ -94,10 +91,10 @@ view [
 	]
 	button "Draw" 150x40 [
 		t0: now/time/precise
-		mandelbrot img/image xmin/data xmax/data ymin/data ymax/data iterations/data
+		mandelbrot canvas/image xmin/data xmax/data ymin/data ymax/data iterations/data
 		dt/data: third now/time/precise - t0
 	]
 	panel [origin 0x0 across txt "time(s):" dt: txt left 100]
 	return
-	img: image 900x600
+	canvas: image 900x600
 ]
