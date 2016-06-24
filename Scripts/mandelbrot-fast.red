@@ -17,7 +17,7 @@ Red [
 ]
 
 mandelbrot-iter: routine [
-	cx [float!] cy [float!] maxIter [integer!] return: [integer!]
+	cx [float!] cy [float!] max-iter [integer!] return: [integer!]
 	/local x y xx yy xy i
 ][
 	x:  0.0
@@ -25,7 +25,7 @@ mandelbrot-iter: routine [
 	xx: 0.0
 	yy: 0.0
 	xy: 0.0
-	i:  maxIter
+	i:  max-iter
 	while [all [i > 0 xx + yy <= 4.0]][
 		i: i - 1
 		xy: x * y
@@ -35,7 +35,7 @@ mandelbrot-iter: routine [
 		y:  xy + xy + cy
 	]
 	i: i - 1
-	maxIter - i
+	max-iter - i
 ]
 
 fast-mandelbrot: routine [
@@ -69,7 +69,7 @@ fast-mandelbrot: routine [
 		]
 		iy: iy + 1.0
 	]
-	image/release-buffer img handle
+	image/release-buffer img handle yes
 ]
 
 mandelbrot: function [image xmin xmax ymin ymax iterations][
@@ -78,7 +78,6 @@ mandelbrot: function [image xmin xmax ymin ymax iterations][
 	
 	image/rgb: white
 	fast-mandelbrot image iterations width height xmin xmax ymin ymax
-	image/rgb: image/rgb
 ]
 
 view [
@@ -96,9 +95,9 @@ view [
 	button "Draw" 150x40 [
 		t0: now/time/precise
 		mandelbrot img/image xmin/data xmax/data ymin/data ymax/data iterations/data
-		dt/data: now/time/precise - t0
+		dt/data: third now/time/precise - t0
 	]
-	txt "time (s):" dt: txt 100
+	panel [origin 0x0 across txt "time(s):" dt: txt left 100]
 	return
 	img: image 900x600
 ]
