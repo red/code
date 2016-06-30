@@ -103,7 +103,7 @@ context [
 	]
 
 	size-handler: insert-event-func [
-		if all [event/window = win event/type = 'resizing][
+		if all [event/window = win event/type = 'resizing clock/parent][
 			clock/size: face/size
 			draw-clock/resize clock
 		]
@@ -121,3 +121,5 @@ context [
 		actors: context [on-close: func [f e][remove-event-func :size-handler]]
 	][resize]
 ]
+
+system/view/auto-sync?: yes
