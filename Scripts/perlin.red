@@ -167,7 +167,6 @@ apply-texture: routine [
     while [y < h] [
        while [x < w][
        	int: luma + float/to-integer val/value
-		int: int + luma   
 		if int < 0 [int: 0 - int]
 		if int > 255 [int: 255]
 
