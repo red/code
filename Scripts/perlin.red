@@ -1,9 +1,13 @@
 Red [
 	Title:  "Procedural perlin noise clouds"
 	Author: "Steeve Antoine"
+	File:	%perlin.red
 	Needs:  'View
 	Tabs:	4
 	Notes:  {
+		This script require compilation to work. From OS command-line:
+			$ red -c perlin.red
+		
 		Feel free to post enhancements.
 		Especially to optimize the routines (Red/system) since they are a first try.  
 		By modifying the apply-texture function it's possible to construct various effects:
