@@ -6,8 +6,8 @@ Red [
 	Date:    "22/06/2016"
 	License: "MIT"
 	Notes: 	{
-		This is a simple spline tool allowing you to move the control points position
-		manually and see the spline's shape change accordingly.
+		This simple spline tool allows you to drag the control points position
+		using the mouse, and see the spline's shape change accordingly.
 		
 		Note: there is a minor bug with circles drawing, which should be fixed soon, so
 		no need to report it.
@@ -20,7 +20,7 @@ light-blue: 102.148.179.36
 
 view/tight [
 	title "Spline demo"
-	style nub: base glass 10x10 loose draw [pen light-blue fill-pen light-blue circle 5x5 5]
+	style nub: base glass 12x12 loose draw [pen pink fill-pen 255.20.147.128 circle 6x6 5.5]
 	
 	canvas: base white 600x600 react [
 		face/draw: reduce [
