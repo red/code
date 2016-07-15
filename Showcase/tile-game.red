@@ -30,12 +30,5 @@ view/tight [
 	piece "1"  piece  "2" piece  "3" piece  "4" return
 	piece "5"  piece  "6" piece  "7" piece  "8" return
 	piece "9"  piece "10" piece "11" piece "12" return
-	piece "13" piece "14" piece "15" empty: piece "" return
-	button 240x60 "Shuffle" [
-		numbers: random [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15]
-		forall numbers [
-			;get the Nth button and set its text
-			set in pick system/view/screens/1/pane/1/pane index? numbers 'text form first numbers
-		]
-	]
+	piece "13" piece "14" piece "15" empty: piece ""
 ]
