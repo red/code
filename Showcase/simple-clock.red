@@ -11,7 +11,7 @@ Red [
 		Original Eve demo: https://twitter.com/ibdknox/status/751169352632668160
 		
 		For more information about this demo see the related article:
-		http://www.red-lang.org/2016/07/native-reactive-spreadsheet-in-17-loc.html
+		http://www.red-lang.org/2016/07/eve-style-clock-demo-in-red-livecoded.html
 	}
 ]
 
@@ -43,7 +43,6 @@ view [
 		name: "Consolas"
 		size: 9
 		color: hex-to-rgb #9EBACB
-		anti-alias?: no
 	]
 	
 	panel 200x300 #2C3339 react [
