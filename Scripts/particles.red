@@ -14,7 +14,7 @@ context [
 	particles-count: 100
 	slots: 7
 	particles: make block! 100 * slots
-	rot: bx: 0
+	fps: rot: bx: 0
 
 	to-text: func [val][
 		particles-count: to integer! val * 200
@@ -24,6 +24,11 @@ context [
 	view/no-wait [
 		title "Particles demo"
 		txt: text "number of particles: 100"
+		text "FPS: 0" rate 1 on-time [
+			change skip face/text 5 fps
+			show face
+			fps: 0
+		]
 		slider 50% [
 			txt/text: to-text face/data
 			show txt
@@ -70,7 +75,8 @@ context [
 			]
 		]
 		show bx
-		loop 3 [do-events/no-wait]
+		fps: fps + 1
+		loop 5 [do-events/no-wait]
 	]
 ]
 
