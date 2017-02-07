@@ -1146,11 +1146,11 @@ Red [
 							]
 							sym = _liquid-rescale [
 							;== Rescales image with seam carving
-								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- the number of columns in the scaled image.
-								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- the number of rows in the scaled image.
+								MAGICK_FETCH_VALUE(TYPE_PAIR) ;-- the number of columns and rows in the scaled image.
+								size: as red-pair! start
 								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- maximum seam transversal step (0 means straight seams).
 								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- introduce a bias for non-straight seams (typically 0).
-								result: MagickLiquidRescaleImage *wand AS_INT(start 0) AS_INT(start 1) AS_FLOAT(start 2) AS_FLOAT(start 3)
+								result: MagickLiquidRescaleImage *wand size/x size/y AS_FLOAT(start 1) AS_FLOAT(start 2)
 							]
 							sym = _magnify [
 							;== Is a convenience method that scales an image proportionally to twice its original size

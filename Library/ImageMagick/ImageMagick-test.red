@@ -51,7 +51,7 @@ probe iMagick [
 
 iMagick [read %mnich.png use 2 read %opice.png hald-clut 1 write %opuice-hald-clut.jpg use 1]
 
-iMagick [read %opice.png liquid-rescale 300 300 3.0 0.3 write %opuice-liquid-rescale.jpg] ;Rescales image with seam carving
+iMagick [read %opice.png liquid-rescale 300x300 3.0 0.3 write %opuice-liquid-rescale.jpg] ;Rescales image with seam carving
 
 ;["o4x4" "o4x4,3,3" "o4x4,8,8,8" "o8x8" "h8x8a" "h8x8a,3,3" "checks" "checks,3,3" "checks,8,8"]
 {A string containing the name of the threshold dither map to use, followed by zero or more numbers representing the number of color levels tho dither between.
