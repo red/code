@@ -1293,7 +1293,7 @@ Red [
 								size: as red-pair! start
 								MAGICK_FETCH_FILTER(type) ;-- Image filter to use.
 								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- the blur factor where > 1 is blurry, < 1 is sharp.
-								result: MagickResizeImage *wand size/x size/y type AS_FLOAT(start 3)
+								result: MagickResizeImage *wand size/x size/y type AS_FLOAT(start 2)
 							]
 							sym = _roll [
 							;== Offsets an image as defined by x and y
