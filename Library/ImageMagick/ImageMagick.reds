@@ -4,7 +4,22 @@ Red/System [
 	File: 	 %ImageMagick.reds
 	Rights:  "Copyright (C) 2012-2015 David 'Oldes' Oliva. All rights reserved."
 	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
+	
 ]
+
+MAGICK_VERSION: 7
+
+#switch OS [
+	Windows   [
+		;#either MAGICK_VERSION < 7 [
+			#define MAGICK_LIBRARY "CORE_RL_wand_.dll"
+		;][
+		;	#define MAGICK_LIBRARY "CORE_RL_MagickWand_.dll"
+		;]
+	]
+	#default  [   ]
+]
+
 
 #enum MagickBooleanType! [MagickFalse MagickTrue]
 #enum NoiseType! [
@@ -583,7 +598,7 @@ KernelInfo!: alias struct! [
 ]
 
 #import [
-	"CORE_RL_wand_.dll" cdecl [
+	MAGICK_LIBRARY cdecl [
 
 
 	;==== source: pixel-wand.reb ====;
@@ -2447,6 +2462,7 @@ KernelInfo!: alias struct! [
 			return: [MagickWand!]
 		]
 		MagickOrderedPosterizeImage: "MagickOrderedPosterizeImage" [
+		;MagickOrderedPosterizeImage: "MagickOrderedDitherImage" [ ;@@ This was renamed in ImageMagick v7!
 			;== Performs an ordered dither based on a number of pre-defined dithering threshold maps, but over multiple intensity levels, which can be different for different channels, according to the input arguments
 			;-- MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,const char *threshold_map)
 			wand	[MagickWand!]
