@@ -12,6 +12,53 @@ Red [
 
 #include %ImageMagick.red
 
+;-- One magick wand can hold multiple images...
+imagick [
+	read %opice.png            ;this loads 1. image into current wand at first index
+	read %mnich.png            ;this loads 2. image into current wand and increments image index
+	previous                   ;this changes index to the previous one
+	write %test1.gif           ;so this will save %opice image
+	next                       ;this changes index back
+	write %test2.gif           ;so this will save %mnich image
+	remove                     ;this removes image at current index (so only %opice would be in the wand)
+	read %mnich.png            ;this loads %mnich image back
+	adaptive-resize 200x200    ;aaptively resize %mnich image with data dependent triangulation
+	write-images %anim.gif on  ;creates animated gif from both images
+	write-images %anim.gif off ;creates sequence from both images (anim-0.gif and anim-1.gif)
+	write-images %anim.miff on ;writes animation into special MIFF file so anim can be loaded later without data lost (which would happen in the GIF)
+	clear                      ;this clears all resources associated with the wand, but keeping the wand for later use
+]
+
+iMagick [restart]              ;this does complete cleanup of the ImageMagick environment
+
+index: iMagick [
+	read %anim.miff            ;read previously created animation file (so we have again both images in wand)
+	get-index                  ;this returns the position of the iterator in the image list (evaluation ends!)
+	read %what-ever            ;this will not be evaluated, because above command stops evaluation
+]
+
+print ["Wand is now on index:" index]
+
+iMagick [
+	head                       ;heare we continue with above wand - setting the wand iterator to the first image
+	combine                    ;combines both images into a single image (replacing current wand with a new one!)
+	write %test3.gif           ;and stores result in a new file
+] 
+
+iMagick [restart]
+
+iMagick [
+	read %opice.png            ;this loads 1. image into current wand at first index
+	read %mnich.png            ;this loads 2. image into current wand and increments image index
+	scale 200x200              ;combine requires images to have same size
+	previous                   ;set index to previous image using 'previous' command here
+	combine 2                  ;combines both images into a single image (writing target to the second wand keeping the original)
+	write 2 %test3.jpg         ;write content of the second wand as JPG
+	destroy 2                  ;completely release all resoutces from second wand if not needed anymore
+] 
+
+
+comment {
 if error? set/any 'err try [
 	iMagick [
 		read %not-existing-file
@@ -46,10 +93,24 @@ probe iMagick [
 	read %opice.png
 	contrast off
 	composite 1 over 50x50
-	write %opice-mnich.png
+	write %opice-mnich-v1.png
+	;destroy 2
+	;destroy 1
 ]
 
-iMagick [read %mnich.png use 2 read %opice.png hald-clut 1 write %opuice-hald-clut.jpg use 1]
+probe iMagick [
+	read   %opice.png
+	read 2 %mnich.png
+	contrast off
+	composite 2 over 50x50
+	write %opice-mnich-v2.png
+	;destroy 2
+	;destroy 1
+]
+
+
+
+iMagick [read %mnich.png use 2 read %opice.png hald-clut 1 write %opuice-hald-clut.jpg]
 
 iMagick [read %opice.png liquid-rescale 300x300 3.0 0.3 write %opuice-liquid-rescale.jpg] ;Rescales image with seam carving
 
@@ -66,7 +127,7 @@ iMagick [read %opice.png sigmoidal-contrast on 100 50 write %opice-sigmoidal-con
 iMagick [read %opice.png spread 10 write %opice-spread.jpg]
 
 
-comment {
+
 probe iMagick [
 	read %opice.png
 	vignette 0 50 30 10
@@ -79,11 +140,8 @@ probe iMagick [
 probe iMagick [
 	read %opice.png
 	preview oil-paint 2
-	use 2
-	write %opice-preview.jpg
-	clear
-	use 1
-	clear
+	write 2 %opice-preview.jpg
+	destroy 2
 ]
 
 iMagick [
@@ -95,6 +153,7 @@ iMagick [
 ]
 
 ;}
+comment { 
 probe iMagick [
 	read  %opice.png
 	clone 2                        ;== Clone current wand to index 2
@@ -104,21 +163,36 @@ probe iMagick [
 	;motion-blur 100 60 180
 	edge 3
 
-	use 3
-	clear
-	read %son1.gif
-	adaptive-threshold 140x140 7    ;== Selects an individual threshold for each pixel based on the range of intensity values in its local neighborhood
-	write %son1-threshold.gif
+;	use 3
+;	clear
+;	read %son1.gif
+;	adaptive-threshold 140x140 7    ;== Selects an individual threshold for each pixel based on the range of intensity values in its local neighborhood
+;	write %son1-threshold.gif
 
 	use 2
 	charcoal 16 4
 	write %opice-charcoal.jpg
 	
-	clear                         ;== Clears resources associated with current wand
-	read %mnich.png
-	adaptive-resize 200x200       ;== Adaptively resize image with data dependent triangulation
-
-	write %mnich.gif
-	use 1
-	write %opice.jpg
+;;	destroy                       ;== Deallocates memory associated with an MagickWand
+;	read %mnich.png
+;	adaptive-resize 200x200       ;== Adaptively resize image with data dependent triangulation
+;
+;	write %mnich.gif
+;	use 1
+;	write %opice.jpg
 ]
+
+probe iMagick [
+	destroy 2
+	read  %opice.png
+	clone 2                        ;== Clone current wand to index 2
+;	edge 3
+	use 2
+	charcoal 16 4
+	write %opice-charcoal-2.jpg
+]
+
+probe iMagick [read %opice.png clone 2 clone 3 edge 3 use 2 charcoal 16 4 write %opice-charcoal.jpg]
+probe iMagick [restart read %opice.png clone 2 use 2 charcoal 16 4 write %opice-charcoal-2.jpg]
+
+}

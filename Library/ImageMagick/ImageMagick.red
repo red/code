@@ -22,8 +22,9 @@ Red [
 		MagickWands-table: as int-ptr! allocate MAX_MAGIC_WANDS * size? MagickWand!
 		zerofill MagickWands-table MagickWands-table + MAX_MAGIC_WANDS
 
-		*wand: declare MagickWand! ;-- this holds the default MagickWand object
-		*wand-index: -1
+		*wand: NewMagickWand ;-- this holds the default MagickWand object
+		*wand-index: 0
+		MagickWands-table/*wand-index: as integer! *wand
 
 
 		throw-magick-error: func [
@@ -108,11 +109,18 @@ Red [
 		_Use:               symbol/make "use"
 		_Clear:             symbol/make "clear"
 		_Clone:             symbol/make "clone"
+		_Destroy:           symbol/make "destroy"
 		_New:               symbol/make "new"
 		;_To:               symbol/make "to"
 		_Read:			    symbol/make "read"
 		_Write:			    symbol/make "write"
+		_Write-Images:	    symbol/make "write-images"
 		_Preview:           symbol/make "preview"
+		_Restart:           symbol/make "restart"
+		_Index:             symbol/make "index"
+		_Head:              symbol/make "head"
+		_Tail:              symbol/make "tail"
+		_Get-Index:         symbol/make "get-index"
 
 		_adaptive-blur:             symbol/make "adaptive-blur"
 		_adaptive-resize:           symbol/make "adaptive-resize"
@@ -136,6 +144,7 @@ Red [
 		_clut:                      symbol/make "clut"
 		_color-decision-list:       symbol/make "color-decision-list"
 		_colorize:                  symbol/make "colorize"
+		_combine:                   symbol/make "combine"
 		_color-matrix:              symbol/make "color-matrix"
 		_comment:                   symbol/make "comment"
 		_composite:                 symbol/make "composite"
@@ -377,6 +386,12 @@ Red [
 		_riemersma:                 symbol/make "riemersma"
 		_floyd-steinberg:           symbol/make "floyd-steinberg"
 
+		#define ASSERT_MAGICK_WAND(index) [
+			if any [index < 0 index >= MAX_MAGIC_WANDS] [
+				throw-magick-error cmds cmd false
+			]
+		]
+
 		#define MAGICK_FETCH_FILE(name) [
 			cmd: cmd + 1
 			if any [cmd >= tail all [TYPE_OF(cmd) <> TYPE_STRING TYPE_OF(cmd) <> TYPE_FILE]][
@@ -393,9 +408,7 @@ Red [
 			]
 			int: as red-integer! cmd
 			index: int/value - 1
-			if any [index < 0 index >= MAX_MAGIC_WANDS] [
-				throw-magick-error cmds cmd false
-			]
+			ASSERT_MAGICK_WAND(index)
 		]
 
 		#define MAGICK_FETCH_PREVIEW_TYPE(type) [
@@ -735,9 +748,29 @@ Red [
 			get-boolean as red-logic! value
 		]
 
+		destroy-wands: func[
+			/local
+				wands  [int-ptr!]
+				tail   [int-ptr!]
+				wand   [MagickWand!]
+		][
+			wands: MagickWands-table
+			tail: wands + MAX_MAGIC_WANDS
+			while [wands < tail][
+				wand: as MagickWand! wands/0
+				if 0 <> as integer! wand [
+					ClearMagickWand wand
+					DestroyMagickWand wand
+					wands/0: 0
+					print ["<-- Destroed wand: " wand lf]
+				]
+				wands: wands + 1
+			]
+		]
 
 		do: func[
 			cmds [red-block!]
+			return: [red-value!]
 			/local
 				cmd       [red-value!]
 				tail      [red-value!]
@@ -746,6 +779,7 @@ Red [
 				value	  [red-value!]
 				word      [red-word!]
 				sym       [integer!]
+				symb      [red-symbol!]
 				str       [red-string!]
 				len       [integer!]
 				name      [c-string!]
@@ -765,8 +799,13 @@ Red [
 			tail: block/rs-tail cmds
 			len: -1
 
+			;Always using wand from index 0 at commands start
+			*wand-index: 0
+			*wand: as MagickWand! MagickWands-table/*wand-index
+
+			print ["DO with wand: " *wand-index " " *wand lf]
+
 			if MagickTrue <> IsMagickWand *wand [
-				*wand-index: *wand-index + 1
 				*wand: NewMagickWand
 				MagickWands-table/*wand-index: as integer! *wand
 			]
@@ -777,22 +816,41 @@ Red [
 						start: cmd + 1
 						word: as red-word! cmd
 						sym: symbol/resolve word/symbol
+						symb: symbol/get sym
+						print ["--> " *wand " " *wand-index " " symb/cache lf]
 						case [
 							sym = _Use [
 								MAGICK_FETCH_MWAND_INDEX(index)
 								*wand: as MagickWand! MagickWands-table/index
-								;print ["use wand: " index " " *wand lf]
 								*wand-index: index
 								if MagickTrue <> IsMagickWand *wand [
 									*wand: NewMagickWand
 									;print ["new wand: " *wand-index " " *wand lf]
 									MagickWands-table/index: as integer! *wand
 								]
+								print ["<-- Use wand: " index " " *wand lf]
 								result: MagickTrue
 							]
 							sym = _Clear [
 							;== Clears resources associated with current wand
 								ClearMagickWand *wand
+								result: MagickTrue
+							]
+							sym = _Destroy [
+							;== Deallocates memory associated with an MagickWand
+								MAGICK_FETCH_OPT_VALUE(TYPE_INTEGER) ;-- optional index of the wand to destroy
+								index: either pos = cmd [int: as red-integer! cmd int/value - 1][*wand-index]
+								ASSERT_MAGICK_WAND(index)
+								*wand2: as MagickWand! MagickWands-table/index
+								if MagickTrue <> IsMagickWand *wand [
+									DestroyMagickWand *wand2
+									print ["<-- Destroyed wand: " index " " *wand2 lf]
+								]
+								MagickWands-table/index: either *wand-index = index [
+									;recreate a new wand if current was destroyed!
+									*wand: NewMagickWand
+									as integer! *wand
+								][	0 ]
 								result: MagickTrue
 							]
 							sym = _Clone [
@@ -805,6 +863,7 @@ Red [
 								]
 								; and clone a new wand at the index
 								MagickWands-table/index: as integer! CloneMagickWand *wand
+								print ["<-- Cloned wand: " index " " as MagickWand! MagickWands-table/index lf]
 								result: MagickTrue
 							]
 							sym = _New [
@@ -813,12 +872,41 @@ Red [
 								;result: MagickReadImage *wand name
 							]
 							sym = _Read [
+								MAGICK_FETCH_OPT_VALUE(TYPE_INTEGER) ;-- optional index of the target wand
+								*wand2: either pos = cmd [
+									int: as red-integer! cmd
+									index: int/value - 1
+									ASSERT_MAGICK_WAND(index)
+									as MagickWand! MagickWands-table/index
+								][ *wand ]
 								MAGICK_FETCH_FILE(name)
-								result: MagickReadImage *wand name
+								print ["<-- READ " name " to " *wand2 lf]
+								result: MagickReadImage *wand2 name
 							]
 							sym = _Write [
+								MAGICK_FETCH_OPT_VALUE(TYPE_INTEGER) ;-- optional index of the source wand
+								*wand2: either pos = cmd [
+									int: as red-integer! cmd
+									index: int/value - 1
+									ASSERT_MAGICK_WAND(index)
+									as MagickWand! MagickWands-table/index
+								][ *wand ]
 								MAGICK_FETCH_FILE(name)
-								result: MagickWriteImage *wand name
+								print ["<-- WRITE " name " to " *wand2 lf]
+								result: MagickWriteImage *wand2 name
+							]
+							sym = _Write-Images [
+								MAGICK_FETCH_OPT_VALUE(TYPE_INTEGER) ;-- optional index of the source wand
+								*wand2: either pos = cmd [
+									int: as red-integer! cmd
+									index: int/value - 1
+									ASSERT_MAGICK_WAND(index)
+									as MagickWand! MagickWands-table/index
+								][ *wand ]
+								MAGICK_FETCH_FILE(name)
+								MAGICK_FETCH_NAMED_VALUE(TYPE_LOGIC) ;-- if true, join images into a single multi-image file.
+								print ["<-- WRITE-IMAGES " name " to " *wand2 " join: " AS_BOOLEAN(value) lf]
+								result: MagickWriteImages *wand2 name AS_BOOLEAN(value)
 							]
 
 							sym = _Preview [
@@ -827,6 +915,38 @@ Red [
 								MAGICK_FETCH_MWAND_INDEX(index) ;-- index in magic wand table, where will be stored result 
 								MagickWands-table/index: as integer! MagickPreviewImages *wand type
 								result: MagickTrue
+							]
+
+							sym = _Restart [
+							;== Releases all used wands and restarts the MagickWand environment
+								destroy-wands
+								MagickWandTerminus
+								MagickWandGenesis
+								*wand-index: 0
+								*wand: NewMagickWand
+								MagickWands-table/*wand-index: as integer! *wand
+								result: MagickTrue
+							]
+							sym = _Index [
+								MAGICK_FETCH_VALUE(TYPE_INTEGER)
+								int: as red-integer! cmd
+								index: int/value
+								result: MagickSetIteratorIndex *wand index
+								result: MagickTrue
+							]
+							sym = _Head [
+								MagickSetFirstIterator *wand
+								result: MagickTrue
+							]
+							sym = _Tail [
+								MagickSetLastIterator *wand
+								result: MagickTrue
+							]
+							sym = _Get-Index [
+								int: as red-integer! stack/arguments
+								int/header: TYPE_INTEGER
+								int/value: MagickGetIteratorIndex *wand
+								return as red-value! int
 							]
 
 
@@ -960,6 +1080,28 @@ Red [
 ;								MAGICK_FETCH_KERNELINFO!() ;-- the color matrix.
 ;								result: MagickColorMatrixImage *wand AS_KERNELINFO!(start 0)
 ;							]
+							sym = _combine [
+							;== Combines one or more images into a single image
+								MAGICK_FETCH_OPT_VALUE(TYPE_INTEGER) ;-- optional index of the destination wand
+								index: either pos = cmd [
+									int: as red-integer! cmd
+									int/value - 1
+								][ *wand-index ] ;by default it will rewrite the current wand
+								*wand2: MagickCombineImages *wand 47 ;@@ TODO: add possibility to choose channel type, 295 is default value!
+								either 0 = as integer! *wand2 [
+									print ["iMagick: 'combine' failed!" lf] ;@@ throw real error instead?
+								][
+									; if there was already a wand on index, deallocate its memory
+									*wand: as MagickWand! MagickWands-table/index
+									if all [
+										0 <> as integer! *wand
+										MagickTrue = IsMagickWand *wand
+									] [ DestroyMagickWand *wand ]
+									MagickWands-table/index: as integer! *wand2 ; and store new wand there
+									*wand: *wand2
+								]
+								result: MagickTrue
+							]
 							sym = _comment [
 							;== Adds a comment to your image
 								MAGICK_FETCH_VALUE(TYPE_STRING) ;-- the image comment.
@@ -1196,6 +1338,8 @@ Red [
 							sym = _next [
 							;== Associates the next image in the image list with a magick wand
 								result: MagickNextImage *wand
+								if result <> MagickTrue [ print ["iMagick: no 'next' image in the list!" lf]]
+								result: MagickTrue
 							]
 							sym = _normalize [
 							;== Enhances the contrast of a color image by adjusting the pixels color to span the entire range of colors available
@@ -1239,6 +1383,8 @@ Red [
 							sym = _previous [
 							;== Assocates the previous image in an image list with the magick wand
 								result: MagickPreviousImage *wand
+								if result <> MagickTrue [ print ["iMagick: no 'previous' image in the list!" lf]]
+								result: MagickTrue
 							]
 ;							sym = _quantize [
 ;							;== Analyzes the colors within a reference image and chooses a fixed number of colors to represent the image
@@ -1493,12 +1639,15 @@ Red [
 ;							]
 
 
-
-
 							true [ throw-magick-error cmds cmd false ]
 						]
 					]
-					true [ throw-magick-error cmds cmd false ]
+					true [
+						MAGICK_FETCH_FILE(name)
+						print ["<-- READ " name " to " *wand lf]
+						result: MagickReadImage *wand name
+						cmd: cmd - 1
+					]
 				]
 				
 				if result <> MagickTrue [
@@ -1515,14 +1664,18 @@ Red [
 			bool: as red-logic! stack/arguments
 			bool/header: TYPE_LOGIC
 			bool/value: true
+			as red-value! bool
 		]
 	]
 ]
 
-iMagick: routine [
-	"Evaluate ImageMagick dialect commands"
-	commands [block!]
-][
-	ImageMagick/do commands
+ImageMagick: context [
+	set 'iMagick routine [
+		"Evaluate ImageMagick dialect commands"
+		commands [block!]
+	][
+		ImageMagick/do commands
+	]
 ]
+
 
