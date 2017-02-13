@@ -22,7 +22,7 @@ imagick [
 	write %test2.gif           ;so this will save %mnich image
 	remove                     ;this removes image at current index (so only %opice would be in the wand)
 	read %mnich.png            ;this loads %mnich image back
-	adaptive-resize 200x200    ;aaptively resize %mnich image with data dependent triangulation
+	adaptive-resize 200x200    ;adaptively resize %mnich image with data dependent triangulation
 	write-images %anim.gif on  ;creates animated gif from both images
 	write-images %anim.gif off ;creates sequence from both images (anim-0.gif and anim-1.gif)
 	write-images %anim.miff on ;writes animation into special MIFF file so anim can be loaded later without data lost (which would happen in the GIF)
@@ -57,6 +57,54 @@ iMagick [
 	destroy 2                  ;completely release all resoutces from second wand if not needed anymore
 ] 
 
+iMagick [restart]
+
+print iMagick [
+	ping %mnich.png           ;`ping` is like `read` except the only valid information returned is the image width height size and format
+	get-size                  ;so we can get image size here without actually reading complete image into memory
+]
+print iMagick [
+	get-info                  ;identifies an image by printing all its attributes
+]
+
+iMagick [restart]
+
+img: iMagick [read %mnich.png get-image]
+;view [image img]
+
+save %image-from-red.png img
+
+iMagick [scale 2x2]                               ;scale image down so bellow results are not too large
+print ["RGB:   " mold iMagick [get-binary "RGB"]] ;prits raw RGB binary data
+print ["Alpha: " mold iMagick [get-binary "A"]]   ;prits raw binary data with image alpha
+
+iMagick [restart]
+
+iMagick [
+	new 10x10 255.0.0.200  ;this creates a new image with specified color and partial transparency
+	write "PNG32:new.png"  ;saves result as 32bit PNG
+]
+
+iMagick [restart]
+
+probe iMagick [
+	read %opice.png             ;load background image into main wand
+	read 2 %mnich.png           ;load another image into second wand
+	composite 2 over 50x50      ;composite second image on the first one using just basic composition 'over and position
+	write %opice-mnich-v1.png   ;save result
+]
+
+iMagick [restart]
+
+iMagick [
+	read %opice.png 
+	alpha on                                       ;activates alpha channel as original image does not have it
+	white-threshold 160.150.100                    ;force all pixels above the color threshold into white while leaving all pixels below unchanged
+	rotate 45                                      ;rotates an image 45 degrees; as no color is specified, the background will be transparent
+	write "PNG32:opice-white-threshold-rotate.png" ;saving result into 32bit PNG file (else it would use same format as original where was no transparency)
+	write %opice-white-threshold-rotate.gif        ;saving result into GIF file (transparency used)
+]
+
 
 comment {
 if error? set/any 'err try [
@@ -85,27 +133,6 @@ probe iMagick [
 		</ColorCorrectionCollection>}
 	write %opice-ccc.png
 	clear
-]
-
-probe iMagick [
-	read %mnich.png
-	use 2
-	read %opice.png
-	contrast off
-	composite 1 over 50x50
-	write %opice-mnich-v1.png
-	;destroy 2
-	;destroy 1
-]
-
-probe iMagick [
-	read   %opice.png
-	read 2 %mnich.png
-	contrast off
-	composite 2 over 50x50
-	write %opice-mnich-v2.png
-	;destroy 2
-	;destroy 1
 ]
 
 

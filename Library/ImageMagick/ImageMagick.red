@@ -15,9 +15,21 @@ Red [
 
 	
 	#define MAX_MAGIC_WANDS 16
+	#define TRACE(value) [
+		;print value ;only for debugging purposes
+	]
 
 
 	ImageMagick: context [
+
+		BitmapData!: alias struct! [
+			width		[integer!]
+			height		[integer!]
+			stride		[integer!]
+			pixelFormat	[integer!]
+			scan0		[byte-ptr!]
+			reserved	[integer!]
+		]
 
 		MagickWands-table: as int-ptr! allocate MAX_MAGIC_WANDS * size? MagickWand!
 		zerofill MagickWands-table MagickWands-table + MAX_MAGIC_WANDS
@@ -105,6 +117,16 @@ Red [
 			as integer! val/value
 		]
 
+		byte-to-float: func[
+			value [byte!]
+			return: [float!]
+			/local
+				i [integer!]
+		][
+			i: as integer! value
+			(as float! i) / 255.0
+		]
+
 
 		_Use:               symbol/make "use"
 		_Clear:             symbol/make "clear"
@@ -121,7 +143,14 @@ Red [
 		_Head:              symbol/make "head"
 		_Tail:              symbol/make "tail"
 		_Get-Index:         symbol/make "get-index"
+		_Get-Size:          symbol/make "get-size"
+		_Get-Image:         symbol/make "get-image"
+		_Get-Binary:        symbol/make "get-binary"
+		_Get-Info:          symbol/make "get-info"
+		_Set-Alpha:         symbol/make "set-alpha"
 
+		_combine:                   symbol/make "combine"
+		_ordered-posterize:         symbol/make "ordered-posterize"
 		_adaptive-blur:             symbol/make "adaptive-blur"
 		_adaptive-resize:           symbol/make "adaptive-resize"
 		_adaptive-sharpen:          symbol/make "adaptive-sharpen"
@@ -144,7 +173,6 @@ Red [
 		_clut:                      symbol/make "clut"
 		_color-decision-list:       symbol/make "color-decision-list"
 		_colorize:                  symbol/make "colorize"
-		_combine:                   symbol/make "combine"
 		_color-matrix:              symbol/make "color-matrix"
 		_comment:                   symbol/make "comment"
 		_composite:                 symbol/make "composite"
@@ -191,7 +219,6 @@ Red [
 		_normalize:                 symbol/make "normalize"
 		_oil-paint:                 symbol/make "oil-paint"
 		_opaque-paint:              symbol/make "opaque-paint"
-		_ordered-posterize:         symbol/make "ordered-posterize"
 		_ping:                      symbol/make "ping"
 		_polaroid:                  symbol/make "polaroid"
 		_posterize:                 symbol/make "posterize"
@@ -274,8 +301,7 @@ Red [
 		_laplacian:                 symbol/make "laplacian"
 		_poisson:                   symbol/make "poisson"
 		_random:                    symbol/make "random"
-		_no:                        symbol/make "no"
-		_modulus-add:               symbol/make "modulus-add"
+		_alpha:                     symbol/make "alpha"
 		_atop:                      symbol/make "atop"
 		_blend:                     symbol/make "blend"
 		_bumpmap:                   symbol/make "bumpmap"
@@ -290,30 +316,46 @@ Red [
 		_copy-cyan:                 symbol/make "copy-cyan"
 		_copy-green:                symbol/make "copy-green"
 		_copy-magenta:              symbol/make "copy-magenta"
-		_copy-opacity:              symbol/make "copy-opacity"
+		_copy-alpha:                symbol/make "copy-alpha"
 		_copy-red:                  symbol/make "copy-red"
 		_copy-yellow:               symbol/make "copy-yellow"
 		_darken:                    symbol/make "darken"
+		_darken-intensity:          symbol/make "darken-intensity"
+		_difference:                symbol/make "difference"
+		_displace:                  symbol/make "displace"
+		_dissolve:                  symbol/make "dissolve"
+		_distort:                   symbol/make "distort"
+		_divide-dst:                symbol/make "divide-dst"
+		_divide-src:                symbol/make "divide-src"
 		_dst-atop:                  symbol/make "dst-atop"
 		_dst:                       symbol/make "dst"
 		_dst-in:                    symbol/make "dst-in"
 		_dst-out:                   symbol/make "dst-out"
 		_dst-over:                  symbol/make "dst-over"
-		_difference:                symbol/make "difference"
-		_displace:                  symbol/make "displace"
-		_dissolve:                  symbol/make "dissolve"
 		_exclusion:                 symbol/make "exclusion"
 		_hard-light:                symbol/make "hard-light"
+		_hard-mix:                  symbol/make "hard-mix"
 		_in:                        symbol/make "in"
+		_intensity:                 symbol/make "intensity"
 		_lighten:                   symbol/make "lighten"
+		_lighten-intensity:         symbol/make "lighten-intensity"
+		_linear-burn:               symbol/make "linear-burn"
+		_linear-dodge:              symbol/make "linear-dodge"
 		_linear-light:              symbol/make "linear-light"
 		_luminize:                  symbol/make "luminize"
-		_minus:                     symbol/make "minus"
+		_mathematics:               symbol/make "mathematics"
+		_minus-dst:                 symbol/make "minus-dst"
+		_minus-src:                 symbol/make "minus-src"
 		_modulate:                  symbol/make "modulate"
+		_modulus-add:               symbol/make "modulus-add"
+		_modulus-subtract:          symbol/make "modulus-subtract"
 		_multiply:                  symbol/make "multiply"
+		_no:                        symbol/make "no"
 		_out:                       symbol/make "out"
 		_over:                      symbol/make "over"
 		_overlay:                   symbol/make "overlay"
+		_pegtop-light:              symbol/make "pegtop-light"
+		_pin-light:                 symbol/make "pin-light"
 		_plus:                      symbol/make "plus"
 		_replace:                   symbol/make "replace"
 		_saturate:                  symbol/make "saturate"
@@ -324,45 +366,41 @@ Red [
 		_src-in:                    symbol/make "src-in"
 		_src-out:                   symbol/make "src-out"
 		_src-over:                  symbol/make "src-over"
-		_modulus-subtract:          symbol/make "modulus-subtract"
-		_xor:                       symbol/make "xor"
-		_divide:                    symbol/make "divide"
-		_distort:                   symbol/make "distort"
-		_pegtop-light:              symbol/make "pegtop-light"
 		_vivid-light:               symbol/make "vivid-light"
-		_pin-light:                 symbol/make "pin-light"
-		_linear-dodge:              symbol/make "linear-dodge"
-		_linear-burn:               symbol/make "linear-burn"
-		_mathematics:               symbol/make "mathematics"
+		_xor:                       symbol/make "xor"
+		_abs:                       symbol/make "abs"
+		_add-modulus:               symbol/make "add-modulus"
 		_and:                       symbol/make "and"
-		_left-shift:                symbol/make "left-shift"
-		_max:                       symbol/make "max"
-		_min:                       symbol/make "min"
-		_or:                        symbol/make "or"
-		_right-shift:               symbol/make "right-shift"
-		_set:                       symbol/make "set"
-		_subtract:                  symbol/make "subtract"
-		_pow:                       symbol/make "pow"
-		_log:                       symbol/make "log"
-		_threshold-black:           symbol/make "threshold-black"
-		_threshold-white:           symbol/make "threshold-white"
+		_cosine:                    symbol/make "cosine"
+		_divide:                    symbol/make "divide"
+		_exponential:               symbol/make "exponential"
 		_gaussian-noise:            symbol/make "gaussian-noise"
 		_impulse-noise:             symbol/make "impulse-noise"
 		_laplacian-noise:           symbol/make "laplacian-noise"
-		_multiplicative-noise:      symbol/make "multiplicative-noise"
-		_poisson-noise:             symbol/make "poisson-noise"
-		_uniform-noise:             symbol/make "uniform-noise"
-		_cosine:                    symbol/make "cosine"
-		_sine:                      symbol/make "sine"
-		_add-modulus:               symbol/make "add-modulus"
+		_left-shift:                symbol/make "left-shift"
+		_log:                       symbol/make "log"
+		_max:                       symbol/make "max"
 		_mean:                      symbol/make "mean"
-		_abs:                       symbol/make "abs"
-		_exponential:               symbol/make "exponential"
+		_median:                    symbol/make "median"
+		_min:                       symbol/make "min"
+		_multiplicative-noise:      symbol/make "multiplicative-noise"
+		_or:                        symbol/make "or"
+		_poisson-noise:             symbol/make "poisson-noise"
+		_pow:                       symbol/make "pow"
+		_right-shift:               symbol/make "right-shift"
+		_root-mean-square:          symbol/make "root-mean-square"
+		_set:                       symbol/make "set"
+		_sine:                      symbol/make "sine"
+		_subtract:                  symbol/make "subtract"
+		_sum:                       symbol/make "sum"
+		_threshold-black:           symbol/make "threshold-black"
+		_threshold-white:           symbol/make "threshold-white"
+		_uniform-noise:             symbol/make "uniform-noise"
 		_point:                     symbol/make "point"
 		_box:                       symbol/make "box"
 		_triangle:                  symbol/make "triangle"
 		_hermite:                   symbol/make "hermite"
-		_hanning:                   symbol/make "hanning"
+		_hann:                      symbol/make "hann"
 		_hamming:                   symbol/make "hamming"
 		_blackman:                  symbol/make "blackman"
 		_quadratic:                 symbol/make "quadratic"
@@ -373,7 +411,7 @@ Red [
 		_sinc:                      symbol/make "sinc"
 		_sinc-fast:                 symbol/make "sinc-fast"
 		_kaiser:                    symbol/make "kaiser"
-		_welsh:                     symbol/make "welsh"
+		_welch:                     symbol/make "welch"
 		_parzen:                    symbol/make "parzen"
 		_bohman:                    symbol/make "bohman"
 		_bartlett:                  symbol/make "bartlett"
@@ -381,8 +419,24 @@ Red [
 		_lanczos:                   symbol/make "lanczos"
 		_lanczos-sharp:             symbol/make "lanczos-sharp"
 		_lanczos-2:                 symbol/make "lanczos-2"
-		_lanczos-2sharp:            symbol/make "lanczos-2sharp"
+		_lanczos-2-sharp:           symbol/make "lanczos-2-sharp"
 		_robidoux:                  symbol/make "robidoux"
+		_robidoux-sharp:            symbol/make "robidoux-sharp"
+		_spline:                    symbol/make "spline"
+		_lanczos-radius:            symbol/make "lanczos-radius"
+		_activate:                  symbol/make "activate"
+		_associate:                 symbol/make "associate"
+		_background:                symbol/make "background"
+		_deactivate:                symbol/make "deactivate"
+		_discrete:                  symbol/make "discrete"
+		_disassociate:              symbol/make "disassociate"
+		_extract:                   symbol/make "extract"
+		_off:                       symbol/make "off"
+		_on:                        symbol/make "on"
+		_opaque:                    symbol/make "opaque"
+		_remove:                    symbol/make "remove"
+		_shape:                     symbol/make "shape"
+		_transparent:               symbol/make "transparent"
 		_riemersma:                 symbol/make "riemersma"
 		_floyd-steinberg:           symbol/make "floyd-steinberg"
 
@@ -509,69 +563,76 @@ Red [
 				word: as red-word! cmd
 				sym: symbol/resolve word/symbol
 				case [
-					sym = _no           [type: 1]
-					sym = _modulus-add  [type: 2]
-					sym = _atop         [type: 3]
-					sym = _blend        [type: 4]
-					sym = _bumpmap      [type: 5]
-					sym = _change-mask  [type: 6]
-					sym = _clear        [type: 7]
-					sym = _color-burn   [type: 8]
-					sym = _color-dodge  [type: 9]
-					sym = _colorize     [type: 10]
-					sym = _copy-black   [type: 11]
-					sym = _copy-blue    [type: 12]
-					sym = _copy         [type: 13]
-					sym = _copy-cyan    [type: 14]
-					sym = _copy-green   [type: 15]
-					sym = _copy-magenta [type: 16]
-					sym = _copy-opacity [type: 17]
-					sym = _copy-red     [type: 18]
-					sym = _copy-yellow  [type: 19]
-					sym = _darken       [type: 20]
-					sym = _dst-atop     [type: 21]
-					sym = _dst          [type: 22]
-					sym = _dst-in       [type: 23]
-					sym = _dst-out      [type: 24]
-					sym = _dst-over     [type: 25]
-					sym = _difference   [type: 26]
-					sym = _displace     [type: 27]
-					sym = _dissolve     [type: 28]
-					sym = _exclusion    [type: 29]
-					sym = _hard-light   [type: 30]
-					sym = _hue          [type: 31]
-					sym = _in           [type: 32]
-					sym = _lighten      [type: 33]
-					sym = _linear-light [type: 34]
-					sym = _luminize     [type: 35]
-					sym = _minus        [type: 36]
-					sym = _modulate     [type: 37]
-					sym = _multiply     [type: 38]
-					sym = _out          [type: 39]
-					sym = _over         [type: 40]
-					sym = _overlay      [type: 41]
-					sym = _plus         [type: 42]
-					sym = _replace      [type: 43]
-					sym = _saturate     [type: 44]
-					sym = _screen       [type: 45]
-					sym = _soft-light   [type: 46]
-					sym = _src-atop     [type: 47]
-					sym = _src          [type: 48]
-					sym = _src-in       [type: 49]
-					sym = _src-out      [type: 50]
-					sym = _src-over     [type: 51]
-					sym = _modulus-subtract [type: 52]
-					sym = _threshold    [type: 53]
-					sym = _xor          [type: 54]
-					sym = _divide       [type: 55]
-					sym = _distort      [type: 56]
-					sym = _blur         [type: 57]
-					sym = _pegtop-light [type: 58]
-					sym = _vivid-light  [type: 59]
-					sym = _pin-light    [type: 60]
-					sym = _linear-dodge [type: 61]
-					sym = _linear-burn  [type: 62]
-					sym = _mathematics  [type: 63]
+					sym = _alpha             [type: 1]
+					sym = _atop              [type: 2]
+					sym = _blend             [type: 3]
+					sym = _blur              [type: 4]
+					sym = _bumpmap           [type: 5]
+					sym = _change-mask       [type: 6]
+					sym = _clear             [type: 7]
+					sym = _color-burn        [type: 8]
+					sym = _color-dodge       [type: 9]
+					sym = _colorize          [type: 10]
+					sym = _copy-black        [type: 11]
+					sym = _copy-blue         [type: 12]
+					sym = _copy              [type: 13]
+					sym = _copy-cyan         [type: 14]
+					sym = _copy-green        [type: 15]
+					sym = _copy-magenta      [type: 16]
+					sym = _copy-alpha        [type: 17]
+					sym = _copy-red          [type: 18]
+					sym = _copy-yellow       [type: 19]
+					sym = _darken            [type: 20]
+					sym = _darken-intensity  [type: 21]
+					sym = _difference        [type: 22]
+					sym = _displace          [type: 23]
+					sym = _dissolve          [type: 24]
+					sym = _distort           [type: 25]
+					sym = _divide-dst        [type: 26]
+					sym = _divide-src        [type: 27]
+					sym = _dst-atop          [type: 28]
+					sym = _dst               [type: 29]
+					sym = _dst-in            [type: 30]
+					sym = _dst-out           [type: 31]
+					sym = _dst-over          [type: 32]
+					sym = _exclusion         [type: 33]
+					sym = _hard-light        [type: 34]
+					sym = _hard-mix          [type: 35]
+					sym = _hue               [type: 36]
+					sym = _in                [type: 37]
+					sym = _intensity         [type: 38]
+					sym = _lighten           [type: 39]
+					sym = _lighten-intensity [type: 40]
+					sym = _linear-burn       [type: 41]
+					sym = _linear-dodge      [type: 42]
+					sym = _linear-light      [type: 43]
+					sym = _luminize          [type: 44]
+					sym = _mathematics       [type: 45]
+					sym = _minus-dst         [type: 46]
+					sym = _minus-src         [type: 47]
+					sym = _modulate          [type: 48]
+					sym = _modulus-add       [type: 49]
+					sym = _modulus-subtract  [type: 50]
+					sym = _multiply          [type: 51]
+					sym = _no                [type: 52]
+					sym = _out               [type: 53]
+					sym = _over              [type: 54]
+					sym = _overlay           [type: 55]
+					sym = _pegtop-light      [type: 56]
+					sym = _pin-light         [type: 57]
+					sym = _plus              [type: 58]
+					sym = _replace           [type: 59]
+					sym = _saturate          [type: 60]
+					sym = _screen            [type: 61]
+					sym = _soft-light        [type: 62]
+					sym = _src-atop          [type: 63]
+					sym = _src               [type: 64]
+					sym = _src-in            [type: 65]
+					sym = _src-out           [type: 66]
+					sym = _src-over          [type: 67]
+					sym = _threshold         [type: 68]
+					sym = _vivid-light       [type: 69]
+					sym = _xor               [type: 70]
 					true [
 						throw-magick-error cmds cmd false
 					]
@@ -595,35 +656,38 @@ Red [
 				word: as red-word! cmd
 				sym: symbol/resolve word/symbol
 				case [
-					sym = _add          [type: 1]
-					sym = _and          [type: 2]
-					sym = _divide       [type: 3]
-					sym = _left-shift   [type: 4]
-					sym = _max          [type: 5]
-					sym = _min          [type: 6]
-					sym = _multiply     [type: 7]
-					sym = _or           [type: 8]
-					sym = _right-shift  [type: 9]
-					sym = _set          [type: 10]
-					sym = _subtract     [type: 11]
-					sym = _xor          [type: 12]
-					sym = _pow          [type: 13]
-					sym = _log          [type: 14]
-					sym = _threshold    [type: 15]
-					sym = _threshold-black [type: 16]
-					sym = _threshold-white [type: 17]
-					sym = _gaussian-noise [type: 18]
-					sym = _impulse-noise [type: 19]
-					sym = _laplacian-noise [type: 20]
-					sym = _multiplicative-noise [type: 21]
-					sym = _poisson-noise [type: 22]
-					sym = _uniform-noise [type: 23]
-					sym = _cosine       [type: 24]
-					sym = _sine         [type: 25]
-					sym = _add-modulus  [type: 26]
-					sym = _mean         [type: 27]
-					sym = _abs          [type: 28]
-					sym = _exponential  [type: 29]
+					sym = _abs                  [type: 1]
+					sym = _add                  [type: 2]
+					sym = _add-modulus          [type: 3]
+					sym = _and                  [type: 4]
+					sym = _cosine               [type: 5]
+					sym = _divide               [type: 6]
+					sym = _exponential          [type: 7]
+					sym = _gaussian-noise       [type: 8]
+					sym = _impulse-noise        [type: 9]
+					sym = _laplacian-noise      [type: 10]
+					sym = _left-shift           [type: 11]
+					sym = _log                  [type: 12]
+					sym = _max                  [type: 13]
+					sym = _mean                 [type: 14]
+					sym = _median               [type: 15]
+					sym = _min                  [type: 16]
+					sym = _multiplicative-noise [type: 17]
+					sym = _multiply             [type: 18]
+					sym = _or                   [type: 19]
+					sym = _poisson-noise        [type: 20]
+					sym = _pow                  [type: 21]
+					sym = _right-shift          [type: 22]
+					sym = _root-mean-square     [type: 23]
+					sym = _set                  [type: 24]
+					sym = _sine                 [type: 25]
+					sym = _subtract             [type: 26]
+					sym = _sum                  [type: 27]
+					sym = _threshold-black      [type: 28]
+					sym = _threshold            [type: 29]
+					sym = _threshold-white      [type: 30]
+					sym = _uniform-noise        [type: 31]
+					sym = _xor                  [type: 32]
 					true [
 						throw-magick-error cmds cmd false
 					]
@@ -647,32 +711,74 @@ Red [
 				word: as red-word! cmd
 				sym: symbol/resolve word/symbol
 				case [
-					sym = _point        [type: 1]
-					sym = _box          [type: 2]
-					sym = _triangle     [type: 3]
-					sym = _hermite      [type: 4]
-					sym = _hanning      [type: 5]
-					sym = _hamming      [type: 6]
-					sym = _blackman     [type: 7]
-					sym = _gaussian     [type: 8]
-					sym = _quadratic    [type: 9]
-					sym = _cubic        [type: 10]
-					sym = _catrom       [type: 11]
-					sym = _mitchell     [type: 12]
-					sym = _jinc         [type: 13]
-					sym = _sinc         [type: 14]
-					sym = _sinc-fast    [type: 15]
-					sym = _kaiser       [type: 16]
-					sym = _welsh        [type: 17]
-					sym = _parzen       [type: 18]
-					sym = _bohman       [type: 19]
-					sym = _bartlett     [type: 20]
-					sym = _lagrange     [type: 21]
-					sym = _lanczos      [type: 22]
-					sym = _lanczos-sharp [type: 23]
-					sym = _lanczos-2    [type: 24]
-					sym = _lanczos-2sharp [type: 25]
-					sym = _robidoux     [type: 26]
+					sym = _point           [type: 1]
+					sym = _box             [type: 2]
+					sym = _triangle        [type: 3]
+					sym = _hermite         [type: 4]
+					sym = _hann            [type: 5]
+					sym = _hamming         [type: 6]
+					sym = _blackman        [type: 7]
+					sym = _gaussian        [type: 8]
+					sym = _quadratic       [type: 9]
+					sym = _cubic           [type: 10]
+					sym = _catrom          [type: 11]
+					sym = _mitchell        [type: 12]
+					sym = _jinc            [type: 13]
+					sym = _sinc            [type: 14]
+					sym = _sinc-fast       [type: 15]
+					sym = _kaiser          [type: 16]
+					sym = _welch           [type: 17]
+					sym = _parzen          [type: 18]
+					sym = _bohman          [type: 19]
+					sym = _bartlett        [type: 20]
+					sym = _lagrange        [type: 21]
+					sym = _lanczos         [type: 22]
+					sym = _lanczos-sharp   [type: 23]
+					sym = _lanczos-2       [type: 24]
+					sym = _lanczos-2-sharp [type: 25]
+					sym = _robidoux        [type: 26]
+					sym = _robidoux-sharp  [type: 27]
+					sym = _cosine          [type: 28]
+					sym = _spline          [type: 29]
+					sym = _lanczos-radius  [type: 30]
+					true [
+						throw-magick-error cmds cmd false
+					]
+				]
+			]
+		]
+
+		#define MAGICK_FETCH_ALPHA_CHANNEL_TYPE(type) [
+			cmd: cmd + 1
+			if any [cmd >= tail all [
+				TYPE_OF(cmd) <> TYPE_INTEGER
+				TYPE_OF(cmd) <> TYPE_WORD
+				TYPE_OF(cmd) <> TYPE_LIT_WORD
+			]][
+				throw-magick-error cmds cmd false
+			]
+			either TYPE_OF(cmd) = TYPE_INTEGER [
+				int: as red-integer! cmd
+				type: int/value
+			][
+				word: as red-word! cmd
+				sym: symbol/resolve word/symbol
+				case [
+					sym = _activate     [type: 1]
+					sym = _associate    [type: 2]
+					sym = _background   [type: 3]
+					sym = _copy         [type: 4]
+					sym = _deactivate   [type: 5]
+					sym = _discrete     [type: 6]
+					sym = _disassociate [type: 7]
+					sym = _extract      [type: 8]
+					sym = _off          [type: 9]
+					sym = _on           [type: 10]
+					sym = _opaque       [type: 11]
+					sym = _remove       [type: 12]
+					sym = _set          [type: 13]
+					sym = _shape        [type: 14]
+					sym = _transparent  [type: 15]
 					true [
 						throw-magick-error cmds cmd false
 					]
@@ -703,6 +809,37 @@ Red [
 						throw-magick-error cmds cmd false
 					]
 				]
+			]
+		]
+
+		#define MAGICK_FETCH_PIXELWAND(pw) [
+			cmd: cmd + 1
+			if any [cmd >= tail TYPE_OF(cmd) <> TYPE_TUPLE][
+				throw-magick-error cmds cmd false
+			]
+			pw: NewPixelWand
+			color: as red-tuple! cmd
+			len: TUPLE_SIZE?(color)
+			bytes: (as byte-ptr! color) + 4
+			PixelSetRed   pw byte-to-float bytes/1
+			PixelSetGreen pw byte-to-float bytes/2
+			PixelSetBlue  pw byte-to-float bytes/3
+			if len >= 4 [PixelSetAlpha pw byte-to-float bytes/4]
+		]
+		#define MAGICK_FETCH_OPT_PIXELWAND(pw) [
+			pos: cmd + 1
+			pw: NewPixelWand
+			either all [pos < tail TYPE_OF(pos) = TYPE_TUPLE][
+				cmd: pos
+				color: as red-tuple! cmd
+				len: TUPLE_SIZE?(color)
+				bytes: (as byte-ptr! color) + 4
+				PixelSetRed   pw byte-to-float bytes/1
+				PixelSetGreen pw byte-to-float bytes/2
+				PixelSetBlue  pw byte-to-float bytes/3
+				if len >= 4 [PixelSetAlpha pw byte-to-float bytes/4]
+			][
+				PixelSetColor pw "transparent"
 			]
 		]
 		
@@ -762,7 +899,7 @@ Red [
 					ClearMagickWand wand
 					DestroyMagickWand wand
 					wands/0: 0
-					print ["<-- Destroed wand: " wand lf]
+					TRACE(["<-- Destroed wand: " wand lf])
 				]
 				wands: wands + 1
 			]
@@ -792,8 +929,21 @@ Red [
 				index     [integer!]
 				size      [red-pair!]
 				position  [red-pair!]
+				img       [red-image!]
 				type      [integer!]
 				exception [ExceptionType!]
+				width     [integer!]
+				height    [integer!]
+				bytes     [byte-ptr!]
+				pixels    [int-ptr!]
+				bitmap    [integer!]
+				bitmapData [BitmapData!]
+				bin       [red-binary!]
+				s         [series!]
+				pw        [PixelWand!]
+				color     [red-tuple!]
+				i         [integer!]
+				f         [float!]
 		][
 			cmd:  block/rs-head cmds
 			tail: block/rs-tail cmds
@@ -802,8 +952,6 @@ Red [
 			;Always using wand from index 0 at commands start
 			*wand-index: 0
 			*wand: as MagickWand! MagickWands-table/*wand-index
-
-			print ["DO with wand: " *wand-index " " *wand lf]
 
 			if MagickTrue <> IsMagickWand *wand [
 				*wand: NewMagickWand
@@ -817,9 +965,10 @@ Red [
 						word: as red-word! cmd
 						sym: symbol/resolve word/symbol
 						symb: symbol/get sym
-						print ["--> " *wand " " *wand-index " " symb/cache lf]
+						TRACE(["--> " *wand " " *wand-index " " symb/cache lf])
 						case [
 							sym = _Use [
+							;== Picks working MagickWand from the specified index (creates a new one if not exists yet)
 								MAGICK_FETCH_MWAND_INDEX(index)
 								*wand: as MagickWand! MagickWands-table/index
 								*wand-index: index
@@ -828,7 +977,7 @@ Red [
 									;print ["new wand: " *wand-index " " *wand lf]
 									MagickWands-table/index: as integer! *wand
 								]
-								print ["<-- Use wand: " index " " *wand lf]
+								TRACE(["<-- Use wand: " index " " *wand lf])
 								result: MagickTrue
 							]
 							sym = _Clear [
@@ -844,7 +993,7 @@ Red [
 								*wand2: as MagickWand! MagickWands-table/index
 								if MagickTrue <> IsMagickWand *wand [
 									DestroyMagickWand *wand2
-									print ["<-- Destroyed wand: " index " " *wand2 lf]
+									TRACE(["<-- Destroyed wand: " index " " *wand2 lf])
 								]
 								MagickWands-table/index: either *wand-index = index [
 									;recreate a new wand if current was destroyed!
@@ -863,13 +1012,19 @@ Red [
 								]
 								; and clone a new wand at the index
 								MagickWands-table/index: as integer! CloneMagickWand *wand
-								print ["<-- Cloned wand: " index " " as MagickWand! MagickWands-table/index lf]
+								TRACE(["<-- Cloned wand: " index " " as MagickWand! MagickWands-table/index lf])
 								result: MagickTrue
 							]
 							sym = _New [
-								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
-								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
-								;result: MagickReadImage *wand name
+							;== Adds a blank image canvas of the specified size and background color to the wand
+								MAGICK_FETCH_VALUE(TYPE_PAIR) ;-- width and height of the local neighborhood.
+								size: as red-pair! start
+								MAGICK_FETCH_OPT_PIXELWAND(pw)
+								result: MagickNewImage *wand size/x size/y pw
+								if all [result = MagickTrue len >= 4] [
+									result: MagickSetImageOpacity *wand 1.0 - byte-to-float bytes/4
+								]
+								DestroyPixelWand pw
 							]
 							sym = _Read [
 								MAGICK_FETCH_OPT_VALUE(TYPE_INTEGER) ;-- optional index of the target wand
@@ -877,10 +1032,14 @@ Red [
 									int: as red-integer! cmd
 									index: int/value - 1
 									ASSERT_MAGICK_WAND(index)
+									if 0 = MagickWands-table/index [
+										MagickWands-table/index: as integer! NewMagickWand
+										TRACE(["<-- NEW WAND " index lf])
+									]
 									as MagickWand! MagickWands-table/index
 								][ *wand ]
 								MAGICK_FETCH_FILE(name)
-								print ["<-- READ " name " to " *wand2 lf]
+								TRACE(["<-- READ " name " to " *wand2 lf])
 								result: MagickReadImage *wand2 name
 							]
 							sym = _Write [
@@ -892,7 +1051,7 @@ Red [
 									as MagickWand! MagickWands-table/index
 								][ *wand ]
 								MAGICK_FETCH_FILE(name)
-								print ["<-- WRITE " name " to " *wand2 lf]
+								TRACE(["<-- WRITE " name " to " *wand2 lf])
 								result: MagickWriteImage *wand2 name
 							]
 							sym = _Write-Images [
@@ -905,7 +1064,7 @@ Red [
 								][ *wand ]
 								MAGICK_FETCH_FILE(name)
 								MAGICK_FETCH_NAMED_VALUE(TYPE_LOGIC) ;-- if true, join images into a single multi-image file.
-								print ["<-- WRITE-IMAGES " name " to " *wand2 " join: " AS_BOOLEAN(value) lf]
+								TRACE(["<-- WRITE-IMAGES " name " to " *wand2 " join: " AS_BOOLEAN(value) lf])
 								result: MagickWriteImages *wand2 name AS_BOOLEAN(value)
 							]
 
@@ -947,6 +1106,65 @@ Red [
 								int/header: TYPE_INTEGER
 								int/value: MagickGetIteratorIndex *wand
 								return as red-value! int
+							]
+							sym = _Get-Size [
+								size: as red-pair! stack/arguments
+								size/header: TYPE_PAIR
+								size/x: MagickGetImageWidth *wand
+								size/y: MagickGetImageHeight *wand
+								return as red-value! size
+							]
+							sym = _Get-Image [
+								width: MagickGetImageWidth *wand
+								height: MagickGetImageHeight *wand
+								img: as red-image! stack/arguments
+								img/header: TYPE_IMAGE
+								img/size: height << 16 or width
+								
+								bitmap: 0
+								if 0 <> OS-image/GdipCreateBitmapFromScan0 width height 0 PixelFormat32bppARGB null :bitmap [
+									throw-magick-error cmds cmd false 
+								]
+								bitmapData: as BitmapData! OS-image/lock-bitmap-fmt bitmap PixelFormat32bppARGB yes
+								bytes: bitmapData/scan0
+								result: MagickExportImagePixels *wand 0 0 width height "BGRA" CharPixel bytes
+								pixels: as int-ptr! bytes
+								OS-image/unlock-bitmap bitmap as-integer bitmapData
+								img/node: as node! bitmap
+								return as red-value! img
+							]
+							sym = _Get-Binary [
+								MAGICK_FETCH_OPT_VALUE(TYPE_STRING) ;-- This string reflects the expected ordering of the pixel array.
+																    ;-- It can be any combination or order of R = red, G = green, B = blue, A = alpha (0 is transparent),
+																    ;-- O = opacity (0 is opaque), C = cyan, Y = yellow, M = magenta, K = black,
+																    ;-- I = intensity (for grayscale), P = pad.
+								name: either pos = cmd [AS_STRING(start 0)][ "BGRA" ]   ;-- default pixel array map type is BGRA
+								width: MagickGetImageWidth *wand
+								height: MagickGetImageHeight *wand
+								len: width * height * length? name
+								bin: binary/make-at stack/arguments len
+								s: GET_BUFFER(bin)
+								bytes: as byte-ptr! s/offset
+								result: MagickExportImagePixels *wand 0 0 width height name CharPixel bytes
+								s/tail: as cell! (as byte-ptr! s/tail) + len 
+								return as red-value! bin
+							]
+							sym = _Get-Info [
+							;== Identifies an image by printing its attributes to the file
+								name: MagickIdentifyImage *wand
+								str: as red-string! stack/arguments
+								str/header:	TYPE_STRING							;-- implicit reset of all header flags
+								str/head:	0
+								str/cache:	null
+								str/node: unicode/load-utf8 name length? name
+								MagickRelinquishMemory name
+								return as red-value! str
+							]
+
+							sym = _alpha [
+							;== Activates deactivates resets or sets the alpha channel
+								MAGICK_FETCH_ALPHA_CHANNEL_TYPE(type) ;-- the alpha channel type
+								result: MagickSetImageAlphaChannel *wand type
 							]
 
 
@@ -1008,11 +1226,12 @@ Red [
 							;== Adjusts the levels of a particular image channel by scaling the minimum and maximum values to the full quantum range
 								result: MagickAutoLevelImage *wand
 							]
-;							sym = _black-threshold [
-;							;== Is like MagickThresholdImage() but  forces all pixels below the threshold into black while leaving all pixels above the threshold unchanged
-;								MAGICK_FETCH_PIXELWAND!() ;-- the pixel wand.
-;								result: MagickBlackThresholdImage *wand AS_PIXELWAND!(start 0)
-;							]
+							sym = _black-threshold [
+							;== Is like MagickThresholdImage() but  forces all pixels below the threshold into black while leaving all pixels above the threshold unchanged
+								MAGICK_FETCH_PIXELWAND(pw)                    ;-- threshold
+								result: MagickWhiteThresholdImage *wand pw
+								DestroyPixelWand pw
+							]
 							sym = _blue-shift [
 							;== Mutes the colors of the image to simulate a scene at nighttime in the moonlight
 								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- the blue shift factor (default 1.5)
@@ -1110,10 +1329,10 @@ Red [
 							sym = _composite [
 							;== Composite one image onto another at the specified offset
 								MAGICK_FETCH_MWAND_INDEX(index) ;-- composite_wand
-								MAGICK_FETCH_COMPOSITE(type)    ;-- This operator affects how the composite is applied to the image.  The default is Over.  Choose from these operators:
+								MAGICK_FETCH_COMPOSITE(type)    ;-- This operator affects how the composite is applied to the image.  The default is Over.
 								MAGICK_FETCH_VALUE(TYPE_PAIR)   ;-- the offset of the composited image.
 								position: as red-pair! cmd
-								result: MagickCompositeImage *wand as MagickWand! MagickWands-table/index type position/x position/y
+								result: MagickCompositeImage *wand as MagickWand! MagickWands-table/index type MagickTrue position/x position/y
 							]
 							sym = _contrast [
 							;== Enhances the intensity differences between the lighter and darker elements of the image
@@ -1255,14 +1474,20 @@ Red [
 								MAGICK_FETCH_MWAND_INDEX(index) ;-- hald_wand
 								result: MagickHaldClutImage *wand as MagickWand! MagickWands-table/index
 							]
-;-							sym = _has-next [
-;-							;== Returns MagickTrue if the wand has more images when traversing the list in the forward direction
-;-								result: MagickHasNextImage *wand
-;-							]
-;-							sym = _has-previous [
-;-							;== Returns MagickTrue if the wand has more images when traversing the list in the reverse direction
-;-								result: MagickHasPreviousImage *wand
-;-							]
+							sym = _has-next [
+							;== Returns MagickTrue if the wand has more images when traversing the list in the forward direction
+								bool: as red-logic! stack/arguments
+								bool/header: TYPE_LOGIC
+								bool/value: as logic! MagickHasNextImage *wand
+								return as red-value! bool
+							]
+							sym = _has-previous [
+							;== Returns MagickTrue if the wand has more images when traversing the list in the reverse direction
+								bool: as red-logic! stack/arguments
+								bool/header: TYPE_LOGIC
+								bool/value: as logic! MagickHasPreviousImage *wand
+								return as red-value! bool
+							]
 							sym = _implode [
 							;== Creates a new image that is a copy of an existing one with the image pixels 'implode' by the specified percentage
 								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- radius
@@ -1328,13 +1553,6 @@ Red [
 								MAGICK_FETCH_NAMED_VALUE(TYPE_LOGIC) ;-- If MagickTrue, only negate grayscale pixels within the image.
 								result: MagickNegateImage *wand AS_BOOLEAN(value)
 							]
-;							sym = _new [
-;							;== Adds a blank image canvas of the specified size and background color to the wand
-;								MAGICK_FETCH_SIZE_T!() ;-- columns
-;								MAGICK_FETCH_SIZE_T!() ;-- rows
-;								MAGICK_FETCH_PIXELWAND!() ;-- the image color.
-;								result: MagickNewImage *wand AS_INT(start 0) AS_INT(start 1) AS_PIXELWAND!(start 2)
-;							]
 							sym = _next [
 							;== Associates the next image in the image list with a magick wand
 								result: MagickNextImage *wand
@@ -1447,12 +1665,13 @@ Red [
 								size: as red-pair! start
 								result: MagickRollImage *wand size/x size/y
 							]
-;							sym = _rotate [
-;							;== Rotates an image the specified number of degrees
-;								MAGICK_FETCH_PIXELWAND!() ;-- the background pixel wand.
-;								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- the number of degrees to rotate the image.
-;								result: MagickRotateImage *wand AS_PIXELWAND!(start 0) AS_FLOAT(start 1)
-;							]
+							sym = _rotate [
+							;== Rotates an image the specified number of degrees
+								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- the number of degrees to rotate the image.
+								MAGICK_FETCH_OPT_PIXELWAND(pw) ;-- the background pixel wand.
+								result: MagickRotateImage *wand pw AS_FLOAT(start 0)
+								DestroyPixelWand pw
+							]
 							sym = _sample [
 							;== Scales an image to the desired dimensions with pixel sampling
 								MAGICK_FETCH_VALUE(TYPE_PAIR) ;-- the number of columns and rows in the scaled image.
@@ -1632,11 +1851,12 @@ Red [
 								MAGICK_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER) ;-- wave_length
 								result: MagickWaveImage *wand AS_FLOAT(start 0) AS_FLOAT(start 1)
 							]
-;							sym = _white-threshold [
-;							;== Is like ThresholdImage() but  force all pixels above the threshold into white while leaving all pixels below the threshold unchanged
-;								MAGICK_FETCH_PIXELWAND!() ;-- the pixel wand.
-;								result: MagickWhiteThresholdImage *wand AS_PIXELWAND!(start 0)
-;							]
+							sym = _white-threshold [
+							;== Is like ThresholdImage() but  force all pixels above the threshold into white while leaving all pixels below the threshold unchanged
+								MAGICK_FETCH_PIXELWAND(pw)                    ;-- threshold
+								result: MagickWhiteThresholdImage *wand pw
+								DestroyPixelWand pw
+							]
 
 
 							true [ throw-magick-error cmds cmd false ]
