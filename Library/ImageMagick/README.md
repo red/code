@@ -14,14 +14,16 @@ iMagick [
   write %opice.jpg                 ;-- save content of the MagicWand as JPG file
 ]
 ```
+More examples can be found in this test file: [ImageMagick-test.red](ImageMagick/ImageMagick-test.red) 
 
 #### Todo
 This is still work in progress... not all MagicWand functions have equivalent in `Red` binding and I still have to figure out,
-how to integrate `PixelWand` and `DrawingWand` functions. It would be also nice to add a possibility to get content of `MagicWand`
-as Red's `image!` type, so one could do live coding using `View`.
+how to integrate `PixelWand` and `DrawingWand` functions.
 
 I should note, that I have actually no need to use this binding at this moment. I'm writing it mostly to learn some internals of
 Red - Red/System coding. So I'm pretty sure many things in this binding could be done better, so if you find something, feel free
 to improve it or let me know.
 
-Code is so far tested on `Windows 7` with `ImageMagick-6.9.0-Q16`.
+#### Note
+Although original work started with ImageMagick v6, I started using the latest version 7, which is unfortunately *not backward compatible*.
+Code is so far tested on `Windows 7 & 10` with `ImageMagick-7.0.4-Q16`.
