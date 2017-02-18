@@ -171,9 +171,11 @@ FMOD: context [
 	*fs:    declare FMOD_SYSTEM!
 	*sound1: declare FMOD_SOUND!
 	*sound2: declare FMOD_SOUND!
+	*sound3: declare FMOD_SOUND!
 
 	*channel1: 0
 	*channel2: 0
+	*channel3: 0
 
 	mastergroup: declare FMOD_CHANNELGROUP!
 
@@ -199,7 +201,7 @@ FMOD: context [
 	result: FMOD_Debug_Initialize (FMOD_DEBUG_LEVEL_LOG or FMOD_DEBUG_TYPE_FILE) FMOD_DEBUG_MODE_CALLBACK :debug-callback null
 	ERRORCHECK(result)
 
-	result: FMOD_System_Init *fs 16 FMOD_INIT_THREAD_UNSAFE  null
+	result: FMOD_System_Init *fs 16 FMOD_INIT_NORMAL  null
 	ERRORCHECK(result)
 
 	either result = FMOD_OK [
@@ -230,6 +232,8 @@ FMOD: context [
 	ERRORCHECK(result)
 	result: FMOD_System_CreateSound *fs "jaguar.wav" (FMOD_CREATESAMPLE or FMOD_2D) 0 :*sound2
 	ERRORCHECK(result)
+	result: FMOD_System_CreateSound *fs "3TpCajovnikAtmo.mp3" (FMOD_CREATESTREAM or FMOD_LOOP_NORMAL or FMOD_2D) 0 :*sound3 ;streaming mp3 as a loop
+	ERRORCHECK(result)
 
 	;-- test of user data set/get with sound object
 	name: "drum"
@@ -253,6 +257,9 @@ FMOD: context [
 		result: FMOD_System_PlaySound *fs *sound2 0 0 :*channel2
 		ERRORCHECK(result)
 		result: FMOD_Channel_SetVolume *channel1 2.0
+
+		result: FMOD_System_PlaySound *fs *sound3 0 0 :*channel3
+		ERRORCHECK(result)
 
 
 		result: FMOD_Channel_GetVolume *channel1 :volume
@@ -286,7 +293,7 @@ FMOD: context [
 		print "^/Press ENTER to continue^/"
 		print "Press '1' to toggle sound 1^/"
 		print "Press '2' to play sound 2^/"
-		print "Press 'e' to toggle echo^/^/"
+		print "Press 'e' to toggle echo^/"
 		print "Press 'f' to toggle flange^/^/"
 
 		until [ ;Main loop
@@ -373,6 +380,7 @@ FMOD: context [
 
 		result: FMOD_Sound_Release *sound1
 		result: FMOD_Sound_Release *sound2
+		result: FMOD_Sound_Release *sound3
 		ERRORCHECK(result)
 
 		result: FMOD_Memory_GetStats :currentalloced :maxalloced 1
