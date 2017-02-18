@@ -17,6 +17,19 @@ Red/System [
 #define handle!           integer!
 #define u-integer!        integer!  ;unsigned int
 
+long-long-ptr!: alias struct! [lo [integer!] hi [integer!]] ;@@ There is no `int64!` datatype in Red/System yet
+#define long-long!        float! ;@@ struct is passed by reference so far so I must fake passing `long long` using `float!`
+#define MAX_32_PRECISION 4294967296.0
+int64-to-float: func[i [long-long-ptr!]	return: [float!]][
+	(MAX_32_PRECISION * as float! i/hi)  + (as float! i/lo) ;@@ float can be used as a workaround to pass long-long! value in function call (instead int64!)
+]
+float-to-int64: func[f [float!] return: [long-long-ptr!] /local i [long-long-ptr!] ][
+	i: declare long-long-ptr!
+	i/hi: as integer! (f / MAX_32_PRECISION)
+	i/lo: as integer! f
+	i
+]
+
 #define FMOD_RESULT!      integer!
 
 #define FMOD_BOOL!                 integer! ;typedef int                        FMOD_BOOL;
@@ -42,7 +55,8 @@ Red/System [
 #define FMOD_CHANNELMASK!          integer! ;typedef unsigned int               FMOD_CHANNELMASK;
 #define FMOD_DRIVER_STATE!         integer! ;typedef unsigned int               FMOD_DRIVER_STATE;
 #define FMOD_PORT_TYPE!            integer! ;typedef unsigned int               FMOD_PORT_TYPE;
-#define FMOD_PORT_INDEX!           integer! ;typedef unsigned long long         FMOD_PORT_INDEX;
+;@@ There is no `int64!` datatype in Red/System yet so I'm using float32! instead bellow!
+#define FMOD_PORT_INDEX!           long-long!  ;typedef unsigned long long         FMOD_PORT_INDEX;
 
 #define FMOD_DEBUG_CALLBACK!  [function! [flags [FMOD_DEBUG_FLAGS!] file [c-string!] line [integer!] func [c-string!] message [c-string!] return: [FMOD_RESULT!]]]
 
@@ -67,7 +81,7 @@ Red/System [
 #define FMOD_MEMORY_REALLOC_CALLBACK! [function! [ptr [byte-ptr!] size [integer!] type [FMOD_MEMORY_TYPE!] sourcestr [c-string!] return: [byte-ptr!]]]
 #define FMOD_MEMORY_FREE_CALLBACK!    [function! [ptr [byte-ptr!] type [FMOD_MEMORY_TYPE!] sourcestr [c-string!]]]
 
-#define FMOD_3D_ROLLOFF_CALLBACK! [function! [channelcontrol [FMOD_CHANNELCONTROL!] distance [float!] return: [float!]]]
+#define FMOD_3D_ROLLOFF_CALLBACK! [function! [channelcontrol [FMOD_CHANNELCONTROL!] distance [float32!] return: [float32!]]]
 
 ;== Initialization flags.  Use them with System::init in the *flags* parameter to change various behavior.  
 ;Use System::setAdvancedSettings to adjust settings for some of the features that are enabled by these flags.
@@ -112,7 +126,7 @@ Red/System [
 #define FMOD_3D_CUSTOMROLLOFF          04000000h  ;/* This sound will follow a rolloff model defined by Sound::set3DCustomRolloff / Channel::set3DCustomRolloff.  */
 #define FMOD_3D_IGNOREGEOMETRY         40000000h  ;/* Is not affect by geometry occlusion.  If not specified in Sound::setMode, or Channel::setMode, the flag is cleared and it is affected by geometry again. */
 
-;== These callback types are used with System::setCallback.
+;== These callback types are used with System::setCallback (FMOD_SYSTEM_CALLBACK_TYPE).
 #define FMOD_SYSTEM_CALLBACK_DEVICELISTCHANGED      00000001h  ;/* Called from System::update when the enumerated list of devices has changed. */
 #define FMOD_SYSTEM_CALLBACK_DEVICELOST             00000002h  ;/* Called from System::update when an output device has been lost due to control panel parameter changes and FMOD cannot automatically recover. */
 #define FMOD_SYSTEM_CALLBACK_MEMORYALLOCATIONFAILED 00000004h  ;/* Called directly when a memory allocation fails somewhere in FMOD.  (NOTE - 'system' will be NULL in this callback type.)*/
@@ -127,6 +141,19 @@ Red/System [
 #define FMOD_SYSTEM_CALLBACK_POSTUPDATE             00000800h  ;/* Called at end of System::update function. */
 #define FMOD_SYSTEM_CALLBACK_RECORDLISTCHANGED      00001000h  ;/* Called from System::update when the enumerated list of recording devices has changed. */
 #define FMOD_SYSTEM_CALLBACK_ALL                    FFFFFFFFh  ;/* Pass this mask to System::setCallback to receive all callback types. */
+
+;== Specify the requested information to be output when using the logging version of FMOD.
+#define FMOD_DEBUG_LEVEL_NONE           00000000h    ;/* Disable all messages */
+#define FMOD_DEBUG_LEVEL_ERROR          00000001h    ;/* Enable only error messages. */
+#define FMOD_DEBUG_LEVEL_WARNING        00000002h    ;/* Enable warning and error messages. */
+#define FMOD_DEBUG_LEVEL_LOG            00000004h    ;/* Enable informational, warning and error messages (default). */
+#define FMOD_DEBUG_TYPE_MEMORY          00000100h    ;/* Verbose logging for memory operations, only use this if you are debugging a memory related issue. */
+#define FMOD_DEBUG_TYPE_FILE            00000200h    ;/* Verbose logging for file access, only use this if you are debugging a file related issue. */
+#define FMOD_DEBUG_TYPE_CODEC           00000400h    ;/* Verbose logging for codec initialization, only use this if you are debugging a codec related issue. */
+#define FMOD_DEBUG_TYPE_TRACE           00000800h    ;/* Verbose logging for internal errors, use this for tracking the origin of error codes. */
+#define FMOD_DEBUG_DISPLAY_TIMESTAMPS   00010000h    ;/* Display the time stamp of the log message in milliseconds. */
+#define FMOD_DEBUG_DISPLAY_LINENUMBERS  00020000h    ;/* Display the source code file and line number for where the message originated. */
+#define FMOD_DEBUG_DISPLAY_THREAD       00040000h    ;/* Display the thread ID of the calling function that generated the message. */
 
 #enum FMOD_OPENSTATE! [
 ;== These values describe what state a sound is in after FMOD_NONBLOCKING has been used to open it.
@@ -479,9 +506,9 @@ FMOD_VECTOR!: alias struct! [
 ;== Structure describing a point in 3D space.
 ;    FMOD uses a left handed co-ordinate system by default.
 ;    To use a right handed co-ordinate system specify FMOD_INIT_3D_RIGHTHANDED from FMOD_INITFLAGS in System::init.
-    x [float!]        ;/* X co-ordinate in 3D space. */
-    y [float!]        ;/* Y co-ordinate in 3D space. */
-    z [float!]        ;/* Z co-ordinate in 3D space. */
+    x [float32!]        ;/* X co-ordinate in 3D space. */
+    y [float32!]        ;/* Y co-ordinate in 3D space. */
+    z [float32!]        ;/* Z co-ordinate in 3D space. */
 ]
 
 
@@ -550,15 +577,15 @@ FMOD_ADVANCEDSETTINGS!: alias struct! [
     ASIONumChannels 		[integer!]                  ;/* [r/w] Optional. Specify 0 to ignore. Number of channels available on the ASIO device. */
     ASIOChannelList 		[handle!];[pointer! [c-string!]]      ;/* [r/w] Optional. Specify 0 to ignore. Pointer to an array of strings (number of entries defined by ASIONumChannels) with ASIO channel names. */
     ASIOSpeakerList 		[FMOD_SPEAKER!]  ;/* [r/w] Optional. Specify 0 to ignore. Pointer to a list of speakers that the ASIO channels map to.  This can be called after System::init to remap ASIO output. */
-    HRTFMinAngle 			[float!]                    ;/* [r/w] Optional.                      For use with FMOD_INIT_HRTF_LOWPASS.  The angle range (0-360) of a 3D sound in relation to the listener, at which the HRTF function begins to have an effect. 0 = in front of the listener. 180 = from 90 degrees to the left of the listener to 90 degrees to the right. 360 = behind the listener. Default = 180.0. */
-    HRTFMaxAngle 			[float!]                    ;/* [r/w] Optional.                      For use with FMOD_INIT_HRTF_LOWPASS.  The angle range (0-360) of a 3D sound in relation to the listener, at which the HRTF function has maximum effect. 0 = front of the listener. 180 = from 90 degrees to the left of the listener to 90 degrees to the right. 360 = behind the listener. Default = 360.0. */
-    HRTFFreq 				[float!]                    ;/* [r/w] Optional. Specify 0 to ignore. For use with FMOD_INIT_HRTF_LOWPASS.  The cutoff frequency of the HRTF's lowpass filter function when at maximum effect. (i.e. at HRTFMaxAngle).  Default = 4000.0. */
-    vol0virtualvol 			[float!]                    ;/* [r/w] Optional. Specify 0 to ignore. For use with FMOD_INIT_VOL0_BECOMES_VIRTUAL.  If this flag is used, and the volume is below this, then the sound will become virtual.  Use this value to raise the threshold to a different point where a sound goes virtual. */
+    HRTFMinAngle 			[float32!]                    ;/* [r/w] Optional.                      For use with FMOD_INIT_HRTF_LOWPASS.  The angle range (0-360) of a 3D sound in relation to the listener, at which the HRTF function begins to have an effect. 0 = in front of the listener. 180 = from 90 degrees to the left of the listener to 90 degrees to the right. 360 = behind the listener. Default = 180.0. */
+    HRTFMaxAngle 			[float32!]                    ;/* [r/w] Optional.                      For use with FMOD_INIT_HRTF_LOWPASS.  The angle range (0-360) of a 3D sound in relation to the listener, at which the HRTF function has maximum effect. 0 = front of the listener. 180 = from 90 degrees to the left of the listener to 90 degrees to the right. 360 = behind the listener. Default = 360.0. */
+    HRTFFreq 				[float32!]                    ;/* [r/w] Optional. Specify 0 to ignore. For use with FMOD_INIT_HRTF_LOWPASS.  The cutoff frequency of the HRTF's lowpass filter function when at maximum effect. (i.e. at HRTFMaxAngle).  Default = 4000.0. */
+    vol0virtualvol 			[float32!]                    ;/* [r/w] Optional. Specify 0 to ignore. For use with FMOD_INIT_VOL0_BECOMES_VIRTUAL.  If this flag is used, and the volume is below this, then the sound will become virtual.  Use this value to raise the threshold to a different point where a sound goes virtual. */
     defaultDecodeBufferSize [integer!]                  ;/* [r/w] Optional. Specify 0 to ignore. For streams. This determines the default size of the double buffer (in milliseconds) that a stream uses.  Default = 400ms */
     profilePortA            [byte!]                     ;/* [r/w] Optional. Specify 0 to ignore. For use with FMOD_INIT_PROFILE_ENABLE.  Specify the port to listen on for connections by the profiler application. */
     profilePortB            [byte!] ;@@ `profilePort` is of type `unsigned short` but such a type is not in Red/System yet, so it is here as two bytes!
     geometryMaxFadeTime     [integer!]                  ;/* [r/w] Optional. Specify 0 to ignore. The maximum time in miliseconds it takes for a channel to fade to the new level when its occlusion changes. */
-    distanceFilterCenterFreq [float!]                   ;/* [r/w] Optional. Specify 0 to ignore. For use with FMOD_INIT_DISTANCE_FILTERING.  The default center frequency in Hz for the distance filtering effect. Default = 1500.0. */
+    distanceFilterCenterFreq [float32!]                   ;/* [r/w] Optional. Specify 0 to ignore. For use with FMOD_INIT_DISTANCE_FILTERING.  The default center frequency in Hz for the distance filtering effect. Default = 1500.0. */
     reverb3Dinstance 		[integer!]                  ;/* [r/w] Optional. Specify 0 to ignore. Out of 0 to 3, 3d reverb spheres will create a phyical reverb unit on this instance slot.  See FMOD_REVERB_PROPERTIES. */
     DSPBufferPoolSize 		[integer!]                  ;/* [r/w] Optional. Specify 0 to ignore. Number of buffers in DSP buffer pool.  Each buffer will be DSPBlockSize * sizeof(float) * SpeakerModeChannelCount.  ie 7.1 @ 1024 DSP block size = 8 * 1024 * 4 = 32kb.  Default = 8. */
     stackSizeStream 		[u-integer!]                ;/* [r/w] Optional. Specify 0 to ignore. Specify the stack size for the FMOD Stream thread in bytes.  Useful for custom codecs that use excess stack.  Default 49,152 (48kb) */
@@ -574,18 +601,18 @@ FMOD_REVERB_PROPERTIES!: alias struct! [
 ;    Note the default reverb properties are the same as the FMOD_PRESET_GENERIC preset.
 ;    All members are read/write [r/w], written to by FMOD when queried with System::getReverbProperties and read by FMOD when set with System::setReverbProperties.
 ;                                 /*       MIN    MAX     DEFAULT DESCRIPTION */
-    DecayTime 			[float!] ;/* [r/w] 0.0    20000.0 1500.0  Reverberation decay time (ms)                                             */
-    EarlyDelay 			[float!] ;/* [r/w] 0.0    300.0   7.0     Initial reflection delay time (ms)                                        */
-    LateDelay 			[float!] ;/* [r/w] 0.0    100     11.0    Late reverberation delay time relative to initial reflection (ms)         */
-    HFReference 		[float!] ;/* [r/w] 20.0   20000.0 5000    Reference high frequency (Hz)                                             */
-    HFDecayRatio 		[float!] ;/* [r/w] 10.0   100.0   50.0    High-frequency to mid-frequency decay time ratio (%)                      */
-    Diffusion 			[float!] ;/* [r/w] 0.0    100.0   100.0   Value that controls the echo density in the late reverberation decay (%)  */
-    Density 			[float!] ;/* [r/w] 0.0    100.0   100.0   Value that controls the modal density in the late reverberation decay (%) */
-    LowShelfFrequency 	[float!] ;/* [r/w] 20.0   1000.0  250.0   Reference low frequency (Hz)                                              */
-    LowShelfGain 		[float!] ;/* [r/w] -36.0  12.0    0.0     Relative room effect level at low frequencies (dB)                        */
-    HighCut 			[float!] ;/* [r/w] 20.0   20000.0 20000.0 Relative room effect level at high frequencies (Hz)                       */
-    EarlyLateMix 		[float!] ;/* [r/w] 0.0    100.0   50.0    Early reflections level relative to room effect (%)                       */
-    WetLevel 			[float!] ;/* [r/w] -80.0  20.0    -6.0    Room effect level at mid frequencies (dB)                                 */
+    DecayTime 			[float32!] ;/* [r/w] 0.0    20000.0 1500.0  Reverberation decay time (ms)                                             */
+    EarlyDelay 			[float32!] ;/* [r/w] 0.0    300.0   7.0     Initial reflection delay time (ms)                                        */
+    LateDelay 			[float32!] ;/* [r/w] 0.0    100     11.0    Late reverberation delay time relative to initial reflection (ms)         */
+    HFReference 		[float32!] ;/* [r/w] 20.0   20000.0 5000    Reference high frequency (Hz)                                             */
+    HFDecayRatio 		[float32!] ;/* [r/w] 10.0   100.0   50.0    High-frequency to mid-frequency decay time ratio (%)                      */
+    Diffusion 			[float32!] ;/* [r/w] 0.0    100.0   100.0   Value that controls the echo density in the late reverberation decay (%)  */
+    Density 			[float32!] ;/* [r/w] 0.0    100.0   100.0   Value that controls the modal density in the late reverberation decay (%) */
+    LowShelfFrequency 	[float32!] ;/* [r/w] 20.0   1000.0  250.0   Reference low frequency (Hz)                                              */
+    LowShelfGain 		[float32!] ;/* [r/w] -36.0  12.0    0.0     Relative room effect level at low frequencies (dB)                        */
+    HighCut 			[float32!] ;/* [r/w] 20.0   20000.0 20000.0 Relative room effect level at high frequencies (Hz)                       */
+    EarlyLateMix 		[float32!] ;/* [r/w] 0.0    100.0   50.0    Early reflections level relative to room effect (%)                       */
+    WetLevel 			[float32!] ;/* [r/w] -80.0  20.0    -6.0    Room effect level at mid frequencies (dB)                                 */
 ]
 
 #enum FMOD_DSP_TYPE! [
@@ -764,7 +791,7 @@ FMOD_TAG!: alias struct! [
 ] ; FMOD_RESULT;
 
 #import [
-	FMOD_LIBRARY cdecl [
+	FMOD_LIBRARY stdcall [
 
 		;-- FMOD global system functions (optional).
 
@@ -1091,8 +1118,8 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_SYSTEM *system, FMOD_SPEAKER speaker, float x, float y, FMOD_BOOL active)
 			system                        [FMOD_SYSTEM!]
 			speaker                       [FMOD_SPEAKER!]
-			x                             [float!]
-			y                             [float!]
+			x                             [float32!]
+			y                             [float32!]
 			active                        [integer!]
 			return:                       [FMOD_RESULT!]
 		]
@@ -1100,8 +1127,8 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_SYSTEM *system, FMOD_SPEAKER speaker, float *x, float *y, FMOD_BOOL *active)
 			system                        [FMOD_SYSTEM!]
 			speaker                       [FMOD_SPEAKER!]
-			x                             [pointer! [float!]]
-			y                             [pointer! [float!]]
+			x                             [pointer! [float32!]]
+			y                             [pointer! [float32!]]
 			active                        [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
@@ -1122,17 +1149,17 @@ FMOD_TAG!: alias struct! [
 		FMOD_System_Set3DSettings: "FMOD_System_Set3DSettings"[
 		;(FMOD_SYSTEM *system, float dopplerscale, float distancefactor, float rolloffscale)
 			system                        [FMOD_SYSTEM!]
-			dopplerscale                  [float!]
-			distancefactor                [float!]
-			rolloffscale                  [float!]
+			dopplerscale                  [float32!]
+			distancefactor                [float32!]
+			rolloffscale                  [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_System_Get3DSettings: "FMOD_System_Get3DSettings"[
 		;(FMOD_SYSTEM *system, float *dopplerscale, float *distancefactor, float *rolloffscale)
 			system                        [FMOD_SYSTEM!]
-			dopplerscale                  [pointer! [float!]]
-			distancefactor                [pointer! [float!]]
-			rolloffscale                  [pointer! [float!]]
+			dopplerscale                  [pointer! [float32!]]
+			distancefactor                [pointer! [float32!]]
+			rolloffscale                  [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_System_Set3DNumListeners: "FMOD_System_Set3DNumListeners"[
@@ -1188,7 +1215,7 @@ FMOD_TAG!: alias struct! [
 			system                        [FMOD_SYSTEM!]
 			sourcespeakermode             [FMOD_SPEAKERMODE!]
 			targetspeakermode             [FMOD_SPEAKERMODE!]
-			matrix                        [pointer! [float!]]
+			matrix                        [pointer! [float32!]]
 			matrixhop                     [integer!]
 			return:                       [FMOD_RESULT!]
 		]
@@ -1225,19 +1252,19 @@ FMOD_TAG!: alias struct! [
 		FMOD_System_GetCPUUsage: "FMOD_System_GetCPUUsage"[
 		;(FMOD_SYSTEM *system, float *dsp, float *stream, float *geometry, float *update, float *total)
 			system                        [FMOD_SYSTEM!]
-			dsp                           [pointer! [float!]]
-			stream                        [pointer! [float!]]
-			geometry                      [pointer! [float!]]
-			update                        [pointer! [float!]]
-			total                         [pointer! [float!]]
+			dsp                           [pointer! [float32!]]
+			stream                        [pointer! [float32!]]
+			geometry                      [pointer! [float32!]]
+			update                        [pointer! [float32!]]
+			total                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_System_GetFileUsage: "FMOD_System_GetFileUsage"[
 		;(FMOD_SYSTEM *system, long long *sampleBytesRead, long long *streamBytesRead, long long *otherBytesRead)
 			system                        [FMOD_SYSTEM!]
-			sampleBytesRead               [int-ptr!]
-			streamBytesRead               [int-ptr!]
-			otherBytesRead                [int-ptr!]
+			sampleBytesRead               [long-long-ptr!]
+			streamBytesRead               [long-long-ptr!]
+			otherBytesRead                [long-long-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_System_GetSoundRAM: "FMOD_System_GetSoundRAM"[
@@ -1459,13 +1486,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_System_SetGeometrySettings: "FMOD_System_SetGeometrySettings"[
 		;(FMOD_SYSTEM *system, float maxworldsize)
 			system                        [FMOD_SYSTEM!]
-			maxworldsize                  [float!]
+			maxworldsize                  [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_System_GetGeometrySettings: "FMOD_System_GetGeometrySettings"[
 		;(FMOD_SYSTEM *system, float *maxworldsize)
 			system                        [FMOD_SYSTEM!]
-			maxworldsize                  [pointer! [float!]]
+			maxworldsize                  [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_System_LoadGeometry: "FMOD_System_LoadGeometry"[
@@ -1481,8 +1508,8 @@ FMOD_TAG!: alias struct! [
 			system                        [FMOD_SYSTEM!]
 			listener                      [FMOD_VECTOR!]
 			source                        [FMOD_VECTOR!]
-			direct                        [pointer! [float!]]
-			reverb                        [pointer! [float!]]
+			direct                        [pointer! [float32!]]
+			reverb                        [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -1521,13 +1548,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_System_SetUserData: "FMOD_System_SetUserData"[
 		;(FMOD_SYSTEM *system, void *userdata)
 			system                        [FMOD_SYSTEM!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_System_GetUserData: "FMOD_System_GetUserData"[
 		;(FMOD_SYSTEM *system, void **userdata)
 			system                        [FMOD_SYSTEM!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -1572,45 +1599,45 @@ FMOD_TAG!: alias struct! [
 		FMOD_Sound_SetDefaults: "FMOD_Sound_SetDefaults"[
 		;(FMOD_SOUND *sound, float frequency, int priority)
 			sound                         [FMOD_SOUND!]
-			frequency                     [float!]
+			frequency                     [float32!]
 			priority                      [integer!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_GetDefaults: "FMOD_Sound_GetDefaults"[
 		;(FMOD_SOUND *sound, float *frequency, int *priority)
 			sound                         [FMOD_SOUND!]
-			frequency                     [pointer! [float!]]
+			frequency                     [pointer! [float32!]]
 			priority                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_Set3DMinMaxDistance: "FMOD_Sound_Set3DMinMaxDistance"[
 		;(FMOD_SOUND *sound, float min, float max)
 			sound                         [FMOD_SOUND!]
-			min                           [float!]
-			max                           [float!]
+			min                           [float32!]
+			max                           [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_Get3DMinMaxDistance: "FMOD_Sound_Get3DMinMaxDistance"[
 		;(FMOD_SOUND *sound, float *min, float *max)
 			sound                         [FMOD_SOUND!]
-			min                           [pointer! [float!]]
-			max                           [pointer! [float!]]
+			min                           [pointer! [float32!]]
+			max                           [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_Set3DConeSettings: "FMOD_Sound_Set3DConeSettings"[
 		;(FMOD_SOUND *sound, float insideconeangle, float outsideconeangle, float outsidevolume)
 			sound                         [FMOD_SOUND!]
-			insideconeangle               [float!]
-			outsideconeangle              [float!]
-			outsidevolume                 [float!]
+			insideconeangle               [float32!]
+			outsideconeangle              [float32!]
+			outsidevolume                 [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_Get3DConeSettings: "FMOD_Sound_Get3DConeSettings"[
 		;(FMOD_SOUND *sound, float *insideconeangle, float *outsideconeangle, float *outsidevolume)
 			sound                         [FMOD_SOUND!]
-			insideconeangle               [pointer! [float!]]
-			outsideconeangle              [pointer! [float!]]
-			outsidevolume                 [pointer! [float!]]
+			insideconeangle               [pointer! [float32!]]
+			outsideconeangle              [pointer! [float32!]]
+			outsidevolume                 [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_Set3DCustomRolloff: "FMOD_Sound_Set3DCustomRolloff"[
@@ -1821,26 +1848,26 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_SOUND *sound, int channel, float volume)
 			sound                         [FMOD_SOUND!]
 			channel                       [integer!]
-			volume                        [float!]
+			volume                        [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_GetMusicChannelVolume: "FMOD_Sound_GetMusicChannelVolume"[
 		;(FMOD_SOUND *sound, int channel, float *volume)
 			sound                         [FMOD_SOUND!]
 			channel                       [integer!]
-			volume                        [pointer! [float!]]
+			volume                        [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_SetMusicSpeed: "FMOD_Sound_SetMusicSpeed"[
 		;(FMOD_SOUND *sound, float speed)
 			sound                         [FMOD_SOUND!]
-			speed                         [float!]
+			speed                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_GetMusicSpeed: "FMOD_Sound_GetMusicSpeed"[
 		;(FMOD_SOUND *sound, float *speed)
 			sound                         [FMOD_SOUND!]
-			speed                         [pointer! [float!]]
+			speed                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -1850,13 +1877,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_Sound_SetUserData: "FMOD_Sound_SetUserData"[
 		;(FMOD_SOUND *sound, void *userdata)
 			sound                         [FMOD_SOUND!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Sound_GetUserData: "FMOD_Sound_GetUserData"[
 		;(FMOD_SOUND *sound, void **userdata)
 			sound                         [FMOD_SOUND!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -1893,13 +1920,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_Channel_SetVolume: "FMOD_Channel_SetVolume"[
 		;(FMOD_CHANNEL *channel, float volume)
 			channel                       [handle!]
-			volume                        [float!]
+			volume                        [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_GetVolume: "FMOD_Channel_GetVolume"[
 		;(FMOD_CHANNEL *channel, float *volume)
 			channel                       [handle!]
-			volume                        [pointer! [float!]]
+			volume                        [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetVolumeRamp: "FMOD_Channel_SetVolumeRamp"[
@@ -1917,19 +1944,19 @@ FMOD_TAG!: alias struct! [
 		FMOD_Channel_GetAudibility: "FMOD_Channel_GetAudibility"[
 		;(FMOD_CHANNEL *channel, float *audibility)
 			channel                       [handle!]
-			audibility                    [pointer! [float!]]
+			audibility                    [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetPitch: "FMOD_Channel_SetPitch"[
 		;(FMOD_CHANNEL *channel, float pitch)
 			channel                       [handle!]
-			pitch                         [float!]
+			pitch                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_GetPitch: "FMOD_Channel_GetPitch"[
 		;(FMOD_CHANNEL *channel, float *pitch)
 			channel                       [handle!]
-			pitch                         [pointer! [float!]]
+			pitch                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetMute: "FMOD_Channel_SetMute"[
@@ -1948,26 +1975,26 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_CHANNEL *channel, int instance, float wet)
 			channel                       [handle!]
 			instance                      [integer!]
-			wet                           [float!]
+			wet                           [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_GetReverbProperties: "FMOD_Channel_GetReverbProperties"[
 		;(FMOD_CHANNEL *channel, int instance, float *wet)
 			channel                       [handle!]
 			instance                      [integer!]
-			wet                           [pointer! [float!]]
+			wet                           [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetLowPassGain: "FMOD_Channel_SetLowPassGain"[
 		;(FMOD_CHANNEL *channel, float gain)
 			channel                       [handle!]
-			gain                          [float!]
+			gain                          [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_GetLowPassGain: "FMOD_Channel_GetLowPassGain"[
 		;(FMOD_CHANNEL *channel, float *gain)
 			channel                       [handle!]
-			gain                          [pointer! [float!]]
+			gain                          [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetMode: "FMOD_Channel_SetMode"[
@@ -2001,33 +2028,33 @@ FMOD_TAG!: alias struct! [
 		FMOD_Channel_SetPan: "FMOD_Channel_SetPan"[
 		;(FMOD_CHANNEL *channel, float pan)
 			channel                       [handle!]
-			pan                           [float!]
+			pan                           [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetMixLevelsOutput: "FMOD_Channel_SetMixLevelsOutput"[
 		;(FMOD_CHANNEL *channel, float frontleft, float frontright, float center, float lfe, float surroundleft, float surroundright, float backleft, float backright)
 			channel                       [handle!]
-			frontleft                     [float!]
-			frontright                    [float!]
-			center                        [float!]
-			lfe                           [float!]
-			surroundleft                  [float!]
-			surroundright                 [float!]
-			backleft                      [float!]
-			backright                     [float!]
+			frontleft                     [float32!]
+			frontright                    [float32!]
+			center                        [float32!]
+			lfe                           [float32!]
+			surroundleft                  [float32!]
+			surroundright                 [float32!]
+			backleft                      [float32!]
+			backright                     [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetMixLevelsInput: "FMOD_Channel_SetMixLevelsInput"[
 		;(FMOD_CHANNEL *channel, float *levels, int numlevels)
 			channel                       [handle!]
-			levels                        [pointer! [float!]]
+			levels                        [pointer! [float32!]]
 			numlevels                     [integer!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetMixMatrix: "FMOD_Channel_SetMixMatrix"[
 		;(FMOD_CHANNEL *channel, float *matrix, int outchannels, int inchannels, int inchannel_hop)
 			channel                       [handle!]
-			matrix                        [pointer! [float!]]
+			matrix                        [pointer! [float32!]]
 			outchannels                   [integer!]
 			inchannels                    [integer!]
 			inchannel_hop                 [integer!]
@@ -2036,7 +2063,7 @@ FMOD_TAG!: alias struct! [
 		FMOD_Channel_GetMixMatrix: "FMOD_Channel_GetMixMatrix"[
 		;(FMOD_CHANNEL *channel, float *matrix, int *outchannels, int *inchannels, int inchannel_hop)
 			channel                       [handle!]
-			matrix                        [pointer! [float!]]
+			matrix                        [pointer! [float32!]]
 			outchannels                   [int-ptr!]
 			inchannels                    [int-ptr!]
 			inchannel_hop                 [integer!]
@@ -2049,59 +2076,53 @@ FMOD_TAG!: alias struct! [
 		FMOD_Channel_GetDSPClock: "FMOD_Channel_GetDSPClock"[
 		;(FMOD_CHANNEL *channel, unsigned long long *dspclock, unsigned long long *parentclock)
 			channel                       [handle!]
-			dspclock                      [int-ptr!]
-			parentclock                   [int-ptr!]
+			dspclock                      [long-long-ptr!]
+			parentclock                   [long-long-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetDelay: "FMOD_Channel_SetDelay"[
 		;(FMOD_CHANNEL *channel, unsigned long long dspclock_start, unsigned long long dspclock_end, FMOD_BOOL stopchannels)
 			channel                       [handle!]
-			dspclock_start_A              [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_start_B              [u-integer!]
-			dspclock_end_A                [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_end_B                [u-integer!]
+			dspclock_start                [long-long!] ;@@ there is no support for `long long` yet in Red/System!
+			dspclock_end                  [long-long!] ;@@ there is no support for `long long` yet in Red/System!
 			stopchannels                  [integer!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_GetDelay: "FMOD_Channel_GetDelay"[
 		;(FMOD_CHANNEL *channel, unsigned long long *dspclock_start, unsigned long long *dspclock_end, FMOD_BOOL *stopchannels)
 			channel                       [handle!]
-			dspclock_start                [int-ptr!]
-			dspclock_end                  [int-ptr!]
+			dspclock_start                [long-long-ptr!]
+			dspclock_end                  [long-long-ptr!]
 			stopchannels                  [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_AddFadePoint: "FMOD_Channel_AddFadePoint"[
 		;(FMOD_CHANNEL *channel, unsigned long long dspclock, float volume)
 			channel                       [handle!]
-			dspclock_A                    [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_B                    [u-integer!]
-			volume                        [float!]
+			dspclock                      [long-long!] ;@@ there is no support for `long long` yet in Red/System!
+			volume                        [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetFadePointRamp: "FMOD_Channel_SetFadePointRamp"[
 		;(FMOD_CHANNEL *channel, unsigned long long dspclock, float volume)
 			channel                       [handle!]
-			dspclock_A                    [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_B                    [u-integer!]
-			volume                        [float!]
+			dspclock                      [long-long!] ;@@ there is no support for `long long` yet in Red/System!
+			volume                        [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_RemoveFadePoints: "FMOD_Channel_RemoveFadePoints"[
 		;(FMOD_CHANNEL *channel, unsigned long long dspclock_start, unsigned long long dspclock_end)
 			channel                       [handle!]
-			dspclock_start_A              [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_start_B              [u-integer!]
-			dspclock_end_A                [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_end_B                [u-integer!]
+			dspclock_start                [long-long!] ;@@ there is no support for `long long` yet in Red/System!
+			dspclock_end                  [long-long!] ;@@ there is no support for `long long` yet in Red/System!
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_GetFadePoints: "FMOD_Channel_GetFadePoints"[
 		;(FMOD_CHANNEL *channel, unsigned int *numpoints, unsigned long long *point_dspclock, float *point_volume)
 			channel                       [handle!]
 			numpoints                     [int-ptr!]
-			point_dspclock                [int-ptr!]
-			point_volume                  [pointer! [float!]]
+			point_dspclock                [long-long-ptr!]
+			point_volume                  [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -2171,31 +2192,31 @@ FMOD_TAG!: alias struct! [
 		FMOD_Channel_Set3DMinMaxDistance: "FMOD_Channel_Set3DMinMaxDistance"[
 		;(FMOD_CHANNEL *channel, float mindistance, float maxdistance)
 			channel                       [handle!]
-			mindistance                   [float!]
-			maxdistance                   [float!]
+			mindistance                   [float32!]
+			maxdistance                   [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Get3DMinMaxDistance: "FMOD_Channel_Get3DMinMaxDistance"[
 		;(FMOD_CHANNEL *channel, float *mindistance, float *maxdistance)
 			channel                       [handle!]
-			mindistance                   [pointer! [float!]]
-			maxdistance                   [pointer! [float!]]
+			mindistance                   [pointer! [float32!]]
+			maxdistance                   [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Set3DConeSettings: "FMOD_Channel_Set3DConeSettings"[
 		;(FMOD_CHANNEL *channel, float insideconeangle, float outsideconeangle, float outsidevolume)
 			channel                       [handle!]
-			insideconeangle               [float!]
-			outsideconeangle              [float!]
-			outsidevolume                 [float!]
+			insideconeangle               [float32!]
+			outsideconeangle              [float32!]
+			outsidevolume                 [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Get3DConeSettings: "FMOD_Channel_Get3DConeSettings"[
 		;(FMOD_CHANNEL *channel, float *insideconeangle, float *outsideconeangle, float *outsidevolume)
 			channel                       [handle!]
-			insideconeangle               [pointer! [float!]]
-			outsideconeangle              [pointer! [float!]]
-			outsidevolume                 [pointer! [float!]]
+			insideconeangle               [pointer! [float32!]]
+			outsideconeangle              [pointer! [float32!]]
+			outsidevolume                 [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Set3DConeOrientation: "FMOD_Channel_Set3DConeOrientation"[
@@ -2227,67 +2248,67 @@ FMOD_TAG!: alias struct! [
 		FMOD_Channel_Set3DOcclusion: "FMOD_Channel_Set3DOcclusion"[
 		;(FMOD_CHANNEL *channel, float directocclusion, float reverbocclusion)
 			channel                       [handle!]
-			directocclusion               [float!]
-			reverbocclusion               [float!]
+			directocclusion               [float32!]
+			reverbocclusion               [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Get3DOcclusion: "FMOD_Channel_Get3DOcclusion"[
 		;(FMOD_CHANNEL *channel, float *directocclusion, float *reverbocclusion)
 			channel                       [handle!]
-			directocclusion               [pointer! [float!]]
-			reverbocclusion               [pointer! [float!]]
+			directocclusion               [pointer! [float32!]]
+			reverbocclusion               [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Set3DSpread: "FMOD_Channel_Set3DSpread"[
 		;(FMOD_CHANNEL *channel, float angle)
 			channel                       [handle!]
-			angle                         [float!]
+			angle                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Get3DSpread: "FMOD_Channel_Get3DSpread"[
 		;(FMOD_CHANNEL *channel, float *angle)
 			channel                       [handle!]
-			angle                         [pointer! [float!]]
+			angle                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Set3DLevel: "FMOD_Channel_Set3DLevel"[
 		;(FMOD_CHANNEL *channel, float level)
 			channel                       [handle!]
-			level                         [float!]
+			level                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Get3DLevel: "FMOD_Channel_Get3DLevel"[
 		;(FMOD_CHANNEL *channel, float *level)
 			channel                       [handle!]
-			level                         [pointer! [float!]]
+			level                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Set3DDopplerLevel: "FMOD_Channel_Set3DDopplerLevel"[
 		;(FMOD_CHANNEL *channel, float level)
 			channel                       [handle!]
-			level                         [float!]
+			level                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Get3DDopplerLevel: "FMOD_Channel_Get3DDopplerLevel"[
 		;(FMOD_CHANNEL *channel, float *level)
 			channel                       [handle!]
-			level                         [pointer! [float!]]
+			level                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Set3DDistanceFilter: "FMOD_Channel_Set3DDistanceFilter"[
 		;(FMOD_CHANNEL *channel, FMOD_BOOL custom, float customLevel, float centerFreq)
 			channel                       [handle!]
 			custom                        [integer!]
-			customLevel                   [float!]
-			centerFreq                    [float!]
+			customLevel                   [float32!]
+			centerFreq                    [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_Get3DDistanceFilter: "FMOD_Channel_Get3DDistanceFilter"[
 		;(FMOD_CHANNEL *channel, FMOD_BOOL *custom, float *customLevel, float *centerFreq)
 			channel                       [handle!]
 			custom                        [int-ptr!]
-			customLevel                   [pointer! [float!]]
-			centerFreq                    [pointer! [float!]]
+			customLevel                   [pointer! [float32!]]
+			centerFreq                    [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -2297,13 +2318,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_Channel_SetUserData: "FMOD_Channel_SetUserData"[
 		;(FMOD_CHANNEL *channel, void *userdata)
 			channel                       [handle!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_GetUserData: "FMOD_Channel_GetUserData"[
 		;(FMOD_CHANNEL *channel, void **userdata)
 			channel                       [handle!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -2313,13 +2334,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_Channel_SetFrequency: "FMOD_Channel_SetFrequency"[
 		;(FMOD_CHANNEL *channel, float frequency)
 			channel                       [handle!]
-			frequency                     [float!]
+			frequency                     [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_GetFrequency: "FMOD_Channel_GetFrequency"[
 		;(FMOD_CHANNEL *channel, float *frequency)
 			channel                       [handle!]
-			frequency                     [pointer! [float!]]
+			frequency                     [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Channel_SetPriority: "FMOD_Channel_SetPriority"[
@@ -2446,13 +2467,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_ChannelGroup_SetVolume: "FMOD_ChannelGroup_SetVolume"[
 		;(FMOD_CHANNELGROUP *channelgroup, float volume)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			volume                        [float!]
+			volume                        [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_GetVolume: "FMOD_ChannelGroup_GetVolume"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *volume)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			volume                        [pointer! [float!]]
+			volume                        [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetVolumeRamp: "FMOD_ChannelGroup_SetVolumeRamp"[
@@ -2470,19 +2491,19 @@ FMOD_TAG!: alias struct! [
 		FMOD_ChannelGroup_GetAudibility: "FMOD_ChannelGroup_GetAudibility"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *audibility)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			audibility                    [pointer! [float!]]
+			audibility                    [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetPitch: "FMOD_ChannelGroup_SetPitch"[
 		;(FMOD_CHANNELGROUP *channelgroup, float pitch)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			pitch                         [float!]
+			pitch                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_GetPitch: "FMOD_ChannelGroup_GetPitch"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *pitch)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			pitch                         [pointer! [float!]]
+			pitch                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetMute: "FMOD_ChannelGroup_SetMute"[
@@ -2501,26 +2522,26 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_CHANNELGROUP *channelgroup, int instance, float wet)
 			channelgroup                  [FMOD_CHANNELGROUP!]
 			instance                      [integer!]
-			wet                           [float!]
+			wet                           [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_GetReverbProperties: "FMOD_ChannelGroup_GetReverbProperties"[
 		;(FMOD_CHANNELGROUP *channelgroup, int instance, float *wet)
 			channelgroup                  [FMOD_CHANNELGROUP!]
 			instance                      [integer!]
-			wet                           [pointer! [float!]]
+			wet                           [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetLowPassGain: "FMOD_ChannelGroup_SetLowPassGain"[
 		;(FMOD_CHANNELGROUP *channelgroup, float gain)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			gain                          [float!]
+			gain                          [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_GetLowPassGain: "FMOD_ChannelGroup_GetLowPassGain"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *gain)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			gain                          [pointer! [float!]]
+			gain                          [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetMode: "FMOD_ChannelGroup_SetMode"[
@@ -2554,33 +2575,33 @@ FMOD_TAG!: alias struct! [
 		FMOD_ChannelGroup_SetPan: "FMOD_ChannelGroup_SetPan"[
 		;(FMOD_CHANNELGROUP *channelgroup, float pan)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			pan                           [float!]
+			pan                           [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetMixLevelsOutput: "FMOD_ChannelGroup_SetMixLevelsOutput"[
 		;(FMOD_CHANNELGROUP *channelgroup, float frontleft, float frontright, float center, float lfe, float surroundleft, float surroundright, float backleft, float backright)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			frontleft                     [float!]
-			frontright                    [float!]
-			center                        [float!]
-			lfe                           [float!]
-			surroundleft                  [float!]
-			surroundright                 [float!]
-			backleft                      [float!]
-			backright                     [float!]
+			frontleft                     [float32!]
+			frontright                    [float32!]
+			center                        [float32!]
+			lfe                           [float32!]
+			surroundleft                  [float32!]
+			surroundright                 [float32!]
+			backleft                      [float32!]
+			backright                     [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetMixLevelsInput: "FMOD_ChannelGroup_SetMixLevelsInput"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *levels, int numlevels)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			levels                        [pointer! [float!]]
+			levels                        [pointer! [float32!]]
 			numlevels                     [integer!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetMixMatrix: "FMOD_ChannelGroup_SetMixMatrix"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *matrix, int outchannels, int inchannels, int inchannel_hop)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			matrix                        [pointer! [float!]]
+			matrix                        [pointer! [float32!]]
 			outchannels                   [integer!]
 			inchannels                    [integer!]
 			inchannel_hop                 [integer!]
@@ -2589,7 +2610,7 @@ FMOD_TAG!: alias struct! [
 		FMOD_ChannelGroup_GetMixMatrix: "FMOD_ChannelGroup_GetMixMatrix"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *matrix, int *outchannels, int *inchannels, int inchannel_hop)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			matrix                        [pointer! [float!]]
+			matrix                        [pointer! [float32!]]
 			outchannels                   [int-ptr!]
 			inchannels                    [int-ptr!]
 			inchannel_hop                 [integer!]
@@ -2602,59 +2623,53 @@ FMOD_TAG!: alias struct! [
 		FMOD_ChannelGroup_GetDSPClock: "FMOD_ChannelGroup_GetDSPClock"[
 		;(FMOD_CHANNELGROUP *channelgroup, unsigned long long *dspclock, unsigned long long *parentclock)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			dspclock                      [int-ptr!]
-			parentclock                   [int-ptr!]
+			dspclock                      [long-long-ptr!]
+			parentclock                   [long-long-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetDelay: "FMOD_ChannelGroup_SetDelay"[
 		;(FMOD_CHANNELGROUP *channelgroup, unsigned long long dspclock_start, unsigned long long dspclock_end, FMOD_BOOL stopchannels)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			dspclock_start_A              [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_start_B              [u-integer!]
-			dspclock_end_A                [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_end_B                [u-integer!]
+			dspclock_start                [long-long!] ;@@ there is no support for `long long` yet in Red/System!
+			dspclock_end                  [long-long!] ;@@ there is no support for `long long` yet in Red/System!
 			stopchannels                  [integer!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_GetDelay: "FMOD_ChannelGroup_GetDelay"[
 		;(FMOD_CHANNELGROUP *channelgroup, unsigned long long *dspclock_start, unsigned long long *dspclock_end, FMOD_BOOL *stopchannels)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			dspclock_start                [int-ptr!]
-			dspclock_end                  [int-ptr!]
+			dspclock_start                [long-long-ptr!]
+			dspclock_end                  [long-long-ptr!]
 			stopchannels                  [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_AddFadePoint: "FMOD_ChannelGroup_AddFadePoint"[
 		;(FMOD_CHANNELGROUP *channelgroup, unsigned long long dspclock, float volume)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			dspclock_A                    [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_B                    [u-integer!]
-			volume                        [float!]
+			dspclock                      [long-long!] ;@@ there is no support for `long long` yet in Red/System!
+			volume                        [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_SetFadePointRamp: "FMOD_ChannelGroup_SetFadePointRamp"[
 		;(FMOD_CHANNELGROUP *channelgroup, unsigned long long dspclock, float volume)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			dspclock_A                    [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_B                    [u-integer!]
-			volume                        [float!]
+			dspclock                      [long-long!] ;@@ there is no support for `long long` yet in Red/System!
+			volume                        [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_RemoveFadePoints: "FMOD_ChannelGroup_RemoveFadePoints"[
 		;(FMOD_CHANNELGROUP *channelgroup, unsigned long long dspclock_start, unsigned long long dspclock_end)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			dspclock_start_A              [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_start_B              [u-integer!]
-			dspclock_end_A                [u-integer!] ;@@ there is no support for `long long` yet in Red/System!
-			dspclock_end_B                [u-integer!]
+			dspclock_start                [long-long!] ;@@ there is no support for `long long` yet in Red/System!
+			dspclock_end                  [long-long!] ;@@ there is no support for `long long` yet in Red/System!
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_GetFadePoints: "FMOD_ChannelGroup_GetFadePoints"[
 		;(FMOD_CHANNELGROUP *channelgroup, unsigned int *numpoints, unsigned long long *point_dspclock, float *point_volume)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			numpoints                     [int-ptr!]
-			point_dspclock                [int-ptr!]
-			point_volume                  [pointer! [float!]]
+			numpoints                     [long-long-ptr!]
+			point_dspclock                [long-long-ptr!]
+			point_volume                  [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -2724,31 +2739,31 @@ FMOD_TAG!: alias struct! [
 		FMOD_ChannelGroup_Set3DMinMaxDistance: "FMOD_ChannelGroup_Set3DMinMaxDistance"[
 		;(FMOD_CHANNELGROUP *channelgroup, float mindistance, float maxdistance)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			mindistance                   [float!]
-			maxdistance                   [float!]
+			mindistance                   [float32!]
+			maxdistance                   [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Get3DMinMaxDistance: "FMOD_ChannelGroup_Get3DMinMaxDistance"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *mindistance, float *maxdistance)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			mindistance                   [pointer! [float!]]
-			maxdistance                   [pointer! [float!]]
+			mindistance                   [pointer! [float32!]]
+			maxdistance                   [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Set3DConeSettings: "FMOD_ChannelGroup_Set3DConeSettings"[
 		;(FMOD_CHANNELGROUP *channelgroup, float insideconeangle, float outsideconeangle, float outsidevolume)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			insideconeangle               [float!]
-			outsideconeangle              [float!]
-			outsidevolume                 [float!]
+			insideconeangle               [float32!]
+			outsideconeangle              [float32!]
+			outsidevolume                 [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Get3DConeSettings: "FMOD_ChannelGroup_Get3DConeSettings"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *insideconeangle, float *outsideconeangle, float *outsidevolume)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			insideconeangle               [pointer! [float!]]
-			outsideconeangle              [pointer! [float!]]
-			outsidevolume                 [pointer! [float!]]
+			insideconeangle               [pointer! [float32!]]
+			outsideconeangle              [pointer! [float32!]]
+			outsidevolume                 [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Set3DConeOrientation: "FMOD_ChannelGroup_Set3DConeOrientation"[
@@ -2780,67 +2795,67 @@ FMOD_TAG!: alias struct! [
 		FMOD_ChannelGroup_Set3DOcclusion: "FMOD_ChannelGroup_Set3DOcclusion"[
 		;(FMOD_CHANNELGROUP *channelgroup, float directocclusion, float reverbocclusion)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			directocclusion               [float!]
-			reverbocclusion               [float!]
+			directocclusion               [float32!]
+			reverbocclusion               [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Get3DOcclusion: "FMOD_ChannelGroup_Get3DOcclusion"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *directocclusion, float *reverbocclusion)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			directocclusion               [pointer! [float!]]
-			reverbocclusion               [pointer! [float!]]
+			directocclusion               [pointer! [float32!]]
+			reverbocclusion               [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Set3DSpread: "FMOD_ChannelGroup_Set3DSpread"[
 		;(FMOD_CHANNELGROUP *channelgroup, float angle)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			angle                         [float!]
+			angle                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Get3DSpread: "FMOD_ChannelGroup_Get3DSpread"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *angle)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			angle                         [pointer! [float!]]
+			angle                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Set3DLevel: "FMOD_ChannelGroup_Set3DLevel"[
 		;(FMOD_CHANNELGROUP *channelgroup, float level)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			level                         [float!]
+			level                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Get3DLevel: "FMOD_ChannelGroup_Get3DLevel"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *level)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			level                         [pointer! [float!]]
+			level                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Set3DDopplerLevel: "FMOD_ChannelGroup_Set3DDopplerLevel"[
 		;(FMOD_CHANNELGROUP *channelgroup, float level)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			level                         [float!]
+			level                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Get3DDopplerLevel: "FMOD_ChannelGroup_Get3DDopplerLevel"[
 		;(FMOD_CHANNELGROUP *channelgroup, float *level)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			level                         [pointer! [float!]]
+			level                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Set3DDistanceFilter: "FMOD_ChannelGroup_Set3DDistanceFilter"[
 		;(FMOD_CHANNELGROUP *channelgroup, FMOD_BOOL custom, float customLevel, float centerFreq)
 			channelgroup                  [FMOD_CHANNELGROUP!]
 			custom                        [integer!]
-			customLevel                   [float!]
-			centerFreq                    [float!]
+			customLevel                   [float32!]
+			centerFreq                    [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Get3DDistanceFilter: "FMOD_ChannelGroup_Get3DDistanceFilter"[
 		;(FMOD_CHANNELGROUP *channelgroup, FMOD_BOOL *custom, float *customLevel, float *centerFreq)
 			channelgroup                  [FMOD_CHANNELGROUP!]
 			custom                        [int-ptr!]
-			customLevel                   [pointer! [float!]]
-			centerFreq                    [pointer! [float!]]
+			customLevel                   [pointer! [float32!]]
+			centerFreq                    [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -2850,13 +2865,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_ChannelGroup_SetUserData: "FMOD_ChannelGroup_SetUserData"[
 		;(FMOD_CHANNELGROUP *channelgroup, void *userdata)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_GetUserData: "FMOD_ChannelGroup_GetUserData"[
 		;(FMOD_CHANNELGROUP *channelgroup, void **userdata)
 			channelgroup                  [FMOD_CHANNELGROUP!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_ChannelGroup_Release: "FMOD_ChannelGroup_Release"[
@@ -2965,25 +2980,25 @@ FMOD_TAG!: alias struct! [
 		FMOD_SoundGroup_SetMuteFadeSpeed: "FMOD_SoundGroup_SetMuteFadeSpeed"[
 		;(FMOD_SOUNDGROUP *soundgroup, float speed)
 			soundgroup                    [FMOD_SOUNDGROUP!]
-			speed                         [float!]
+			speed                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_SoundGroup_GetMuteFadeSpeed: "FMOD_SoundGroup_GetMuteFadeSpeed"[
 		;(FMOD_SOUNDGROUP *soundgroup, float *speed)
 			soundgroup                    [FMOD_SOUNDGROUP!]
-			speed                         [pointer! [float!]]
+			speed                         [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_SoundGroup_SetVolume: "FMOD_SoundGroup_SetVolume"[
 		;(FMOD_SOUNDGROUP *soundgroup, float volume)
 			soundgroup                    [FMOD_SOUNDGROUP!]
-			volume                        [float!]
+			volume                        [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_SoundGroup_GetVolume: "FMOD_SoundGroup_GetVolume"[
 		;(FMOD_SOUNDGROUP *soundgroup, float *volume)
 			soundgroup                    [FMOD_SOUNDGROUP!]
-			volume                        [pointer! [float!]]
+			volume                        [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_SoundGroup_Stop: "FMOD_SoundGroup_Stop"[
@@ -3028,13 +3043,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_SoundGroup_SetUserData: "FMOD_SoundGroup_SetUserData"[
 		;(FMOD_SOUNDGROUP *soundgroup, void *userdata)
 			soundgroup                    [FMOD_SOUNDGROUP!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_SoundGroup_GetUserData: "FMOD_SoundGroup_GetUserData"[
 		;(FMOD_SOUNDGROUP *soundgroup, void **userdata)
 			soundgroup                    [FMOD_SOUNDGROUP!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -3137,17 +3152,17 @@ FMOD_TAG!: alias struct! [
 		FMOD_DSP_SetWetDryMix: "FMOD_DSP_SetWetDryMix"[
 		;(FMOD_DSP *dsp, float prewet, float postwet, float dry)
 			dsp                           [FMOD_DSP!]
-			prewet                        [float!]
-			postwet                       [float!]
-			dry                           [float!]
+			prewet                        [float32!]
+			postwet                       [float32!]
+			dry                           [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_DSP_GetWetDryMix: "FMOD_DSP_GetWetDryMix"[
 		;(FMOD_DSP *dsp, float *prewet, float *postwet, float *dry)
 			dsp                           [FMOD_DSP!]
-			prewet                        [pointer! [float!]]
-			postwet                       [pointer! [float!]]
-			dry                           [pointer! [float!]]
+			prewet                        [pointer! [float32!]]
+			postwet                       [pointer! [float32!]]
+			dry                           [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_DSP_SetChannelFormat: "FMOD_DSP_SetChannelFormat"[
@@ -3190,7 +3205,7 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_DSP *dsp, int index, float value)
 			dsp                           [FMOD_DSP!]
 			index                         [integer!]
-			value                         [float!]
+			value                         [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_DSP_SetParameterInt: "FMOD_DSP_SetParameterInt"[
@@ -3219,7 +3234,7 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_DSP *dsp, int index, float *value, char *valuestr, int valuestrlen)
 			dsp                           [FMOD_DSP!]
 			index                         [integer!]
-			value                         [pointer! [float!]]
+			value                         [pointer! [float32!]]
 			valuestr                      [c-string!]
 			valuestrlen                   [integer!]
 			return:                       [FMOD_RESULT!]
@@ -3312,13 +3327,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_DSP_SetUserData: "FMOD_DSP_SetUserData"[
 		;(FMOD_DSP *dsp, void *userdata)
 			dsp                           [FMOD_DSP!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_DSP_GetUserData: "FMOD_DSP_GetUserData"[
 		;(FMOD_DSP *dsp, void **userdata)
 			dsp                           [FMOD_DSP!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -3365,19 +3380,19 @@ FMOD_TAG!: alias struct! [
 		FMOD_DSPConnection_SetMix: "FMOD_DSPConnection_SetMix"[
 		;(FMOD_DSPCONNECTION *dspconnection, float volume)
 			dspconnection                 [FMOD_DSPCONNECTION!]
-			volume                        [float!]
+			volume                        [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_DSPConnection_GetMix: "FMOD_DSPConnection_GetMix"[
 		;(FMOD_DSPCONNECTION *dspconnection, float *volume)
 			dspconnection                 [FMOD_DSPCONNECTION!]
-			volume                        [pointer! [float!]]
+			volume                        [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_DSPConnection_SetMixMatrix: "FMOD_DSPConnection_SetMixMatrix"[
 		;(FMOD_DSPCONNECTION *dspconnection, float *matrix, int outchannels, int inchannels, int inchannel_hop)
 			dspconnection                 [FMOD_DSPCONNECTION!]
-			matrix                        [pointer! [float!]]
+			matrix                        [pointer! [float32!]]
 			outchannels                   [integer!]
 			inchannels                    [integer!]
 			inchannel_hop                 [integer!]
@@ -3386,7 +3401,7 @@ FMOD_TAG!: alias struct! [
 		FMOD_DSPConnection_GetMixMatrix: "FMOD_DSPConnection_GetMixMatrix"[
 		;(FMOD_DSPCONNECTION *dspconnection, float *matrix, int *outchannels, int *inchannels, int inchannel_hop)
 			dspconnection                 [FMOD_DSPCONNECTION!]
-			matrix                        [pointer! [float!]]
+			matrix                        [pointer! [float32!]]
 			outchannels                   [int-ptr!]
 			inchannels                    [int-ptr!]
 			inchannel_hop                 [integer!]
@@ -3405,13 +3420,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_DSPConnection_SetUserData: "FMOD_DSPConnection_SetUserData"[
 		;(FMOD_DSPCONNECTION *dspconnection, void *userdata)
 			dspconnection                 [FMOD_DSPCONNECTION!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_DSPConnection_GetUserData: "FMOD_DSPConnection_GetUserData"[
 		;(FMOD_DSPCONNECTION *dspconnection, void **userdata)
 			dspconnection                 [FMOD_DSPCONNECTION!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -3430,8 +3445,8 @@ FMOD_TAG!: alias struct! [
 		FMOD_Geometry_AddPolygon: "FMOD_Geometry_AddPolygon"[
 		;(FMOD_GEOMETRY *geometry, float directocclusion, float reverbocclusion, FMOD_BOOL doublesided, int numvertices, const FMOD_VECTOR *vertices, int *polygonindex)
 			geometry                      [FMOD_GEOMETRY!]
-			directocclusion               [float!]
-			reverbocclusion               [float!]
+			directocclusion               [float32!]
+			reverbocclusion               [float32!]
 			doublesided                   [integer!]
 			numvertices                   [integer!]
 			vertices                      [FMOD_VECTOR!]
@@ -3478,8 +3493,8 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_GEOMETRY *geometry, int index, float directocclusion, float reverbocclusion, FMOD_BOOL doublesided)
 			geometry                      [FMOD_GEOMETRY!]
 			index                         [integer!]
-			directocclusion               [float!]
-			reverbocclusion               [float!]
+			directocclusion               [float32!]
+			reverbocclusion               [float32!]
 			doublesided                   [integer!]
 			return:                       [FMOD_RESULT!]
 		]
@@ -3487,8 +3502,8 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_GEOMETRY *geometry, int index, float *directocclusion, float *reverbocclusion, FMOD_BOOL *doublesided)
 			geometry                      [FMOD_GEOMETRY!]
 			index                         [integer!]
-			directocclusion               [pointer! [float!]]
-			reverbocclusion               [pointer! [float!]]
+			directocclusion               [pointer! [float32!]]
+			reverbocclusion               [pointer! [float32!]]
 			doublesided                   [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
@@ -3560,13 +3575,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_Geometry_SetUserData: "FMOD_Geometry_SetUserData"[
 		;(FMOD_GEOMETRY *geometry, void *userdata)
 			geometry                      [FMOD_GEOMETRY!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Geometry_GetUserData: "FMOD_Geometry_GetUserData"[
 		;(FMOD_GEOMETRY *geometry, void **userdata)
 			geometry                      [FMOD_GEOMETRY!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 
@@ -3586,16 +3601,16 @@ FMOD_TAG!: alias struct! [
 		;(FMOD_REVERB3D *reverb3d, const FMOD_VECTOR *position, float mindistance, float maxdistance)
 			reverb3d                      [FMOD_REVERB3D!]
 			position                      [FMOD_VECTOR!]
-			mindistance                   [float!]
-			maxdistance                   [float!]
+			mindistance                   [float32!]
+			maxdistance                   [float32!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Reverb3D_Get3DAttributes: "FMOD_Reverb3D_Get3DAttributes"[
 		;(FMOD_REVERB3D *reverb3d, FMOD_VECTOR *position, float *mindistance, float *maxdistance)
 			reverb3d                      [FMOD_REVERB3D!]
 			position                      [FMOD_VECTOR!]
-			mindistance                   [pointer! [float!]]
-			maxdistance                   [pointer! [float!]]
+			mindistance                   [pointer! [float32!]]
+			maxdistance                   [pointer! [float32!]]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Reverb3D_SetProperties: "FMOD_Reverb3D_SetProperties"[
@@ -3629,13 +3644,13 @@ FMOD_TAG!: alias struct! [
 		FMOD_Reverb3D_SetUserData: "FMOD_Reverb3D_SetUserData"[
 		;(FMOD_REVERB3D *reverb3d, void *userdata)
 			reverb3d                      [FMOD_REVERB3D!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 		FMOD_Reverb3D_GetUserData: "FMOD_Reverb3D_GetUserData"[
 		;(FMOD_REVERB3D *reverb3d, void **userdata)
 			reverb3d                      [FMOD_REVERB3D!]
-			userdata                      [byte-ptr!]
+			userdata                      [int-ptr!]
 			return:                       [FMOD_RESULT!]
 		]
 

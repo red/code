@@ -17,6 +17,10 @@ FMOD: context [
 				dwMilliseconds	[integer!]
 			]
 		]
+		LIBC-file cdecl [
+			_kbhit: "_kbhit" [ return: [integer!] ]
+			_getch: "_getch" [ return: [integer!] ]
+		]
 	]
 
 
@@ -113,18 +117,82 @@ FMOD: context [
 
 	#define ERRORCHECK(result) [
 		if result <> FMOD_OK [
-			print ["FMOD ERROR"]
+			print-error result
 		]
 	]
 
+	debug-callback: func [
+		flags [FMOD_DEBUG_FLAGS!]
+		file [c-string!]
+		line [integer!]
+		func [c-string!]
+		message [c-string!]
+		return: [FMOD_RESULT!]
+	][
+		print [message lf]
+		return FMOD_OK
+	]
+
+	system-callback: func [
+		system [FMOD_SYSTEM!]
+		type [FMOD_SYSTEM_CALLBACK_TYPE!]
+		commanddata1 [byte-ptr!]
+		commanddata2 [byte-ptr!]
+		userdata [byte-ptr!]
+		return: [FMOD_RESULT!]
+	][
+		switch type [
+			FMOD_SYSTEM_CALLBACK_DEVICELISTCHANGED      []  ;/* Called from System::update when the enumerated list of devices has changed. */
+			FMOD_SYSTEM_CALLBACK_DEVICELOST             []  ;/* Called from System::update when an output device has been lost due to control panel parameter changes and FMOD cannot automatically recover. */
+			FMOD_SYSTEM_CALLBACK_MEMORYALLOCATIONFAILED []  ;/* Called directly when a memory allocation fails somewhere in FMOD.  (NOTE - 'system' will be NULL in this callback type.)*/
+			FMOD_SYSTEM_CALLBACK_THREADCREATED          []  ;/* Called directly when a thread is created. */
+			FMOD_SYSTEM_CALLBACK_BADDSPCONNECTION       []  ;/* Called when a bad connection was made with DSP::addInput. Usually called from mixer thread because that is where the connections are made.  */
+			FMOD_SYSTEM_CALLBACK_PREMIX                 [
+				;print ["CALLBACK [" type "] premix" lf]
+			]  ;/* Called each tick before a mix update happens. */
+			FMOD_SYSTEM_CALLBACK_POSTMIX                []  ;/* Called each tick after a mix update happens. */
+			FMOD_SYSTEM_CALLBACK_ERROR                  [
+				;print ["CALLBACK [" type "] Error" lf]
+			]  ;/* Called when each API function returns an error code, including delayed async functions. */
+			FMOD_SYSTEM_CALLBACK_MIDMIX                 []  ;/* Called each tick in mix update after clocks have been updated before the main mix occurs. */
+			FMOD_SYSTEM_CALLBACK_THREADDESTROYED        []  ;/* Called directly when a thread is destroyed. */
+			FMOD_SYSTEM_CALLBACK_PREUPDATE              [
+				;print ["CALLBACK [" type "] preupdate" lf]
+			]  ;/* Called at start of System::update function. */
+			FMOD_SYSTEM_CALLBACK_POSTUPDATE             []  ;/* Called at end of System::update function. */
+			FMOD_SYSTEM_CALLBACK_RECORDLISTCHANGED      []  ;/* Called from System::update when the enumerated list of recording devices has changed. */
+			default [
+				print "CALLBACK unknown^/"
+			]
+		]
+		return FMOD_OK
+	]
 
 	*fs:    declare FMOD_SYSTEM!
-	*sound: declare FMOD_SOUND!
+	*sound1: declare FMOD_SOUND!
+	*sound2: declare FMOD_SOUND!
+
+	*channel1: 0
+	*channel2: 0
+	currentalloced: 0
+	maxalloced: 0
+
+	continue?: false
+	key: 0
+	isplaying: 0
+	paused: 0
+	volume: declare float32!
+	index: 0
+	num: 0
 
 	result: FMOD_System_Create :*fs
 	ERRORCHECK(result)
 
-	result: FMOD_System_Init *fs 16 FMOD_INIT_NORMAL null
+	;@@ this does not work, don't know why. Throws:  FMOD Error: [68] A command issued was not supported by this object. 
+	result: FMOD_Debug_Initialize (FMOD_DEBUG_LEVEL_LOG or FMOD_DEBUG_TYPE_FILE) FMOD_DEBUG_MODE_CALLBACK :debug-callback null
+	ERRORCHECK(result)
+
+	result: FMOD_System_Init *fs 16 FMOD_INIT_THREAD_UNSAFE  null
 	ERRORCHECK(result)
 
 	either result = FMOD_OK [
@@ -133,37 +201,146 @@ FMOD: context [
 		quit 0
 	]
 
+	;-- setting system callback
+	result: FMOD_System_SetCallback *fs :system-callback FMOD_SYSTEM_CALLBACK_ALL
+	ERRORCHECK(result)
+
+	;-- getting some system info
 	version: 0
 	FMOD_System_GetVersion *fs :version
 	print ["FMOD version: " (version >> 16) #"." ((version and 0000FF00h) >> 8) #"." (version and 000000FFh) lf]
 
-	numdrivers: -1
-	FMOD_System_GetNumDrivers *fs :numdrivers
-	print ["Number of sound drivers: " numdrivers lf]
+	FMOD_System_GetNumDrivers *fs :num
+	print ["Number of sound drivers: " num lf]
+	FMOD_System_GetSoftwareChannels *fs :num
+	print ["Number of software channels: " num lf]
 
-	result: FMOD_System_CreateSound *fs "drumloop.wav" FMOD_DEFAULT 0 :*sound
+	;-- creating some sounds from files
+	result: FMOD_System_CreateSound *fs "drumloop.wav" FMOD_DEFAULT 0 :*sound1
+	ERRORCHECK(result)
+	result: FMOD_System_CreateSound *fs "jaguar.wav" (FMOD_CREATESAMPLE or FMOD_2D) 0 :*sound2
 	ERRORCHECK(result)
 
-	*channel: 0
-	currentalloced: 0
-	maxalloced: 0
+	;-- test of user data set/get with sound object
+	name: "drum"
+	result: FMOD_Sound_SetUserData *sound1 as int-ptr! name
+	result: FMOD_Sound_SetUserData *sound2 as int-ptr! "jaguar"
 
+	data-ptr: 0
+	result: FMOD_Sound_GetUserData *sound1 :data-ptr ;pointer to data pointer
+	print ["getting userdata from sound1: " as c-string! data-ptr lf]
+	result: FMOD_Sound_GetUserData *sound2 :data-ptr ;pointer to data pointer
+	print ["getting userdata from sound2: " as c-string! data-ptr lf]
 
 	if FMOD_OK = result [
-		result: FMOD_System_PlaySound *fs *sound 0 0 :*channel
+		result: FMOD_System_PlaySound *fs *sound1 0 0 :*channel1
 		ERRORCHECK(result)
 
-		print ["Playing sound at channel: " as int-ptr! *channel " (3 seconds)" lf]
+		result: FMOD_Channel_GetIndex *channel1 :index
+		ERRORCHECK(result)
+		print ["channel1 index: " index lf]
 
-		Sleep 3000 ;wait 3s
+		result: FMOD_System_PlaySound *fs *sound2 0 0 :*channel2
+		ERRORCHECK(result)
+		result: FMOD_Channel_SetVolume *channel1 2.0
 
-		FMOD_System_Update *fs
+
+		result: FMOD_Channel_GetVolume *channel1 :volume
+		ERRORCHECK(result)
+
+		print ["Playing sound at channel1: " as int-ptr! *channel1 " volume: " volume lf]
+
+		result: FMOD_Channel_GetVolume *channel2 :volume
+		ERRORCHECK(result)
+		print ["Playing sound at channel2: " as int-ptr! *channel2 " volume: " volume lf]
 
 		result: FMOD_Memory_GetStats :currentalloced :maxalloced 1
-		print ["Sound RAM current: " currentalloced " max: " maxalloced lf]
+		print ["Memory current: " currentalloced " max: " maxalloced lf]
 
+
+		print "^/Press ENTER to continue, press 1 to toggle sound 1, press 2 to play sound 2^/"
+
+		until [ ;Main loop
+			result: FMOD_System_Update *fs
+			ERRORCHECK(result)
+			if 0 <> _kbhit [
+				key: _getch
+				switch key [
+					13 [ continue?: true ] ;pressed ENTER
+					49 [
+						print [*channel1 lf]
+
+						result: FMOD_Channel_GetPaused *channel1 :paused
+						ERRORCHECK(result)
+						result: FMOD_Channel_GetVolume *channel1 :volume
+						ERRORCHECK(result)
+						result: FMOD_Channel_GetIndex *channel1 :index
+						ERRORCHECK(result)
+						print [paused " " volume " " index lf]
+
+						;either paused = 0 [
+						;	print ["pausing" lf]
+						;	result: FMOD_Channel_SetPaused *fs *channel1 1 ;@@ this does not work - throws invalid handle error
+						;	ERRORCHECK(result)
+						;][
+						;	print "resume^/"
+						;	result: FMOD_Channel_SetPaused *fs *channel1 0 ;@@ this does not work - throws invalid handle error
+						;	ERRORCHECK(result)
+						;]
+						either volume = as float32! 0.0 [
+							result: FMOD_Channel_SetVolume *channel1 1.0
+							ERRORCHECK(result)
+							result: FMOD_Channel_SetPosition *channel1 475 FMOD_TIMEUNIT_MS ;sets starting position of the drum loop
+							ERRORCHECK(result)
+						][
+							result: FMOD_Channel_SetVolume *channel1 0.0
+							ERRORCHECK(result)
+						]
+					]
+					50 [
+						result: FMOD_System_PlaySound *fs *sound2 0 0 :*channel2
+						ERRORCHECK(result)
+						result: FMOD_Channel_GetIndex *channel2 :index
+						ERRORCHECK(result)
+						print ["Playing sound at channel2: " as int-ptr! *channel2 " index: " index lf]
+					]
+					default [
+						print ["pressed: " key lf]
+					]
+				]
+			]
+			Sleep 50
+			continue?
+		]
+
+		print "Releasing the sound...^/"
+
+		result: FMOD_Sound_Release *sound1
+		result: FMOD_Sound_Release *sound2
+		ERRORCHECK(result)
+
+		result: FMOD_Memory_GetStats :currentalloced :maxalloced 1
+		print ["Memory current: " currentalloced " max: " maxalloced lf]
 	]
 
+	FMOD_System_Update *fs
+
+	sampleBytesRead: declare long-long-ptr!
+	streamBytesRead: declare long-long-ptr!
+	otherBytesRead:  declare long-long-ptr!
+
+	result: FMOD_System_GetFileUsage *fs sampleBytesRead streamBytesRead otherBytesRead
+	ERRORCHECK(result)
+	print ["sampleBytesRead: " int64-to-float sampleBytesRead lf]
+	print ["streamBytesRead: " int64-to-float streamBytesRead lf]
+	print ["otherBytesRead:  " int64-to-float otherBytesRead  lf]
+
+	i: float-to-int64 int64-to-float sampleBytesRead
+	print [i/hi " " i/lo lf]
+
 	result: FMOD_System_Close *fs
+	ERRORCHECK(result)
+
+	result: FMOD_System_Release *fs
 	ERRORCHECK(result)
 ]
