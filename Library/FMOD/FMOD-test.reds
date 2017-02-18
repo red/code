@@ -174,6 +174,9 @@ FMOD: context [
 
 	*channel1: 0
 	*channel2: 0
+
+	mastergroup: declare FMOD_CHANNELGROUP!
+
 	currentalloced: 0
 	maxalloced: 0
 
@@ -181,9 +184,13 @@ FMOD: context [
 	key: 0
 	isplaying: 0
 	paused: 0
+	enabled: 0
 	volume: declare float32!
 	index: 0
 	num: 0
+
+	dspecho: declare FMOD_DSP!
+	dspflange: declare FMOD_DSP!
 
 	result: FMOD_System_Create :*fs
 	ERRORCHECK(result)
@@ -214,6 +221,9 @@ FMOD: context [
 	print ["Number of sound drivers: " num lf]
 	FMOD_System_GetSoftwareChannels *fs :num
 	print ["Number of software channels: " num lf]
+
+	result: FMOD_System_GetMasterChannelGroup *fs :mastergroup
+	ERRORCHECK(result)
 
 	;-- creating some sounds from files
 	result: FMOD_System_CreateSound *fs "drumloop.wav" FMOD_DEFAULT 0 :*sound1
@@ -254,11 +264,30 @@ FMOD: context [
 		ERRORCHECK(result)
 		print ["Playing sound at channel2: " as int-ptr! *channel2 " volume: " volume lf]
 
+		
+		result: FMOD_System_CreateDSPByType *fs FMOD_DSP_TYPE_ECHO :dspecho
+		ERRORCHECK(result)
+		result: FMOD_ChannelGroup_AddDSP mastergroup 0 dspecho
+		ERRORCHECK(result)
+		result: FMOD_DSP_SetBypass dspecho 1
+		ERRORCHECK(result)
+
+		result: FMOD_System_CreateDSPByType *fs FMOD_DSP_TYPE_ECHO :dspflange
+		ERRORCHECK(result)
+		result: FMOD_ChannelGroup_AddDSP mastergroup 0 dspflange
+		ERRORCHECK(result)
+		result: FMOD_DSP_SetBypass dspflange 1
+		ERRORCHECK(result)
+
 		result: FMOD_Memory_GetStats :currentalloced :maxalloced 1
 		print ["Memory current: " currentalloced " max: " maxalloced lf]
 
 
-		print "^/Press ENTER to continue, press 1 to toggle sound 1, press 2 to play sound 2^/"
+		print "^/Press ENTER to continue^/"
+		print "Press '1' to toggle sound 1^/"
+		print "Press '2' to play sound 2^/"
+		print "Press 'e' to toggle echo^/^/"
+		print "Press 'f' to toggle flange^/^/"
 
 		until [ ;Main loop
 			result: FMOD_System_Update *fs
@@ -304,6 +333,22 @@ FMOD: context [
 						ERRORCHECK(result)
 						print ["Playing sound at channel2: " as int-ptr! *channel2 " index: " index lf]
 					]
+					101 [ ;key `e`
+						result: FMOD_DSP_GetBypass dspecho :enabled
+						ERRORCHECK(result)
+						enabled: either enabled = 1 [0][1]
+						result: FMOD_DSP_SetBypass dspecho enabled
+						ERRORCHECK(result)
+						print ["DSP echo state: " enabled lf]
+					]
+					102 [ ;key `f`
+						result: FMOD_DSP_GetBypass dspflange :enabled
+						ERRORCHECK(result)
+						enabled: either enabled = 1 [0][1]
+						result: FMOD_DSP_SetBypass dspflange enabled
+						ERRORCHECK(result)
+						print ["DSP flange state: " enabled lf]
+					]
 					default [
 						print ["pressed: " key lf]
 					]
@@ -312,6 +357,17 @@ FMOD: context [
 			Sleep 50
 			continue?
 		]
+
+		print "Releasing DSPs...^/"
+		result: FMOD_Channel_RemoveDSP mastergroup dspecho
+		ERRORCHECK(result)
+		result: FMOD_Channel_RemoveDSP mastergroup dspflange
+		ERRORCHECK(result)
+
+		result: FMOD_DSP_Release dspecho
+		ERRORCHECK(result)
+		result: FMOD_DSP_Release dspflange
+		ERRORCHECK(result)
 
 		print "Releasing the sound...^/"
 
@@ -334,9 +390,6 @@ FMOD: context [
 	print ["sampleBytesRead: " int64-to-float sampleBytesRead lf]
 	print ["streamBytesRead: " int64-to-float streamBytesRead lf]
 	print ["otherBytesRead:  " int64-to-float otherBytesRead  lf]
-
-	i: float-to-int64 int64-to-float sampleBytesRead
-	print [i/hi " " i/lo lf]
 
 	result: FMOD_System_Close *fs
 	ERRORCHECK(result)
