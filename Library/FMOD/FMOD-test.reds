@@ -193,6 +193,7 @@ FMOD: context [
 
 	dspecho: declare FMOD_DSP!
 	dspflange: declare FMOD_DSP!
+	dspchorus: declare FMOD_DSP!
 
 	result: FMOD_System_Create :*fs
 	ERRORCHECK(result)
@@ -286,6 +287,16 @@ FMOD: context [
 		result: FMOD_DSP_SetBypass dspflange 1
 		ERRORCHECK(result)
 
+		result: FMOD_System_CreateDSPByType *fs FMOD_DSP_TYPE_CHORUS :dspchorus
+		ERRORCHECK(result)
+		result: FMOD_Channel_AddDSP *channel1 0 dspchorus
+		ERRORCHECK(result)
+
+
+		result: FMOD_DSP_GetNumParameters dspecho :num
+		ERRORCHECK(result)
+		print ["DSP echo parameters: " num lf]
+
 		result: FMOD_Memory_GetStats :currentalloced :maxalloced 1
 		print ["Memory current: " currentalloced " max: " maxalloced lf]
 
@@ -293,6 +304,7 @@ FMOD: context [
 		print "^/Press ENTER to continue^/"
 		print "Press '1' to toggle sound 1^/"
 		print "Press '2' to play sound 2^/"
+		print "Press 'c' to toggle chorus on the mp3 stream^/"
 		print "Press 'e' to toggle echo^/"
 		print "Press 'f' to toggle flange^/^/"
 
@@ -302,8 +314,8 @@ FMOD: context [
 			if 0 <> _kbhit [
 				key: _getch
 				switch key [
-					13 [ continue?: true ] ;pressed ENTER
-					49 [
+					13   [ continue?: true ] ;pressed ENTER
+					#"1" [
 						print [*channel1 lf]
 
 						result: FMOD_Channel_GetPaused *channel1 :paused
@@ -333,28 +345,36 @@ FMOD: context [
 							ERRORCHECK(result)
 						]
 					]
-					50 [
+					#"2" [
 						result: FMOD_System_PlaySound *fs *sound2 0 0 :*channel2
 						ERRORCHECK(result)
 						result: FMOD_Channel_GetIndex *channel2 :index
 						ERRORCHECK(result)
 						print ["Playing sound at channel2: " as int-ptr! *channel2 " index: " index lf]
 					]
-					101 [ ;key `e`
+					#"c" [
+						result: FMOD_DSP_GetBypass dspchorus :enabled
+						ERRORCHECK(result)
+						print ["DSP chorus state: " enabled lf]
+						enabled: either enabled = 1 [0][1]
+						result: FMOD_DSP_SetBypass dspchorus enabled
+						ERRORCHECK(result)
+					]
+					#"e" [
 						result: FMOD_DSP_GetBypass dspecho :enabled
 						ERRORCHECK(result)
+						print ["DSP echo state: " enabled lf] ;bypassed means disabled
 						enabled: either enabled = 1 [0][1]
-						result: FMOD_DSP_SetBypass dspecho enabled
+						result: FMOD_DSP_SetBypass dspecho enabled 
 						ERRORCHECK(result)
-						print ["DSP echo state: " enabled lf]
 					]
-					102 [ ;key `f`
+					#"f" [
 						result: FMOD_DSP_GetBypass dspflange :enabled
 						ERRORCHECK(result)
+						print ["DSP flange state: " enabled lf]
 						enabled: either enabled = 1 [0][1]
 						result: FMOD_DSP_SetBypass dspflange enabled
 						ERRORCHECK(result)
-						print ["DSP flange state: " enabled lf]
 					]
 					default [
 						print ["pressed: " key lf]
@@ -366,14 +386,18 @@ FMOD: context [
 		]
 
 		print "Releasing DSPs...^/"
-		result: FMOD_Channel_RemoveDSP mastergroup dspecho
+		result: FMOD_ChannelGroup_RemoveDSP mastergroup dspecho
 		ERRORCHECK(result)
-		result: FMOD_Channel_RemoveDSP mastergroup dspflange
+		result: FMOD_ChannelGroup_RemoveDSP mastergroup dspflange
+		ERRORCHECK(result)
+		result: FMOD_Channel_RemoveDSP *channel1 dspchorus
 		ERRORCHECK(result)
 
 		result: FMOD_DSP_Release dspecho
 		ERRORCHECK(result)
 		result: FMOD_DSP_Release dspflange
+		ERRORCHECK(result)
+		result: FMOD_DSP_Release dspchorus
 		ERRORCHECK(result)
 
 		print "Releasing the sound...^/"
