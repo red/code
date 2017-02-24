@@ -9,7 +9,7 @@ Red [
 	#include %bass.reds
 
 	#define TRACE(value) [
-		;print-line value ;only for debugging purposes
+		print-line value ;only for debugging purposes
 	]
 
 	bass: context [
@@ -155,6 +155,7 @@ Red [
 		_Load:           symbol/make "load"
 		_Play:           symbol/make "play"
 		_Pause:          symbol/make "pause"
+		_Resume:         symbol/make "resume"
 		_Stop:           symbol/make "stop"
 		_Free:           symbol/make "free"
 		_Music:          symbol/make "music"
@@ -215,29 +216,29 @@ Red [
 									music: BASS_MusicLoad no name 0.0 0 0 0
 									set-handle _Music! music     ;@@ use red-handle! instead once available in Red!
 								]
-								TRACE(["music: " as byte-ptr! music " " as byte-ptr! int " "int/_pad])
+								TRACE(["music: " as byte-ptr! music])
 							]
 							sym = _Play [
 								BASS_FETCH_NAMED_VALUE(TYPE_INTEGER)  ;@@ use TYPE_HANDLE later
 								int: as red-integer! value
 								sym: int/_pad
+								channel: 0
 								case [
 									sym = _Sound! [
 										channel: BASS_SampleGetChannel int/value no
-										if channel <> 0 [
-											BASS_ChannelPlay channel no
-											if _set-word/index >= 0 [
-												set-handle _Channel! channel     ;@@ use red-handle! instead once available in Red!
-											]
-											TRACE(["playing channel: " as byte-ptr! channel lf])
-										]
 									]
 									any [sym = _Channel! sym = _Music!][
-										BASS_ChannelPlay int/value yes
+										channel: int/value
 									]
 									true [
 										print-line "BASS play expect valid sound, music or channel handle!"
 									]
+								]
+								if channel <> 0 [
+									BASS_ChannelPlay channel yes
+								]
+								if _set-word/index >= 0 [
+									set-handle _Channel! channel     ;@@ use red-handle! instead once available in Red!
 								]
 							]
 							sym = _Pause [
@@ -251,6 +252,23 @@ Red [
 									true [
 										print-line "BASS pause expect valid channel handle!"
 									]
+								]
+							]
+							sym = _Resume [
+								BASS_FETCH_NAMED_VALUE(TYPE_INTEGER)  ;@@ use TYPE_HANDLE later
+								int: as red-integer! value
+								sym: int/_pad
+								channel: int/value
+								case [
+									any [sym = _Channel! sym = _Music!] [
+										BASS_ChannelPlay channel no ;--play without restarting
+									]
+									true [
+										print-line "BASS resume expect valid channel or music handle!"
+									]
+								]
+								if _set-word/index >= 0 [
+									set-handle _Channel! channel     ;@@ use red-handle! instead once available in Red!
 								]
 							]
 							sym = _Stop [
