@@ -12,6 +12,17 @@ Red [
 
 #include %ImageMagick.red
 
+;-- here are image files used in the test
+media: [%mnich.png %opice.png]
+;-- download them if not exists...
+foreach file media [
+	unless exists? file [
+		url: rejoin [https://github.com/Oldes/media/blob/master/ file]
+		print ["Downloading file:" mold file "from:" url]
+		write/binary file read/binary rejoin [url %?raw=true]
+	]
+]
+
 ;-- One magick wand can hold multiple images...
 imagick [
 	read %opice.png            ;this loads 1. image into current wand at first index
