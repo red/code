@@ -8,9 +8,8 @@ Red/System [
 ]
 
 #switch OS [
-	Windows   [
-		#define BASS_LIBRARY "bass.dll"
-	]
+	Windows   [	#define BASS_LIBRARY "bass.dll" ]
+	MacOSX    [ #define BASS_LIBRARY "libbass.dylib " ] ;@@ not tested!
 	#default  [   ]
 ]
 
@@ -921,7 +920,7 @@ BASS_DX8_REVERB!: alias struct! [
 		;HMUSIC BASSDEF(BASS_MusicLoad)(BOOL mem, const void *file, QWORD offset, DWORD length, DWORD flags, DWORD freq);
 			mem                           [BOOL!]
 			file                          [c-string!]
-			offset                        [long-long-ptr!]
+			offset                        [long-long!]
 			length                        [integer!]
 			flags                         [integer!]
 			freq                          [integer!]

@@ -23,12 +23,10 @@ BASS: context [
 		]
 	]
 
-	if false = BASS_Init 1 44100 BASS_DEVICE_3D 0 null [
+	if false = BASS_Init -1 44100 BASS_DEVICE_3D 0 null [
 		print ["BASS Error [" BASS_ErrorGetCode "]: Can't initialize device!" lf]
 		quit 1
 	]
-
-	Sleep 20
 
 	info: declare BASS_INFO!
 
@@ -93,8 +91,6 @@ BASS: context [
 			switch key [
 				13 [ quit?: true ] ;pressed ENTER
 				#"1" [
-					;channel1: BASS_SampleGetChannel sound1 no
-					;BASS_ChannelPlay channel1  yes
 					either BASS_ACTIVE_PLAYING = BASS_ChannelIsActive channel1 [
 						BASS_ChannelPause channel1
 					][
