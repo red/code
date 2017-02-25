@@ -69,21 +69,28 @@ BASS: context [
 
 	sound1: BASS_SampleLoad no "drumloop.wav" 0.0 0 3 BASS_SAMPLE_OVER_POS or BASS_SAMPLE_LOOP
 	sound2: BASS_SampleLoad no "jaguar.wav"   0.0 0 3 BASS_SAMPLE_OVER_POS
+	music:  BASS_MusicLoad  no "feroness_-_sun.mod"   0.0 0 0 0
 	print ["sound1: " as byte-ptr! sound1 lf]
 	print ["sound2: " as byte-ptr! sound2 lf]
+	print ["music: "  as byte-ptr! music lf]
 
 	channel1: BASS_SampleGetChannel sound1 no
 	print ["channel1: " as byte-ptr! channel1 lf]
 
 	BASS_ChannelPlay channel1  yes
 	
+	
 	print "^/Press ENTER to quit^/"
 	print "Press '1' to toggle sound 1^/"
-	print "Press '2' to play sound 2^/^/"
+	print "Press '2' to play sound 2^/"
+	print "Press '3' to toggle MOD music^/"
+	print "Press 'e' to toggle MOD music echo^/^/"
 
 	quit?: false
 	key: 0
 	channel2: 0
+	fx_echo: 0
+	err: 0
 
 	until [ ;Main loop
 		if 0 <> _kbhit [
@@ -101,7 +108,27 @@ BASS: context [
 					channel2: BASS_SampleGetChannel sound2 no
 					BASS_ChannelPlay channel2  yes
 				]
+				#"3" [
+					either BASS_ACTIVE_PLAYING = BASS_ChannelIsActive music [
+						BASS_ChannelPause music
+					][
+						BASS_ChannelPlay music no
+					]
+					print ["music playing: " (BASS_ACTIVE_PLAYING = BASS_ChannelIsActive music) lf]
+				]
+				#"e" [
+					either 0 = fx_echo [
+						fx_echo: BASS_ChannelSetFX music BASS_FX_DX8_ECHO 0
+						print ["music FX: " as byte-ptr! fx_echo lf]
+					][
+						BASS_ChannelRemoveFX music fx_echo
+						fx_echo: 0
+						print-line "music FX removed"
+					]
+				]
 			]
+			err: BASS_ErrorGetCode
+			if err > 0 [ print-line ["BASS Error [" err "]"] ]
 		]
 		Sleep 10
 		quit?

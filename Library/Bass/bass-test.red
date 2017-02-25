@@ -30,14 +30,37 @@ bass/do [
 	play sound                         ;or not if not needed
 ]
 wait 3
-bass/do [pause channel play sound]
+bass/do [pause :channel play :sound]  ;handles can be passed also as get-words
 wait 1
 bass/do [resume channel]
+
+effects: [
+	chorus
+	compressor
+	distortion
+	echo
+	flanger
+	gargle
+	parameq
+	reverb
+]
+
+foreach effect effects [
+	print ["Enabling effect:" effect]
+	bass/do compose [
+		fx: (effect) channel
+	]
+	wait 6
+	print ["Disabling effect:" effect]
+	bass/do [stop fx]
+	wait 4
+]
+
+bass/do [
+	play sound
+]
 wait 3
-bass/do [pause music play sound]
-wait 1
-bass/do [resume music]
-wait 3
+
 
 bass/free  ;Frees all resources used by the output device, including all its samples, streams and MOD musics.
 
