@@ -23,7 +23,7 @@ p: []
 
 repeat y 9 [
 	repeat x 9 [
-		col: either x = 1 [#" "][#"A" + (x - 2)]
+		col: either x = 1 [#"^(2028)"][#"A" + (x - 2)]
 		ref: to word! append form col y - 1
 		header?: (y = 1) or (x = 1)
 		
