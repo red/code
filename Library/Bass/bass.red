@@ -18,6 +18,7 @@ Red [
 		_set-word/index: -1
 		_initialized: false
 		_last-handle: declare red-integer! [0 0 0 0] ;@@ use red-handle! later
+		_info-sample: declare BASS_SAMPLE!
 
 		set-handle: func [
 			type    [integer!]
@@ -105,7 +106,21 @@ Red [
 		]
 
 
-
+		get-float: func [
+			int		[red-integer!]
+			return: [float!]
+			/local
+				f	[red-float!]
+				v	[float!]
+		][
+			either TYPE_OF(int) = TYPE_INTEGER [
+				v: as-float int/value
+			][
+				f: as red-float! int
+				v: f/value
+			]
+			v
+		]
 		get-int: func [
 			int		[red-integer!]
 			return: [integer!]
@@ -152,6 +167,13 @@ Red [
 			value: either TYPE_OF(cmd) = TYPE_WORD [_context/get as red-word! cmd][cmd]
 			if TYPE_OF(value) <> type [throw-error cmds cmd false]
 		]
+		#define BASS_FETCH_OPT_NAMED_VALUE(type) [
+			pos: cmd + 1
+			if pos < tail [
+				value: either TYPE_OF(pos) = TYPE_WORD [_context/get as red-word! pos][pos]
+				if TYPE_OF(value) = type [cmd: pos]
+			]
+		]
 		#define BASS_FETCH_HANDLE(int) [
 			cmd: cmd + 1
 			if cmd >= tail [throw-error cmds cmd false]
@@ -172,7 +194,9 @@ Red [
 				throw-error cmds cmd false
 			]
 		]
-		
+		#define AS_FLOAT(value index) [
+			get-float as red-integer! value + index
+		]
 		#define AS_INT(value index) [
 			get-int as red-integer! value + index
 		]
@@ -192,8 +216,6 @@ Red [
 		_Stop:           symbol/make "stop"
 		_Free:           symbol/make "free"
 		_Music:          symbol/make "music"
-		_Set-FX:         symbol/make "set-fx"
-		_Remove-FX:      symbol/make "remove-fx"
 
 		_CHORUS:         symbol/make "chorus"
 		_COMPRESSOR:     symbol/make "compressor"
@@ -201,9 +223,43 @@ Red [
 		_ECHO:           symbol/make "echo"
 		_FLANGER:        symbol/make "flanger"
 		_GARGLE:         symbol/make "gargle"
-		;_I3DL2REVERB:    symbol/make "init"
+		_I3DL2REVERB:    symbol/make "reverb-3D"
 		_PARAMEQ:        symbol/make "parameq"
 		_REVERB:         symbol/make "reverb"
+
+		_freq:           symbol/make "freq"
+    	_volume:         symbol/make "volume"
+    	_pan:            symbol/make "pan"
+    	_flags:          symbol/make "flags"
+    	_length:         symbol/make "length"
+    	_max:            symbol/make "max"
+    	_origres:        symbol/make "origres"
+    	_chans:          symbol/make "chans"
+    	_mingap:         symbol/make "mingap"
+    	_mode3d:         symbol/make "mode3d"
+    	_mindist:        symbol/make "mindist"
+    	_maxdist:        symbol/make "maxdist"
+    	_iangle:         symbol/make "iangle"
+    	_oangle:         symbol/make "oangle"
+    	_outvol:         symbol/make "outvol"
+    	_quality:        symbol/make "quality"
+    	_vam:            symbol/make "vam"
+    	_priority:       symbol/make "priority"
+    	_no-ramp:        symbol/make "no-ramp"
+    	_no-buffer:      symbol/make "no-buffer"
+
+		_8BITS:          symbol/make "8bits"
+		_FLOAT:          symbol/make "float"
+		_MONO:           symbol/make "mono"
+		_LOOP:           symbol/make "loop"
+		_3D:             symbol/make "3D"
+		_SOFTWARE:       symbol/make "sofware"
+		_MUTEMAX:        symbol/make "mute-max"
+		_VAM:            symbol/make "vam"
+		_FX:             symbol/make "fx"
+		_OVER_VOL:       symbol/make "over-vol"
+		_OVER_POS:       symbol/make "over-pos"
+		_OVER_DIST:      symbol/make "over-dist"
 
 		_Sound!:         symbol/make "sound!"
 		_Channel!:       symbol/make "channel!"
@@ -252,11 +308,26 @@ Red [
 							sym = _Load [
 								ASSERT_SET(_set-word)   ;loading sound without setting it would lead just to memory leak
 								BASS_FETCH_FILE(name)
-								sound: BASS_SampleLoad no name 0.0 0 3 BASS_SAMPLE_OVER_POS ;or BASS_SAMPLE_LOOP
-								set-handle _Sound! sound 0
-								TRACE(["sound: " as byte-ptr! sound])
+								sound: BASS_SampleLoad no name 0.0 0 3 0
+								either sound <> 0 [
+									BASS_FETCH_OPT_NAMED_VALUE(TYPE_BLOCK) ;optional settings
+									if pos = cmd [
+										;TRACE(["has sound settings " cmd])
+										process-sample-info sound as red-block! cmd
+									]
+									set-handle _Sound! sound 0
+									TRACE(["sound: " as byte-ptr! sound])
+								][
+									if BASS_ERROR_FILEFORM = BASS_ErrorGetCode [
+										music: BASS_MusicLoad no name 0.0 0 0 0
+										if music <> 0 [
+											set-handle _Music! music 0
+											TRACE(["music: " as byte-ptr! music])
+										]
+									]
+								]
 							]
-							sym = _Music [
+							sym = _Music [ ;@@ should I keep it? Load is now loading music too
 								ASSERT_SET(_set-word)   ;loading sound without setting it would lead just to memory leak
 								BASS_FETCH_FILE(name)
 								music: BASS_MusicLoad no name 0.0 0 0 0
@@ -276,6 +347,11 @@ Red [
 									true [
 										print-line "BASS play expect valid sound, music or channel handle!"
 									]
+								]
+								BASS_FETCH_OPT_NAMED_VALUE(TYPE_BLOCK) ;optional settings
+								if pos = cmd [
+									TRACE(["play attributes: " value])
+									process-channel-attributes channel as red-block! value
 								]
 								if channel <> 0 [
 									BASS_ChannelPlay channel yes
@@ -358,12 +434,17 @@ Red [
 								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_GARGLE 0
 								set-handle _FX! fx int/value
 							]
+							sym = _I3DL2REVERB [
+								BASS_FETCH_HANDLE(int) ;--channel
+								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_I3DL2REVERB 0
+								set-handle _FX! fx int/value
+							]
 							sym = _PARAMEQ [
 								BASS_FETCH_HANDLE(int) ;--channel
 								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_PARAMEQ 0
 								set-handle _FX! fx int/value
 							]
-							sym = _REVERB [ ;@@ TODO: _I3DL2REVERB
+							sym = _REVERB [
 								BASS_FETCH_HANDLE(int) ;--channel
 								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_REVERB 0
 								set-handle _FX! fx int/value
@@ -402,17 +483,174 @@ Red [
 							true [ throw-error cmds cmd false ]
 						]
 						_set-word/index: -1
+						if BASS_ErrorGetCode > 0 [
+							i: BASS_ErrorGetCode
+							print-line ["BASS Error [" i "]: " get-error-str i]
+						]
 					]
 					true [ throw-error cmds cmd false ]
 				]
-				if BASS_ErrorGetCode > 0 [
-					i: BASS_ErrorGetCode
-					print-line ["BASS Error [" i "]: " get-error-str i]
-				]
-				
 				cmd: cmd + 1
 			]
 			as red-value! logic/box true
+		]
+
+		process-sample-info: func[
+			sample  [HSAMPLE!]
+			cmds    [red-block!]
+			/local
+				cmd       [red-value!]
+				tail      [red-value!]
+				start     [red-value!]
+				pos		  [red-value!]
+				value	  [red-value!]
+				word      [red-word!]
+				sym       [integer!]
+				symb      [red-symbol!]
+				len       [integer!]
+				name      [c-string!]
+				flags     [integer!]
+		][
+			cmd:  block/rs-head cmds
+			tail: block/rs-tail cmds
+			len: -1
+			BASS_SampleGetInfo sample _info-sample
+			flags: _info-sample/flags
+			TRACE(["old flags: " flags])
+			while [cmd < tail][
+				case [
+					any [TYPE_OF(cmd) = TYPE_WORD TYPE_OF(cmd) = TYPE_SET_WORD] [
+						start: cmd + 1
+						word:  as red-word! cmd
+						sym:   symbol/resolve word/symbol
+						symb:  symbol/get sym
+						TRACE(["--> " symb/cache])
+						either TYPE_OF(cmd) = TYPE_SET_WORD [
+							case [
+								sym = _volume [
+									BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+									TRACE(["old volume: " _info-sample/volume])
+									_info-sample/volume: as float32! AS_FLOAT(start 0)
+									TRACE(["new volume: " _info-sample/volume])
+								]
+								sym = _pan [
+									BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+									TRACE(["old pan: " _info-sample/pan])
+									_info-sample/pan: as float32! AS_FLOAT(start 0)
+									TRACE(["new pan: " _info-sample/pan])
+								]
+									;_freq:           symbol/make "freq"
+							    	;_flags:          symbol/make "flags"
+							    	;_length:         symbol/make "length"
+							    	;_max:            symbol/make "max"
+							    	;_origres:        symbol/make "origres"
+							    	;_chans:          symbol/make "chans"
+							    	;_mingap:         symbol/make "mingap"
+							    	;_mode3d:         symbol/make "mode3d"
+							    	;_mindist:        symbol/make "mindist"
+							    	;_maxdist:        symbol/make "maxdist"
+							    	;_iangle:         symbol/make "iangle"
+							    	;_oangle:         symbol/make "oangle"
+							    	;_outvol:         symbol/make "outvol"
+							    	;_vam:            symbol/make "vam"
+							    	;_priority:       symbol/make "priority"
+							    true [ print-line ["wrong sound info arg: " start] ]
+							]
+						][
+							case [
+								sym = _LOOP      [flags: flags or BASS_SAMPLE_LOOP]
+								sym = _8BITS     [flags: flags or BASS_SAMPLE_8BITS]
+								sym = _FLOAT     [flags: flags or BASS_SAMPLE_FLOAT]
+								sym = _MONO      [flags: flags or BASS_SAMPLE_MONO]
+								sym = _3D        [flags: flags or BASS_SAMPLE_3D]
+								sym = _SOFTWARE  [flags: flags or BASS_SAMPLE_SOFTWARE]
+								sym = _MUTEMAX   [flags: flags or BASS_SAMPLE_MUTEMAX]
+								sym = _VAM       [flags: flags or BASS_SAMPLE_VAM]
+								sym = _FX        [flags: flags or BASS_SAMPLE_FX]
+								sym = _OVER_VOL  [flags: flags or BASS_SAMPLE_OVER_VOL]
+								sym = _OVER_POS  [flags: flags or BASS_SAMPLE_OVER_POS]
+								sym = _OVER_DIST [flags: flags or BASS_SAMPLE_OVER_DIST]
+								true [ print-line ["wrong sound info arg: " start] ]
+							]
+						]
+					]
+					true [ print-line ["wrong sound info value: " start] ]
+				]
+				cmd:  cmd + 1
+			]
+			TRACE(["new flags: " flags])
+			_info-sample/flags: flags
+			BASS_SampleSetInfo sample _info-sample
+		]
+
+		process-channel-attributes: func[
+			handle  [integer!]
+			cmds    [red-block!]
+			/local
+				cmd       [red-value!]
+				tail      [red-value!]
+				start     [red-value!]
+				pos		  [red-value!]
+				value	  [red-value!]
+				word      [red-word!]
+				sym       [integer!]
+				symb      [red-symbol!]
+				len       [integer!]
+				name      [c-string!]
+				flags     [integer!]
+		][
+			cmd:  block/rs-head cmds
+			tail: block/rs-tail cmds
+			len: -1
+			while [cmd < tail][
+				case [
+					any [TYPE_OF(cmd) = TYPE_SET_WORD] [
+						start: cmd + 1
+						word:  as red-word! cmd
+						sym:   symbol/resolve word/symbol
+						symb:  symbol/get sym
+						TRACE(["--> " symb/cache])
+						case [
+							sym = _volume [
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								BASS_ChannelSetAttribute handle BASS_ATTRIB_VOL as float32! AS_FLOAT(start 0)
+							]
+							sym = _pan [
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								BASS_ChannelSetAttribute handle BASS_ATTRIB_PAN as float32! AS_FLOAT(start 0)
+							]
+							sym = _quality [
+								;The sample rate conversion quality...
+								; 0 = linear interpolation,
+								; 1 = 8 point sinc interpolation,
+								; 2 = 16 point sinc interpolation,
+								; 3 = 32 point sinc interpolation.
+								; Other values are also accepted but will be interpreted as 0 or 3, depending on whether they are lower or higher. 
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								BASS_ChannelSetAttribute handle BASS_ATTRIB_SRC as float32! AS_FLOAT(start 0)
+							]
+							sym = _freq [
+								;The sample rate... 0 = original rate (when the channel was created). 
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								BASS_ChannelSetAttribute handle BASS_ATTRIB_FREQ as float32! AS_FLOAT(start 0)
+							]
+							sym = _no-ramp [
+								;Disable playback ramping... 0 = no, else yes. 
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								BASS_ChannelSetAttribute handle BASS_ATTRIB_NORAMP as float32! AS_FLOAT(start 0)
+							]
+							sym = _no-buffer [
+								;Disable playback buffering... 0 = no, else yes.  
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								BASS_ChannelSetAttribute handle BASS_ATTRIB_NOBUFFER as float32! AS_FLOAT(start 0)
+							]
+						    true [ print-line ["wrong channel attribute: " start] ]
+						]
+					]
+					true [ print-line ["wrong channel attribute value: " start] ]
+				]
+				cmd:  cmd + 1
+			]
 		]
 	]
 ]

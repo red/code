@@ -976,7 +976,7 @@ BASS_DX8_REVERB!: alias struct! [
 		BASS_SampleSetInfo: "BASS_SampleSetInfo"[
 		;BOOL BASSDEF(BASS_SampleSetInfo)(HSAMPLE handle, const BASS_SAMPLE *info);
 			handle                        [HSAMPLE!]
-			info                          [int-ptr!]
+			info                          [BASS_SAMPLE!]
 			return:                       [BOOL!]
 		]
 		BASS_SampleGetChannel: "BASS_SampleGetChannel"[

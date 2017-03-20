@@ -24,16 +24,18 @@ unless exists? file: %feroness_-_sun.mod [
 bass/init ;Initializes a sound output device using default values
 
 bass/do [
-	sound:   load  %jaguar.wav         ;sound can be loaded from file
-	music:   music %feroness_-_sun.mod ;loads MOD file... could be possibly done in load later
-	channel: play music                ;channel can be stored for later use (note that in this case channel equals music)
-	play sound                         ;or not if not needed
+	sound:   load %jaguar.wav          ;sound can be loaded from file
+	drum:    load %drumloop.wav [loop fx volume: 0.6]
+	music:   load %feroness_-_sun.mod  ;loads MOD file
+	channel: play music                ;channel can be stored for later use
+	play sound [volume: 0.4 pan: -1]   ;or not if not needed
+	loop: play drum
 ]
 wait 3
-bass/do [pause :channel play :sound]  ;handles can be passed also as get-words
+bass/do [pause :channel play :sound [pan: 1]]  ;handles can be passed also as get-words
 wait 1
 bass/do [resume channel]
-
+bass/do [stop loop]
 effects: [
 	chorus
 	compressor
@@ -43,6 +45,7 @@ effects: [
 	gargle
 	parameq
 	reverb
+	reverb-3D
 ]
 
 foreach effect effects [
