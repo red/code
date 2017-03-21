@@ -45,8 +45,8 @@ rnd: [
 noise: routine [rnd [block!] x [integer!] y [integer!] return: [float!] /local idx][ 
 	;-- same pair seed xy gives same result
 	idx: as red-integer! block/rs-abs-at rnd x and 255
-    idx: as red-integer! block/rs-abs-at rnd idx/value + y and 255
-    integer/to-float idx/value - 128
+	idx: as red-integer! block/rs-abs-at rnd idx/value + y and 255
+	as-float idx/value - 128
 ]
 
 ;-- linear interpolation
@@ -85,9 +85,9 @@ gen-texture: routine [
 		x: 0
 		y: 0
 		frequence: 1 << (i - 1) ;2 ** (i - 1)
-		coeff: 256.0 * detail * integer/to-float frequence 
+		coeff: 256.0 * detail * as-float frequence 
 		
-		amplitude: pow persistence integer/to-float (i - 1)
+		amplitude: pow persistence as-float (i - 1)
 
 		yy: 0.0
 		p: 0
@@ -101,7 +101,7 @@ gen-texture: routine [
 			]
 
 			;dy: pick curve-table to integer! yy + 1.5
-			tmp: as red-float! block/rs-abs-at curve-table (float/to-integer (yy + 0.5))
+			tmp: as red-float! block/rs-abs-at curve-table (as-integer (yy + 0.5))
 			dy: tmp/value
 
 			xx: 0.0
@@ -117,7 +117,7 @@ gen-texture: routine [
 				]
 
 				;dx: pick curve-table to integer! xx + 1.5
-				tmp: as red-float! block/rs-abs-at curve-table (float/to-integer (xx + 0.5))
+				tmp: as red-float! block/rs-abs-at curve-table (as-integer (xx + 0.5))
 				dx: tmp/value
 				
 				if (y << 16 + x) <> _xy [
@@ -150,39 +150,39 @@ gen-texture: routine [
 
 ;-- apply texture on alpha channel
 apply-texture: routine [
-    src  [image!]
+	src  [image!]
 	texture [block!]
 	luma [integer!]
-    /local
-        pix [int-ptr!]
+	/local
+	    pix [int-ptr!]
 		s [series!]
 		val [red-float!]
-        handle h w x y r g b a int
+	    handle h w x y r g b a int
 ][
-    handle: 0
-    pix: image/acquire-buffer src :handle
+	handle: 0
+	pix: image/acquire-buffer src :handle
 	s: GET_BUFFER(texture)
 	val: as red-float! s/offset
 
-    w: IMAGE_WIDTH(src/size)
-    h: IMAGE_HEIGHT(src/size)
-    x: 0
-    y: 0
-    while [y < h] [
-       while [x < w][
-       	int: luma + float/to-integer val/value
+	w: IMAGE_WIDTH(src/size)
+	h: IMAGE_HEIGHT(src/size)
+	x: 0
+	y: 0
+	while [y < h] [
+	   while [x < w][
+	   	int: luma + as-integer val/value
 		if int < 0 [int: 0 - int]
 		if int > 255 [int: 255]
 
-        pix/value: pix/value and 00FFFFFFh OR (int << 24 )
-        x: x + 1
-        pix: pix + 1
+	    pix/value: pix/value and 00FFFFFFh OR (int << 24 )
+	    x: x + 1
+	    pix: pix + 1
 		val: val + 1
-       ]
-       x: 0
-       y: y + 1
-    ]
-    image/release-buffer src handle yes
+	   ]
+	   x: 0
+	   y: y + 1
+	]
+	image/release-buffer src handle yes
 ]
 
 octaves: 4			;** increase the noise
@@ -200,7 +200,6 @@ rebuild: has [saved parms new][
 	either saved = new: reduce parms [
 		return false
 	] [
-		set parms new
 		append clear saved new
 	]
 
