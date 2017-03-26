@@ -102,8 +102,7 @@ view [
 	
 	at 550x25
 	panel [
-		txt "Fill Style:" style-lst: drop-list data ["Radial" "Linear" "Diamond"]
-			on-create [face/selected: 1]
+		txt "Fill Style:" style-lst: drop-list data ["Radial" "Linear" "Diamond"] select 1
 		return
 		text 120x50 "Click a color box to set the gradient color" 
 		c1: color-box red  c2: color-box green  c3: color-box blue  return
