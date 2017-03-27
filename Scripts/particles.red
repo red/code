@@ -25,7 +25,7 @@ context [
 		title "Particles demo"
 		txt: text "number of particles: 100"
 		text "FPS: 0" rate 1 on-time [
-			change skip face/text 5 fps
+			append clear skip face/text 5 fps
 			show face
 			fps: 0
 		]
