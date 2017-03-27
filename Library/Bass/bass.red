@@ -180,7 +180,7 @@ Red [
 				TYPE_OF(cmd) = TYPE_WORD
 				TYPE_OF(cmd) = TYPE_GET_WORD
 			][ _context/get as red-word! cmd ][cmd]
-			int: either TYPE_OF(value) <> TYPE_HANDLE [
+			hnd: either TYPE_OF(value) <> TYPE_HANDLE [
 				;throw-error cmds cmd false
 				_last-handle
 			][
