@@ -9,7 +9,7 @@ Red [
 	#include %bass.reds
 
 	#define TRACE(value) [
-		print-line value ;only for debugging purposes
+		;print-line value ;only for debugging purposes
 	]
 
 	bass: context [
@@ -17,7 +17,7 @@ Red [
 		_set-word: declare red-word! 0
 		_set-word/index: -1
 		_initialized: false
-		_last-handle: declare red-integer! [0 0 0 0] ;@@ use red-handle! later
+		_last-handle: declare red-handle! [0 0 0 0]
 		_info-sample: declare BASS_SAMPLE!
 
 		set-handle: func [
@@ -26,18 +26,17 @@ Red [
 			parent  [integer!]
 			/local
 				val [red-value!]
-				int [red-integer!]
+				hnd [red-handle!]
 		][
 			if _set-word/index >= 0 [
 				val: _context/get _set-word
-				int: as red-integer! val
-				int/header: TYPE_INTEGER
-				int/value: value
-				int/_pad: type      ;-- storing handle type in unused integer! slot value
-				int/padding: parent ;-- storing special parent pointer in unused slot
+				hnd: as red-handle! val
+				hnd/header: TYPE_HANDLE
+				hnd/value: value
+				hnd/_pad: type      ;-- storing handle type in unused slot value
+				hnd/padding: parent ;-- storing special parent pointer in unused slot
 			]
 			;-- _last-handle is used to simplify dialect so user don't have to pass the handle value repeatadly
-			;@@ use red-handle! later
 			_last-handle/value: value
 			_last-handle/_pad: type 
 			_last-handle/padding: parent
@@ -174,20 +173,20 @@ Red [
 				if TYPE_OF(value) = type [cmd: pos]
 			]
 		]
-		#define BASS_FETCH_HANDLE(int) [
+		#define BASS_FETCH_HANDLE(hnd) [
 			cmd: cmd + 1
 			if cmd >= tail [throw-error cmds cmd false]
 			value: either any [
 				TYPE_OF(cmd) = TYPE_WORD
 				TYPE_OF(cmd) = TYPE_GET_WORD
 			][ _context/get as red-word! cmd ][cmd]
-			int: either TYPE_OF(value) <> TYPE_INTEGER [ ;@@ use TYPE_HANDLE later
+			int: either TYPE_OF(value) <> TYPE_HANDLE [
 				;throw-error cmds cmd false
 				_last-handle
 			][
-				as red-integer! value
+				as red-handle! value
 			] 
-			sym: int/_pad
+			sym: hnd/_pad
 		]
 		#define ASSERT_SET(_set-word) [
 			if _set-word/index < 0 [
@@ -200,10 +199,10 @@ Red [
 		#define AS_INT(value index) [
 			get-int as red-integer! value + index
 		]
-		#define RESET_INT(int) [
-			int/padding: 0
-			int/value: 0
-			int/_pad: 0
+		#define RESET_HANDLE(hnd) [
+			hnd/padding: 0
+			hnd/value: 0
+			hnd/_pad: 0
 		]
 
 
@@ -282,7 +281,7 @@ Red [
 				len       [integer!]
 				name      [c-string!]
 				result    [logic!]
-				int       [red-integer!]
+				hnd       [red-handle!]
 				sound     [integer!]
 				channel   [integer!]
 				music     [integer!]
@@ -335,14 +334,14 @@ Red [
 								TRACE(["music: " as byte-ptr! music])
 							]
 							sym = _Play [
-								BASS_FETCH_HANDLE(int)
+								BASS_FETCH_HANDLE(hnd)
 								channel: 0
 								case [
 									sym = _Sound! [
-										channel: BASS_SampleGetChannel int/value no
+										channel: BASS_SampleGetChannel hnd/value no
 									]
 									any [sym = _Channel! sym = _Music!][
-										channel: int/value
+										channel: hnd/value
 									]
 									true [
 										print-line "BASS play expect valid sound, music or channel handle!"
@@ -356,23 +355,23 @@ Red [
 								if channel <> 0 [
 									BASS_ChannelPlay channel yes
 								]
-								set-handle _Channel! channel int/value
+								set-handle _Channel! channel hnd/value
 							]
 							sym = _Pause [
-								BASS_FETCH_HANDLE(int)
+								BASS_FETCH_HANDLE(hnd)
 								case [
 									any [sym = _Channel! sym = _Music!] [
-										BASS_ChannelPause int/value
+										BASS_ChannelPause hnd/value
 									]
 									true [
 										print-line "BASS pause expect valid channel handle!"
 									]
 								]
-								set-handle _Channel! int/value int/padding
+								set-handle _Channel! hnd/value hnd/padding
 							]
 							sym = _Resume [
-								BASS_FETCH_HANDLE(int)
-								channel: int/value
+								BASS_FETCH_HANDLE(hnd)
+								channel: hnd/value
 								case [
 									any [sym = _Channel! sym = _Music!] [
 										BASS_ChannelPlay channel no ;--play without restarting
@@ -381,91 +380,91 @@ Red [
 										print-line "BASS resume expect valid channel or music handle!"
 									]
 								]
-								set-handle _Channel! channel int/padding
+								set-handle _Channel! channel hnd/padding
 							]
 							sym = _Stop [
-								BASS_FETCH_HANDLE(int)
+								BASS_FETCH_HANDLE(hnd)
 								case [
 									sym = _Sound! [
-										BASS_SampleStop int/value
+										BASS_SampleStop hnd/value
 									]
 									any [sym = _Channel! sym = _Music!][
-										BASS_ChannelStop int/value
+										BASS_ChannelStop hnd/value
 									]
 									sym = _FX! [
-										;the FX handle is storing channel pointer as int/padding
-										BASS_ChannelRemoveFX int/padding int/value
-										RESET_INT(int)
+										;the FX handle is storing channel pointer as hnd/padding
+										BASS_ChannelRemoveFX hnd/padding hnd/value
+										RESET_HANDLE(hnd)
 									]
 									true [
 										print-line "BASS stop expect valid sound, music, channel or fx handle!"
 									]
 								]
-								set-handle _Channel! int/value int/padding
+								set-handle _Channel! hnd/value hnd/padding
 							]
 
 							sym = _CHORUS [
-								BASS_FETCH_HANDLE(int) ;--channel
-								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_CHORUS 0
-								set-handle _FX! fx int/value
+								BASS_FETCH_HANDLE(hnd) ;--channel
+								fx: BASS_ChannelSetFX hnd/value BASS_FX_DX8_CHORUS 0
+								set-handle _FX! fx hnd/value
 							]
 							sym = _COMPRESSOR [
-								BASS_FETCH_HANDLE(int) ;--channel
-								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_COMPRESSOR 0
-								set-handle _FX! fx int/value
+								BASS_FETCH_HANDLE(hnd) ;--channel
+								fx: BASS_ChannelSetFX hnd/value BASS_FX_DX8_COMPRESSOR 0
+								set-handle _FX! fx hnd/value
 							]
 							sym = _DISTORTION [
-								BASS_FETCH_HANDLE(int) ;--channel
-								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_DISTORTION 0
-								set-handle _FX! fx int/value
+								BASS_FETCH_HANDLE(hnd) ;--channel
+								fx: BASS_ChannelSetFX hnd/value BASS_FX_DX8_DISTORTION 0
+								set-handle _FX! fx hnd/value
 							]
 							sym = _ECHO [
-								BASS_FETCH_HANDLE(int) ;--channel
-								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_ECHO 0
-								set-handle _FX! fx int/value
+								BASS_FETCH_HANDLE(hnd) ;--channel
+								fx: BASS_ChannelSetFX hnd/value BASS_FX_DX8_ECHO 0
+								set-handle _FX! fx hnd/value
 							]
 							sym = _FLANGER [
-								BASS_FETCH_HANDLE(int) ;--channel
-								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_FLANGER 0
-								set-handle _FX! fx int/value
+								BASS_FETCH_HANDLE(hnd) ;--channel
+								fx: BASS_ChannelSetFX hnd/value BASS_FX_DX8_FLANGER 0
+								set-handle _FX! fx hnd/value
 							]
 							sym = _GARGLE [
-								BASS_FETCH_HANDLE(int) ;--channel
-								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_GARGLE 0
-								set-handle _FX! fx int/value
+								BASS_FETCH_HANDLE(hnd) ;--channel
+								fx: BASS_ChannelSetFX hnd/value BASS_FX_DX8_GARGLE 0
+								set-handle _FX! fx hnd/value
 							]
 							sym = _I3DL2REVERB [
-								BASS_FETCH_HANDLE(int) ;--channel
-								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_I3DL2REVERB 0
-								set-handle _FX! fx int/value
+								BASS_FETCH_HANDLE(hnd) ;--channel
+								fx: BASS_ChannelSetFX hnd/value BASS_FX_DX8_I3DL2REVERB 0
+								set-handle _FX! fx hnd/value
 							]
 							sym = _PARAMEQ [
-								BASS_FETCH_HANDLE(int) ;--channel
-								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_PARAMEQ 0
-								set-handle _FX! fx int/value
+								BASS_FETCH_HANDLE(hnd) ;--channel
+								fx: BASS_ChannelSetFX hnd/value BASS_FX_DX8_PARAMEQ 0
+								set-handle _FX! fx hnd/value
 							]
 							sym = _REVERB [
-								BASS_FETCH_HANDLE(int) ;--channel
-								fx: BASS_ChannelSetFX int/value BASS_FX_DX8_REVERB 0
-								set-handle _FX! fx int/value
+								BASS_FETCH_HANDLE(hnd) ;--channel
+								fx: BASS_ChannelSetFX hnd/value BASS_FX_DX8_REVERB 0
+								set-handle _FX! fx hnd/value
 							]
 
 							sym = _Free [
-								BASS_FETCH_HANDLE(int)
+								BASS_FETCH_HANDLE(hnd)
 								case [
-									sym = _Sound!   [ BASS_SampleFree  int/value ]
-									sym = _Music!   [ BASS_MusicFree   int/value ]
+									sym = _Sound!   [ BASS_SampleFree  hnd/value ]
+									sym = _Music!   [ BASS_MusicFree   hnd/value ]
 									sym = _FX! [
-										;the FX handle is storing channel pointer as int/padding
-										BASS_ChannelRemoveFX int/padding int/value 
+										;the FX handle is storing channel pointer as hnd/padding
+										BASS_ChannelRemoveFX hnd/padding hnd/value 
 									]
 									;@@ should I also free a sound if I get channel handle?
 									true [
 										print-line "BASS free expect valid sound, music or fx handle!"
 									]
 								]
-								RESET_INT(int)
-								RESET_INT(_last-handle)
+								RESET_HANDLE(hnd)
+								RESET_HANDLE(_last-handle)
 							]
 							sym = _Init [
 								BASS_FETCH_VALUE(TYPE_INTEGER)
@@ -476,7 +475,7 @@ Red [
 							]
 							sym = _End [
 								_initialized: not BASS_Free
-								RESET_INT(_last-handle)
+								RESET_HANDLE(_last-handle)
 							]
 
 
