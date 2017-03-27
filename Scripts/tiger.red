@@ -29,6 +29,5 @@ while [ not empty? system/view/screens/1/pane ][
     tiger/7: rot
 
     show ti
-    wait 0.001
-    do-events/no-wait
+    loop 5 [do-events/no-wait]
 ]
