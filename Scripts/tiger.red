@@ -13,20 +13,20 @@ tiger: [pen off fill-pen 255.255.255 line-width 1 shape [move -122x84 curve -122
 rot: 0
 z: 0.01
 zoom: 0.2
-insert tiger compose [translate -50x-80 scale (zoom) (zoom) rotate (rot) translate 295x245]
+insert tiger compose [translate 295x245 rotate (rot) scale (zoom) (zoom) translate -50x-80]
 ti: none
 board: layout/tight [ti: base 600x500 white ]
 board/text: "Red - SVG tiger demo"
 ti/draw: tiger
 view/no-wait board
 
-while [ not empty? system/view/screens/1/pane ][
+while [board/state][
     rot: rot + 1
     zoom: zoom + z
     if any [zoom < 0.1 zoom > 1.2][z: negate z]
-    tiger/4: zoom
-    tiger/5: zoom
-    tiger/7: rot
+    tiger/4: rot
+    tiger/6: zoom
+    tiger/7: zoom
 
     show ti
     loop 5 [do-events/no-wait]
