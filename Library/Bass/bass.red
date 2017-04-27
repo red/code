@@ -9,7 +9,7 @@ Red [
 	#include %bass.reds
 
 	#define TRACE(value) [
-		;print-line value ;only for debugging purposes
+		print-line value ;only for debugging purposes
 	]
 
 	bass: context [
@@ -173,6 +173,13 @@ Red [
 				if TYPE_OF(value) = type [cmd: pos]
 			]
 		]
+		#define BASS_FETCH_OPT_NAMED_VALUE_2(type1 type2) [
+			pos: cmd + 1
+			if pos < tail [
+				value: either TYPE_OF(pos) = TYPE_WORD [_context/get as red-word! pos][pos]
+				if any [TYPE_OF(value) = type1 TYPE_OF(value) = type2][cmd: pos]
+			]
+		]
 		#define BASS_FETCH_HANDLE(hnd) [
 			cmd: cmd + 1
 			if cmd >= tail [throw-error cmds cmd false]
@@ -186,7 +193,59 @@ Red [
 			][
 				as red-handle! value
 			] 
-			sym: hnd/_pad
+			type: hnd/_pad
+		]
+		#define BASS_FETCH_TIME(ms) [
+			cmd: cmd + 1
+			if cmd >= tail [throw-error cmds cmd false]
+			value: either TYPE_OF(cmd) = TYPE_WORD [_context/get as red-word! cmd][cmd]
+			switch TYPE_OF(value) [
+				TYPE_INTEGER [
+					ms: get-int as red-integer! cmd
+				]
+				TYPE_FLOAT [
+					fl: as red-float! cmd
+					ms: as integer! (1000.0 * fl/value)
+				]
+				TYPE_TIME [
+					tm: as red-time! cmd
+					ms: as-integer (tm/time / 1E6)
+				]
+				default [
+					throw-error cmds cmd false
+				]
+			]
+		]
+		#define BASS_FETCH_OPT_TIME(ms) [
+			pos: cmd + 1
+			if pos < tail [
+				value: either TYPE_OF(pos) = TYPE_WORD [_context/get as red-word! pos][pos]
+				switch TYPE_OF(value) [
+					TYPE_INTEGER [
+						ms: get-int as red-integer! pos
+						cmd: pos
+					]
+					TYPE_FLOAT [
+						fl: as red-float! pos
+						ms: as integer! (1000.0 * fl/value)
+						cmd: pos
+					]
+					TYPE_TIME [
+						tm: as red-time! pos
+						ms: as-integer (tm/time / 1E6)
+						cmd: pos
+					]
+					default [ms: 0]
+				]
+			]
+		]
+		#define BASS_FETCH_OPT_SETTINGS(blk ms) [
+			blk: null
+			BASS_FETCH_OPT_NAMED_VALUE(TYPE_BLOCK) 
+			if pos = cmd [
+				blk: as red-block! value
+				BASS_FETCH_OPT_TIME(ms)
+			]
 		]
 		#define ASSERT_SET(_set-word) [
 			if _set-word/index < 0 [
@@ -215,6 +274,8 @@ Red [
 		_Stop:           symbol/make "stop"
 		_Free:           symbol/make "free"
 		_Music:          symbol/make "music"
+		_Fade:           symbol/make "fade"
+		_Set:            symbol/make "set"
 
 		_CHORUS:         symbol/make "chorus"
 		_COMPRESSOR:     symbol/make "compressor"
@@ -246,12 +307,19 @@ Red [
     	_priority:       symbol/make "priority"
     	_no-ramp:        symbol/make "no-ramp"
     	_no-buffer:      symbol/make "no-buffer"
+    	_eax:            symbol/make "eax"
+    	_bpm:            symbol/make "bpm"
+    	_amplify:        symbol/make "amplify"
+    	_pan-separation: symbol/make "pan-separation"
+    	_position-scaler: symbol/make "position-scaler"
+    	_speed:          symbol/make "speed"
+
 
 		_8BITS:          symbol/make "8bits"
 		_FLOAT:          symbol/make "float"
 		_MONO:           symbol/make "mono"
 		_LOOP:           symbol/make "loop"
-		_3D:             symbol/make "3D"
+		_MODE-3D:        symbol/make "mode-3D"
 		_SOFTWARE:       symbol/make "sofware"
 		_MUTEMAX:        symbol/make "mute-max"
 		_VAM:            symbol/make "vam"
@@ -274,8 +342,10 @@ Red [
 				start     [red-value!]
 				pos		  [red-value!]
 				value	  [red-value!]
+				blk       [red-block!]
 				word      [red-word!]
 				sym       [integer!]
+				type      [integer!]
 				symb      [red-symbol!]
 				str       [red-string!]
 				len       [integer!]
@@ -287,6 +357,9 @@ Red [
 				music     [integer!]
 				i         [integer!]
 				fx        [integer!]
+				tm        [red-time!]
+				ms        [integer!]
+				fl        [red-float!]
 		][
 			cmd:  block/rs-head cmds
 			tail: block/rs-tail cmds
@@ -337,22 +410,19 @@ Red [
 								BASS_FETCH_HANDLE(hnd)
 								channel: 0
 								case [
-									sym = _Sound! [
+									type = _Sound! [
 										channel: BASS_SampleGetChannel hnd/value no
 									]
-									any [sym = _Channel! sym = _Music!][
+									any [type = _Channel! type = _Music!][
 										channel: hnd/value
 									]
 									true [
 										print-line "BASS play expect valid sound, music or channel handle!"
 									]
 								]
-								BASS_FETCH_OPT_NAMED_VALUE(TYPE_BLOCK) ;optional settings
-								if pos = cmd [
-									TRACE(["play attributes: " value])
-									process-channel-attributes channel as red-block! value
-								]
+								BASS_FETCH_OPT_SETTINGS(blk ms)
 								if channel <> 0 [
+									if blk <> null [process-channel-attributes channel blk ms]
 									BASS_ChannelPlay channel yes
 								]
 								set-handle _Channel! channel hnd/value
@@ -360,7 +430,7 @@ Red [
 							sym = _Pause [
 								BASS_FETCH_HANDLE(hnd)
 								case [
-									any [sym = _Channel! sym = _Music!] [
+									any [type = _Channel! type = _Music!] [
 										BASS_ChannelPause hnd/value
 									]
 									true [
@@ -372,9 +442,11 @@ Red [
 							sym = _Resume [
 								BASS_FETCH_HANDLE(hnd)
 								channel: hnd/value
+								BASS_FETCH_OPT_SETTINGS(blk ms)
 								case [
-									any [sym = _Channel! sym = _Music!] [
+									any [type = _Channel! type = _Music!] [
 										BASS_ChannelPlay channel no ;--play without restarting
+										if blk <> null [process-channel-attributes hnd/value blk ms]
 									]
 									true [
 										print-line "BASS resume expect valid channel or music handle!"
@@ -385,13 +457,13 @@ Red [
 							sym = _Stop [
 								BASS_FETCH_HANDLE(hnd)
 								case [
-									sym = _Sound! [
+									type = _Sound! [
 										BASS_SampleStop hnd/value
 									]
-									any [sym = _Channel! sym = _Music!][
+									any [type = _Channel! type = _Music!][
 										BASS_ChannelStop hnd/value
 									]
-									sym = _FX! [
+									type = _FX! [
 										;the FX handle is storing channel pointer as hnd/padding
 										BASS_ChannelRemoveFX hnd/padding hnd/value
 										RESET_HANDLE(hnd)
@@ -401,6 +473,24 @@ Red [
 									]
 								]
 								set-handle _Channel! hnd/value hnd/padding
+							]
+							any [sym = _Fade sym = _Set] [
+								BASS_FETCH_HANDLE(hnd)
+								BASS_FETCH_NAMED_VALUE(TYPE_BLOCK)
+								blk: as red-block! value
+								either sym = _Fade [
+									BASS_FETCH_TIME(ms)
+								][
+									ms: 0
+								]
+								case [
+									any [type = _Channel! type = _Music!][
+										process-channel-attributes hnd/value blk ms
+									]
+									true [
+										print-line "BASS fade expect valid music or channel handle!"
+									]
+								]
 							]
 
 							sym = _CHORUS [
@@ -452,9 +542,9 @@ Red [
 							sym = _Free [
 								BASS_FETCH_HANDLE(hnd)
 								case [
-									sym = _Sound!   [ BASS_SampleFree  hnd/value ]
-									sym = _Music!   [ BASS_MusicFree   hnd/value ]
-									sym = _FX! [
+									type = _Sound!   [ BASS_SampleFree  hnd/value ]
+									type = _Music!   [ BASS_MusicFree   hnd/value ]
+									type = _FX! [
 										;the FX handle is storing channel pointer as hnd/padding
 										BASS_ChannelRemoveFX hnd/padding hnd/value 
 									]
@@ -561,7 +651,7 @@ Red [
 								sym = _8BITS     [flags: flags or BASS_SAMPLE_8BITS]
 								sym = _FLOAT     [flags: flags or BASS_SAMPLE_FLOAT]
 								sym = _MONO      [flags: flags or BASS_SAMPLE_MONO]
-								sym = _3D        [flags: flags or BASS_SAMPLE_3D]
+								sym = _MODE-3D   [flags: flags or BASS_SAMPLE_3D]
 								sym = _SOFTWARE  [flags: flags or BASS_SAMPLE_SOFTWARE]
 								sym = _MUTEMAX   [flags: flags or BASS_SAMPLE_MUTEMAX]
 								sym = _VAM       [flags: flags or BASS_SAMPLE_VAM]
@@ -585,6 +675,7 @@ Red [
 		process-channel-attributes: func[
 			handle  [integer!]
 			cmds    [red-block!]
+			time    [integer!]
 			/local
 				cmd       [red-value!]
 				tail      [red-value!]
@@ -601,6 +692,8 @@ Red [
 			cmd:  block/rs-head cmds
 			tail: block/rs-tail cmds
 			len: -1
+
+			TRACE(["process-channel-attributes time: " time])
 			while [cmd < tail][
 				case [
 					any [TYPE_OF(cmd) = TYPE_SET_WORD] [
@@ -612,11 +705,15 @@ Red [
 						case [
 							sym = _volume [
 								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
-								BASS_ChannelSetAttribute handle BASS_ATTRIB_VOL as float32! AS_FLOAT(start 0)
+								either time > 0 [
+									BASS_ChannelSlideAttribute handle BASS_ATTRIB_VOL as float32! AS_FLOAT(start 0) time
+								][	BASS_ChannelSetAttribute handle BASS_ATTRIB_VOL as float32! AS_FLOAT(start 0) ]
 							]
 							sym = _pan [
 								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
-								BASS_ChannelSetAttribute handle BASS_ATTRIB_PAN as float32! AS_FLOAT(start 0)
+								either time > 0 [
+									BASS_ChannelSlideAttribute handle BASS_ATTRIB_PAN as float32! AS_FLOAT(start 0) time
+								][	BASS_ChannelSetAttribute handle BASS_ATTRIB_PAN as float32! AS_FLOAT(start 0) ]
 							]
 							sym = _quality [
 								;The sample rate conversion quality...
@@ -631,7 +728,9 @@ Red [
 							sym = _freq [
 								;The sample rate... 0 = original rate (when the channel was created). 
 								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
-								BASS_ChannelSetAttribute handle BASS_ATTRIB_FREQ as float32! AS_FLOAT(start 0)
+								either time > 0 [
+									BASS_ChannelSlideAttribute handle BASS_ATTRIB_FREQ as float32! AS_FLOAT(start 0) time
+								][	BASS_ChannelSetAttribute handle BASS_ATTRIB_FREQ as float32! AS_FLOAT(start 0) ]
 							]
 							sym = _no-ramp [
 								;Disable playback ramping... 0 = no, else yes. 
@@ -642,6 +741,46 @@ Red [
 								;Disable playback buffering... 0 = no, else yes.  
 								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
 								BASS_ChannelSetAttribute handle BASS_ATTRIB_NOBUFFER as float32! AS_FLOAT(start 0)
+							]
+							sym = _eax [
+								;The wet (reverb) / dry (no reverb) mix ratio of a channel.
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								either time > 0 [
+									BASS_ChannelSlideAttribute handle BASS_ATTRIB_EAXMIX as float32! AS_FLOAT(start 0) time
+								][	BASS_ChannelSetAttribute handle BASS_ATTRIB_EAXMIX as float32! AS_FLOAT(start 0) ]
+							]
+							sym = _bpm [
+								;The BPM of a MOD music. 
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								either time > 0 [
+									BASS_ChannelSlideAttribute handle BASS_ATTRIB_MUSIC_BPM as float32! AS_FLOAT(start 0) time
+								][	BASS_ChannelSetAttribute handle BASS_ATTRIB_MUSIC_BPM as float32! AS_FLOAT(start 0) ]
+							]
+							sym = _pan-separation [
+								;The pan separation level of a MOD music. 
+								;0 (min) to 100 (max), 50 = linear. This will be rounded down to a whole number. 
+								;By default BASS uses a linear panning "curve". If you want to use the panning of FT2, use a pan separation setting of around 35.
+								;To use the Amiga panning (ie. full left and right) set it to 100. 
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								either time > 0 [
+									BASS_ChannelSlideAttribute handle BASS_ATTRIB_MUSIC_PANSEP as float32! AS_FLOAT(start 0) time
+								][	BASS_ChannelSetAttribute handle BASS_ATTRIB_MUSIC_PANSEP as float32! AS_FLOAT(start 0) ]
+							]
+							sym = _position-scaler [
+								;The position scaler of a MOD music. 
+								;1 (min) to 256 (max). This will be rounded down to a whole number. 
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								either time > 0 [
+									BASS_ChannelSlideAttribute handle BASS_ATTRIB_MUSIC_PSCALER as float32! AS_FLOAT(start 0) time
+								][	BASS_ChannelSetAttribute handle BASS_ATTRIB_MUSIC_PSCALER as float32! AS_FLOAT(start 0) ]
+							]
+							sym = _speed [
+								;The speed of a MOD music. 
+								;0 (min) to 255 (max). This will be rounded down to a whole number. 
+								BASS_FETCH_VALUE_2(TYPE_FLOAT TYPE_INTEGER)
+								either time > 0 [
+									BASS_ChannelSlideAttribute handle BASS_ATTRIB_MUSIC_SPEED as float32! AS_FLOAT(start 0) time
+								][	BASS_ChannelSetAttribute handle BASS_ATTRIB_MUSIC_SPEED	 as float32! AS_FLOAT(start 0) ]
 							]
 						    true [ print-line ["wrong channel attribute: " start] ]
 						]
