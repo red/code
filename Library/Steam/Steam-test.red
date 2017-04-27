@@ -14,5 +14,16 @@ if not exists? %steam_appid.txt [
 ]
 
 Steam/init
+
+file: %hello.txt
+data: to binary! "Hello Red!"
+Steam/file-write file data
+
 Steam/info
+
+either Steam/file-exists? file [
+	print ["From" mold file ":" mold to string! Steam/file-read file]
+][
+	print [mold file "not found!"]
+]
 Steam/shutdown

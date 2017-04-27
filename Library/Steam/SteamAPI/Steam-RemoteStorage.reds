@@ -105,7 +105,7 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 		SteamAPI_ISteamRemoteStorage_FileRead: "SteamAPI_ISteamRemoteStorage_FileRead" [
 			instancePtr   [ISteamRemoteStorage!];intptr_t
 			pchFile       [c-string!]          ;const char *
-			pvData        [int-ptr!]           ;void *
+			pvData        [byte-ptr!]          ;void *
 			cubDataToRead [integer!]           ;int32
 			return: [integer!]
 		]
@@ -126,7 +126,7 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 		SteamAPI_ISteamRemoteStorage_FileReadAsyncComplete: "SteamAPI_ISteamRemoteStorage_FileReadAsyncComplete" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
 			hReadCall   [uint64! value]        ;SteamAPICall_t
-			pvBuffer    [int-ptr!]             ;void *
+			pvBuffer    [byte-ptr!]             ;void *
 			cubToRead   [integer!]             ;uint32
 			return: [logic!]
 		]
@@ -251,7 +251,7 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 		SteamAPI_ISteamRemoteStorage_UGCRead: "SteamAPI_ISteamRemoteStorage_UGCRead" [
 			instancePtr   [ISteamRemoteStorage!];intptr_t
 			hContent      [uint64! value]      ;UGCHandle_t
-			pvData        [int-ptr!]           ;void *
+			pvData        [byte-ptr!]          ;void *
 			cubDataToRead [integer!]           ;int32
 			cOffset       [integer!]           ;uint32
 			eAction       [EUGCReadAction!]    ;EUGCReadAction

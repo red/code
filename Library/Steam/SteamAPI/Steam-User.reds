@@ -24,7 +24,7 @@ ISteamUser: declare ISteamUser!
 		]
 		SteamAPI_ISteamUser_InitiateGameConnection: "SteamAPI_ISteamUser_InitiateGameConnection" [
 			instancePtr       [ISteamUser!]    ;intptr_t
-			pAuthBlob         [int-ptr!]       ;void *
+			pAuthBlob         [byte-ptr!]      ;void *
 			cbMaxAuthBlob     [integer!]       ;int
 			steamIDGameServer [CSteamID!]      ;class CSteamID
 			unIPServer        [integer!]       ;uint32
@@ -65,11 +65,11 @@ ISteamUser: declare ISteamUser!
 		SteamAPI_ISteamUser_GetVoice: "SteamAPI_ISteamUser_GetVoice" [
 			instancePtr         [ISteamUser!]  ;intptr_t
 			bWantCompressed     [logic!]       ;bool
-			pDestBuffer         [int-ptr!]     ;void *
+			pDestBuffer         [byte-ptr!]    ;void *
 			cbDestBufferSize    [integer!]     ;uint32
 			nBytesWritten       [int-ptr!]     ;uint32 *
 			bWantUncompressed   [logic!]       ;bool
-			pUncompressedDestBuffer[int-ptr!]  ;void *
+			pUncompressedDestBuffer[byte-ptr!] ;void *
 			cbUncompressedDestBufferSize[integer!];uint32
 			nUncompressBytesWritten[int-ptr!]  ;uint32 *
 			nUncompressedVoiceDesiredSampleRate[integer!];uint32
@@ -79,7 +79,7 @@ ISteamUser: declare ISteamUser!
 			instancePtr        [ISteamUser!]   ;intptr_t
 			pCompressed        [byte-ptr!]     ;const void *
 			cbCompressed       [integer!]      ;uint32
-			pDestBuffer        [int-ptr!]      ;void *
+			pDestBuffer        [byte-ptr!]     ;void *
 			cbDestBufferSize   [integer!]      ;uint32
 			nBytesWritten      [int-ptr!]      ;uint32 *
 			nDesiredSampleRate [integer!]      ;uint32
@@ -91,7 +91,7 @@ ISteamUser: declare ISteamUser!
 		]
 		SteamAPI_ISteamUser_GetAuthSessionTicket: "SteamAPI_ISteamUser_GetAuthSessionTicket" [
 			instancePtr [ISteamUser!]          ;intptr_t
-			pTicket     [int-ptr!]             ;void *
+			pTicket     [byte-ptr!]            ;void *
 			cbMaxTicket [integer!]             ;int
 			pcbTicket   [int-ptr!]             ;uint32 *
 			return: [HAuthTicket!]
@@ -129,13 +129,13 @@ ISteamUser: declare ISteamUser!
 		]
 		SteamAPI_ISteamUser_RequestEncryptedAppTicket: "SteamAPI_ISteamUser_RequestEncryptedAppTicket" [
 			instancePtr     [ISteamUser!]      ;intptr_t
-			pDataToInclude  [int-ptr!]         ;void *
+			pDataToInclude  [byte-ptr!]        ;void *
 			cbDataToInclude [integer!]         ;int
 			return: [uint64! value]
 		]
 		SteamAPI_ISteamUser_GetEncryptedAppTicket: "SteamAPI_ISteamUser_GetEncryptedAppTicket" [
 			instancePtr [ISteamUser!]          ;intptr_t
-			pTicket     [int-ptr!]             ;void *
+			pTicket     [byte-ptr!]            ;void *
 			cbMaxTicket [integer!]             ;int
 			pcbTicket   [int-ptr!]             ;uint32 *
 			return: [logic!]

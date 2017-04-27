@@ -11,5 +11,17 @@ Red/System [
 
 init
 info
+
+data: declare binary-ref!
+
+print-line ["exists hell.txt?  " file-exists? "hell.txt"]
+print-line ["exists hello.txt? " file-exists? "hello.txt"]
+
+bytes: file-read "hell.txt" data
+print-line ["read: " bytes " bytes at: " data/value]
+
+bytes: file-read "hello.txt" data
+print-line ["read: " bytes " bytes at: " data/value]
+
 SteamAPI_Shutdown
 

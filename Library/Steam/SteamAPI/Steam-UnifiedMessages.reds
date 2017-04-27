@@ -28,7 +28,7 @@ ISteamUnifiedMessages: declare ISteamUnifiedMessages!
 		SteamAPI_ISteamUnifiedMessages_GetMethodResponseData: {SteamAPI_ISteamUnifiedMessages_GetMethodResponseData} [
 			instancePtr         [ISteamUnifiedMessages!];intptr_t
 			hHandle             [uint64! value];ClientUnifiedMessageHandle
-			pResponseBuffer     [int-ptr!]     ;void *
+			pResponseBuffer     [byte-ptr!]    ;void *
 			unResponseBufferSize[integer!]     ;uint32
 			bAutoRelease        [logic!]       ;bool
 			return: [logic!]

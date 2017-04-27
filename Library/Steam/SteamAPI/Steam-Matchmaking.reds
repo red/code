@@ -205,7 +205,7 @@ ISteamMatchmaking: declare ISteamMatchmaking!
 			steamIDLobby    [CSteamID!]        ;class CSteamID
 			iChatID         [integer!]         ;int
 			pSteamIDUser    [CSteamID-ref!]    ;class CSteamID *
-			pvData          [int-ptr!]         ;void *
+			pvData          [byte-ptr!]        ;void *
 			cubData         [integer!]         ;int
 			peChatEntryType [int-ptr!]         ;EChatEntryType *
 			return: [integer!]

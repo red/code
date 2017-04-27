@@ -33,7 +33,7 @@ ISteamScreenshots: declare ISteamScreenshots!
 	STEAM_LIBRARY STEAM_CALL [
 		SteamAPI_ISteamScreenshots_WriteScreenshot: "SteamAPI_ISteamScreenshots_WriteScreenshot" [
 			instancePtr [ISteamScreenshots!]   ;intptr_t
-			pubRGB      [int-ptr!]             ;void *
+			pubRGB      [byte-ptr!]            ;void *
 			cubRGB      [integer!]             ;uint32
 			nWidth      [integer!]             ;int
 			nHeight     [integer!]             ;int

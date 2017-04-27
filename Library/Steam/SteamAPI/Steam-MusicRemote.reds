@@ -35,7 +35,7 @@ ISteamMusicRemote: declare ISteamMusicRemote!
 		]
 		SteamAPI_ISteamMusicRemote_SetPNGIcon_64x64: "SteamAPI_ISteamMusicRemote_SetPNGIcon_64x64" [
 			instancePtr    [ISteamMusicRemote!];intptr_t
-			pvBuffer       [int-ptr!]          ;void *
+			pvBuffer       [byte-ptr!]         ;void *
 			cbBufferLength [integer!]          ;uint32
 			return: [logic!]
 		]
@@ -110,7 +110,7 @@ ISteamMusicRemote: declare ISteamMusicRemote!
 		]
 		SteamAPI_ISteamMusicRemote_UpdateCurrentEntryCoverArt: {SteamAPI_ISteamMusicRemote_UpdateCurrentEntryCoverArt} [
 			instancePtr    [ISteamMusicRemote!];intptr_t
-			pvBuffer       [int-ptr!]          ;void *
+			pvBuffer       [byte-ptr!]         ;void *
 			cbBufferLength [integer!]          ;uint32
 			return: [logic!]
 		]

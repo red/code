@@ -135,7 +135,7 @@ ISteamGameServer: declare ISteamGameServer!
 		]
 		SteamAPI_ISteamGameServer_GetAuthSessionTicket: "SteamAPI_ISteamGameServer_GetAuthSessionTicket" [
 			instancePtr [ISteamGameServer!]    ;intptr_t
-			pTicket     [int-ptr!]             ;void *
+			pTicket     [byte-ptr!]            ;void *
 			cbMaxTicket [integer!]             ;int
 			pcbTicket   [int-ptr!]             ;uint32 *
 			return: [HAuthTicket!]
@@ -188,7 +188,7 @@ ISteamGameServer: declare ISteamGameServer!
 		]
 		SteamAPI_ISteamGameServer_GetNextOutgoingPacket: "SteamAPI_ISteamGameServer_GetNextOutgoingPacket" [
 			instancePtr [ISteamGameServer!]    ;intptr_t
-			pOut        [int-ptr!]             ;void *
+			pOut        [byte-ptr!]            ;void *
 			cbMaxOut    [integer!]             ;int
 			pNetAdr     [int-ptr!]             ;uint32 *
 			pPort       [pointer! [uint16!]]   ;uint16 *

@@ -9,6 +9,8 @@ Red/System [
 
 #include %SteamAPI/Steam-API.reds
 
+binary-ref!:  alias struct! [value [byte-ptr!]]
+
 isReady: false
 
 init: func[
@@ -42,8 +44,33 @@ list-friends: func[
 	]
 ]
 
-write-file: func[file [c-string!] data [byte-ptr!] length [integer!] return: [logic!]][
+file-write: func[file [c-string!] data [byte-ptr!] length [integer!] return: [logic!]][
 	SteamAPI_ISteamRemoteStorage_FileWrite ISteamRemoteStorage file data length
+]
+file-read: func[
+	file [c-string!]
+	data [binary-ref!]
+	return: [integer!]
+	/local
+		size   [integer!]
+		buffer [byte-ptr!]
+		bytes  [integer!]
+][
+	size: SteamAPI_ISteamRemoteStorage_GetFileSize ISteamRemoteStorage file
+	bytes: -1
+	if size > 0 [
+		buffer: allocate size
+		bytes: SteamAPI_ISteamRemoteStorage_FileRead ISteamRemoteStorage file buffer size
+		data/value: buffer
+	]
+	bytes
+]
+file-exists?: func[
+	file [c-string!]
+	return: [logic!]
+][
+	;@@ steam returns ballast in the higher bits so we must clear them manually!
+	as logic! 01h and as integer! SteamAPI_ISteamRemoteStorage_FileExists ISteamRemoteStorage file
 ]
 file-count: func[return: [integer!]][
 	SteamAPI_ISteamRemoteStorage_GetFileCount ISteamRemoteStorage
@@ -64,7 +91,12 @@ list-files: func[
 	]
 ]
 
-info: func[][
+info: func[
+	/local
+		total     [uint64!]
+		available [uint64!]
+		res       [logic!]
+][
 	if any [isReady init] [
 		print-line ["Steam running: " SteamAPI_IsSteamRunning]
 		print-line ["User_BLoggedOn: " SteamAPI_ISteamUser_BLoggedOn ISteamUser ]
@@ -72,6 +104,14 @@ info: func[][
 		print-line ["Friends_GetPersonaName: " SteamAPI_ISteamFriends_GetPersonaName ISteamFriends]
 		print-line ["Friends_GetPersonaState: " SteamAPI_ISteamFriends_GetPersonaState ISteamFriends]
 		print-line ["RemoteStorage_IsCloudEnabledForAccount: " SteamAPI_ISteamRemoteStorage_IsCloudEnabledForAccount ISteamRemoteStorage]
+
+		total: declare uint64! 0
+		available: declare uint64! 0
+
+		res: SteamAPI_ISteamRemoteStorage_GetQuota ISteamRemoteStorage total available
+		if 0 < (01h and as integer! res) [
+			print-line ["RemoteStorage_GetQuota total: " total/lo " available: " available/lo]
+		]
 
 		list-friends EFriendFlagAll
 		print-line ["Files on SteamCloud:"]

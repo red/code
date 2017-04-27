@@ -52,7 +52,7 @@ ISteamInventory: declare ISteamInventory!
 		SteamAPI_ISteamInventory_SerializeResult: "SteamAPI_ISteamInventory_SerializeResult" [
 			instancePtr      [ISteamInventory!];intptr_t
 			resultHandle     [integer!]        ;SteamInventoryResult_t
-			pOutBuffer       [int-ptr!]        ;void *
+			pOutBuffer       [byte-ptr!]       ;void *
 			punOutBufferSize [int-ptr!]        ;uint32 *
 			return: [logic!]
 		]

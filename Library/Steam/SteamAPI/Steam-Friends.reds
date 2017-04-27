@@ -385,7 +385,7 @@ ISteamFriends: declare ISteamFriends!
 			instancePtr     [ISteamFriends!]   ;intptr_t
 			steamIDClanChat [CSteamID!]        ;class CSteamID
 			iMessage        [integer!]         ;int
-			prgchText       [int-ptr!]         ;void *
+			prgchText       [byte-ptr!]        ;void *
 			cchTextMax      [integer!]         ;int
 			peChatEntryType [int-ptr!]         ;EChatEntryType *
 			psteamidChatter [CSteamID-ref!]    ;class CSteamID *
@@ -427,7 +427,7 @@ ISteamFriends: declare ISteamFriends!
 			instancePtr     [ISteamFriends!]   ;intptr_t
 			steamIDFriend   [CSteamID!]        ;class CSteamID
 			iMessageID      [integer!]         ;int
-			pvData          [int-ptr!]         ;void *
+			pvData          [byte-ptr!]        ;void *
 			cubData         [integer!]         ;int
 			peChatEntryType [int-ptr!]         ;EChatEntryType *
 			return: [integer!]

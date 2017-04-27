@@ -47,7 +47,7 @@ int64!:  alias struct! [lo [integer!] hi [integer!]] ;@@ must be changed once we
 uin16!:  alias struct! [lo [byte!] hi [byte!]]       ;@@ must be changed once we will get real integer16! type
 
 #define uint64! int64!
-uint64-ref!: alias struct! [value [uint64!]]
+#define uint64-ref! uint64!
 int64-ref!:  alias struct! [value [int64!]]
 logic-ref!:  alias struct! [value [logic!]]
 string-ref!:  alias struct! [value [c-string!]]

@@ -99,7 +99,7 @@ ISteamUtils: declare ISteamUtils!
 		SteamAPI_ISteamUtils_GetAPICallResult: "SteamAPI_ISteamUtils_GetAPICallResult" [
 			instancePtr       [ISteamUtils!]   ;intptr_t
 			hSteamAPICall     [uint64! value]  ;SteamAPICall_t
-			pCallback         [int-ptr!]       ;void *
+			pCallback         [byte-ptr!]      ;void *
 			cubCallback       [integer!]       ;int
 			iCallbackExpected [integer!]       ;int
 			pbFailed          [logic-ref!];bool *

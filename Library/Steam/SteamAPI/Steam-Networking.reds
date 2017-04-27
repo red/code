@@ -99,7 +99,7 @@ ISteamNetworking: declare ISteamNetworking!
 		]
 		SteamAPI_ISteamNetworking_ReadP2PPacket: "SteamAPI_ISteamNetworking_ReadP2PPacket" [
 			instancePtr    [ISteamNetworking!] ;intptr_t
-			pubDest        [int-ptr!]          ;void *
+			pubDest        [byte-ptr!]         ;void *
 			cubDest        [integer!]          ;uint32
 			pcubMsgSize    [int-ptr!]          ;uint32 *
 			psteamIDRemote [CSteamID-ref!]     ;class CSteamID *
@@ -171,7 +171,7 @@ ISteamNetworking: declare ISteamNetworking!
 		SteamAPI_ISteamNetworking_SendDataOnSocket: "SteamAPI_ISteamNetworking_SendDataOnSocket" [
 			instancePtr [ISteamNetworking!]    ;intptr_t
 			hSocket     [integer!]             ;SNetSocket_t
-			pubData     [int-ptr!]             ;void *
+			pubData     [byte-ptr!]            ;void *
 			cubData     [integer!]             ;uint32
 			bReliable   [logic!]               ;bool
 			return: [logic!]
@@ -185,7 +185,7 @@ ISteamNetworking: declare ISteamNetworking!
 		SteamAPI_ISteamNetworking_RetrieveDataFromSocket: "SteamAPI_ISteamNetworking_RetrieveDataFromSocket" [
 			instancePtr [ISteamNetworking!]    ;intptr_t
 			hSocket     [integer!]             ;SNetSocket_t
-			pubDest     [int-ptr!]             ;void *
+			pubDest     [byte-ptr!]            ;void *
 			cubDest     [integer!]             ;uint32
 			pcubMsgSize [int-ptr!]             ;uint32 *
 			return: [logic!]
@@ -200,7 +200,7 @@ ISteamNetworking: declare ISteamNetworking!
 		SteamAPI_ISteamNetworking_RetrieveData: "SteamAPI_ISteamNetworking_RetrieveData" [
 			instancePtr   [ISteamNetworking!]  ;intptr_t
 			hListenSocket [integer!]           ;SNetListenSocket_t
-			pubDest       [int-ptr!]           ;void *
+			pubDest       [byte-ptr!]          ;void *
 			cubDest       [integer!]           ;uint32
 			pcubMsgSize   [int-ptr!]           ;uint32 *
 			phSocket      [int-ptr!]           ;SNetSocket_t *
