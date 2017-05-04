@@ -61,5 +61,8 @@ SQLite/do [
 print ["^/Raw data result:" mold result lf]
 print rejoin ["Random number: " result/2 " blob: #{" result/4 #"}"]
 
-SQLite/free ;closes all opened DBs and free SQLite resources
+;it is also possible to use just:
+print ["^/Tables:" mold SQLite/query "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"]
+
+SQLite/free ;closes all opened DBs and frees SQLite resources
 

@@ -424,6 +424,9 @@ Red [
 ]
 
 SQLite: context [
+	output: make block! 16 ;use for temporary outputs
+	;NOTE: output is replaced by each query call, so if you need the data later, use `copy`
+
 	init: func [
 		"Initializes SQLite"
 	][
@@ -440,5 +443,14 @@ SQLite: context [
 		commands [block!]
 	][
 		sqlite/do commands
+	]
+	query: func[
+		"Executes SQL query"
+		sql [string!]
+		/into result [block!]
+	][
+		unless into [result: clear head output]
+		do compose [result: exec (sql)]
+		result
 	]
 ]
