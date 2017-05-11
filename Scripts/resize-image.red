@@ -44,7 +44,7 @@ mouse-move: func [face event][
 
 ;img-url: https://upload.wikimedia.org/wikipedia/en/2/24/Lenna.png
 img-url: https://pbs.twimg.com/profile_images/501701094032941056/R-a4YJ5K.png
-img: load/as read/binary img-url 'jpeg
+img: load/as read/binary img-url 'png
 
 
 draw-blk: compose [
