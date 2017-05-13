@@ -4,8 +4,8 @@ Red [
 	Needs:  'View
 	Notes:  {
 		Drag the red ball using left mouse button, all the other balls
-		will follow it. This demo the "dynamic" reactions usage from
-		Red's reactive framework.
+		will follow it. This demonstrates the "dynamic" reactions usage
+		from Red's reactive framework.
 	
 		See more about reactive programming in Red here:
 		http://www.red-lang.org/2016/06/061-reactive-programming.html
