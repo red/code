@@ -1,8 +1,8 @@
 Red/System [
-	Title:	"SWF reader"
+	Title:	"SWF parser"
 	Purpose: "Just a simple test. So far it displays some info about given SWF file"
 	Author: "Oldes"
-	File: 	%swf.reds
+	File: 	%swf-parse.reds
 	Tabs: 	4
 	Rights: "Copyright (C) 2017 Oldes. All rights reserved."
 	License: {
@@ -155,7 +155,11 @@ swf: context [
 			i     [integer!]
 			bytes [byte-ptr!]
 	][
-		file-handle: simple-io/open-file name simple-io/RIO_READ true
+		file-handle: simple-io/open-file name simple-io/RIO_READ false
+		if 0 >= file-handle [
+			print-line ["Unable to open file: " name]
+			exit
+		]
 		if 1 = init-in-from-file file-handle [
 			signature: in/pos/1
 			if not all [
@@ -218,7 +222,19 @@ swf: context [
 	]
 ]
 
+do-input: func [
+	/local
+		argument  [str-array!]
+		file-name [c-string!]
+][
+	either 2 = system/args-count [
+		argument: system/args-list + 1
+		file-name: argument/item
+		swf/parse file-name
+		swf/close
+	][
+		print-line ["Provide file name as a first argument. For example: swf-parse test.swf"]
+	]
+]
 
-swf/parse #u16 "Test_anims.swf"
-swf/close
-
+do-input
