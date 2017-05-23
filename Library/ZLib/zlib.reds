@@ -17,10 +17,10 @@ Red/System [
 	}
 ]
 
-#include %../ansi.reds
+#define file! int-ptr!
+#define handle! int-ptr!
 
 zlib: context [
-	;#define opaque!  integer!
 	#define gzfile!  integer!
 	#define Z_NULL  0								;-- for initializing zalloc, zfree, opaque
 
@@ -142,6 +142,52 @@ zlib: context [
 		]
 
 	] ; cdecl
+
+	LIBC-file cdecl [
+		realloc: "realloc" [
+			"Resize and return allocated memory."
+			memory			[byte-ptr!]
+			size			[integer!]
+			return:			[byte-ptr!]
+		]
+		fopen: "fopen" [
+			"Open file."
+			name			[c-string!]
+			mode			[c-string!]
+			return:			[file!]
+		]
+		fclose: "fclose" [
+			"Close file."
+			file			[file!]
+			return:			[integer!] "0 or EOF"
+		]
+		feof: "feof" [						
+			"End-of-file status."
+			file			[file!]
+			return:			[logic!]
+		]
+		ferror: "ferror" [
+			"File status."
+			file			[file!]
+			return:			[logic!]
+		]
+		fwrite: "fwrite" [
+			"Write binary array to file."
+			array			[byte-ptr!]
+			size			[integer!]
+			entries			[integer!]
+			file			[file!]
+			return:			[integer!]	"Chunks written"
+		]
+		fread: "fread" [
+			"Read binary array from file."
+			array			[byte-ptr!]
+			size			[integer!]
+			entries			[integer!]
+			file			[file!]
+			return:			[integer!]	"Chunks read"
+		]
+	] ; LIBC-file
 	] ; #import [z-library
 
 	;-- Higher level interface ---------------------------- ---------------------------------------
@@ -163,8 +209,8 @@ zlib: context [
 			print [ "gunzip: gzopen of " file-in " failed." lf ]
 			return Z_ERRNO
 		]
-		file: open file-out "wb"
-		if file-error? file [
+		file: fopen file-out "wb"
+		if ferror file [
 			print [ "gunzip: Error opening " file-out lf ]
 			return Z_ERRNO
 		]
@@ -175,10 +221,10 @@ zlib: context [
 		]
 		until [
 			bytes-read: gzread zfile buffer (CHUNK - 1)
-			_write-array (as opaque! buffer) bytes-read 1 file
+			fwrite buffer bytes-read 1 file
 			0 <> (gzeof zfile)
 		]
-		close-file file
+		fclose file
 		gzclose zfile
 		free buffer
 		return Z_OK
@@ -195,8 +241,8 @@ zlib: context [
 			buffer     [byte-ptr!]
 			bytes-read [integer!]
 	][
-		file: open file-in "rb"
-		if file-error? file [
+		file: fopen file-in "rb"
+		if ferror file [
 			print [ "gzip: Error opening " file-in lf ]
 			return Z_ERRNO
 		]
@@ -211,11 +257,11 @@ zlib: context [
 			return Z_ERRNO
 		]
 		until [
-			bytes-read: read-array (as opaque! buffer) 1 CHUNK file
+			bytes-read: fread buffer 1 CHUNK file
 			gzwrite zfile buffer bytes-read
-			file-tail? file
+			feof file
 		]
-		close-file file
+		fclose file
 		gzclose zfile
 		free buffer
 		return Z_OK
@@ -237,7 +283,7 @@ zlib: context [
 		]
 		ret: z-compress out-buf out-count in-buf in-count level
 		either ret = Z_OK [
-			tmp: resize out-buf out-count/value	;-- Resize output buffer to minimum size
+			tmp: realloc out-buf out-count/value	;-- Resize output buffer to minimum size
 			either tmp = NULL [						;-- reallocation failed, uses current output buffer
 			print [ "Compress Warning : Impossible to reallocate output buffer." lf ]
 			][
@@ -272,7 +318,7 @@ zlib: context [
 			ret: z-uncompress out-buf :out-count in-buf in-count
 			if ret = Z_BUF_ERROR [					;-- need to expand output buffer
 			out-count: 2 * out-count				;-- double buffer size
-			tmp: resize out-buf out-count		;-- Resize output buffer to new size
+			tmp: realloc out-buf out-count		;-- Resize output buffer to new size
 			either tmp = NULL [						;-- reallocation failed, uses current output buffer
 				print [ "Decompress Error : Impossible to reallocate output buffer." lf ]
 				ret: Z_MEM_ERROR
@@ -283,7 +329,7 @@ zlib: context [
 			any [ (ret = Z_OK) (ret = Z_MEM_ERROR) (ret = Z_STREAM_ERROR) ]
 		]
 		either ret = Z_OK [
-			tmp: resize out-buf out-count		;-- Resize output buffer to minimum size
+			tmp: realloc out-buf out-count		;-- Resize output buffer to minimum size
 			either tmp = NULL [						;-- reallocation failed, uses current output buffer
 			print [ "Decompress Warning : Impossible to reallocate output buffer." lf ]
 			][
