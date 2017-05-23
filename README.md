@@ -1,6 +1,6 @@
 # Red/Code
 
-This repository contains code written in Red and its dialects by the Red community. The purpose is to provide a central place that is easy enough to find for newcomers to check for some Red code examples, demos, libraries and apps. There are four sections in the repository, Apps, Scripts, ShowCase and Library. This repository is curated in the sense that contributions are included when they meet the applicable criteria.
+This repository contains code written in Red and its dialects by the Red team and community. There are four sections in the repository, Apps, Scripts, ShowCase and Library. This repository is curated in the sense that contributions are included when they meet the applicable criteria of higher code quality, completeness and relevancy. For a place where to find general user scripts, see the [red/community](https://github.com/red/community) repository.
 
 ## Apps
 
