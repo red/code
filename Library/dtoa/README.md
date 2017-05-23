@@ -18,7 +18,7 @@ Functions
 
 Examples
 ------------------------
-Please check the tests file (tests/source/library/dtoa-test.red) to see how to use it. ;-)
+Please check the tests file (dtoa-test.red) to see how to use it. ;-)
 
 Running tests
 ------------------------
@@ -27,7 +27,7 @@ Running tests
 
 1. From the REBOL console type :
 
-    `do/args %red.r "%tests/source/library/dtoa-test.red"`, the compilation process should finish with a `...output file size` message.
+    `do/args %red.r "%../Red-code/Library/dtoa/dtoa-test.red"`, the compilation process should finish with a `...output file size` message.
 
 1. The resulting binaries are in Red main directory, go try them!
 
