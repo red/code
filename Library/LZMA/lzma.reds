@@ -150,7 +150,7 @@ lzma: context [
 			print-line "LZMA Compress Error : Output buffer allocation error."
 			return NULL
 		]
-		ret: easy_buffer_encode level 0 NULL as byte-ptr! test in-size out-buf out-pos out-size/value
+		ret: easy_buffer_encode level 0 NULL in-buf in-size out-buf out-pos out-size/value
 		if ret <> LZMA_OK [
 			print-line ["LZMA Compress Error : " ret " = " form-error-msg ret]
 			free out-buf
@@ -167,7 +167,9 @@ lzma: context [
 		return:      [byte-ptr!] "Return a pointer to decompressed data"
 		/local ret out-buf tmp in-pos i
 	][
-		out-size/value: 2 * in-size						;-- allocate twice the size of original buffer
+		if out-size/value = 0 [         ;-- in case initial output size is not specified
+			out-size/value: 2 * in-size ;-- allocate twice the size of original buffer
+		]	
 		out-buf: allocate out-size/value
 		if out-buf = NULL [
 			print-line "LZMA Decompress Error : Output buffer allocation error."
