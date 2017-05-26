@@ -1,5 +1,5 @@
 Red/System [
-	Title:   "Basic Red/System libLZMA binding"
+	Title:   "Red/System libLZMA binding"
 	Author: "Oldes"
 	File: 	%lzma.reds
 	Tabs: 	4
@@ -14,6 +14,102 @@ Red/System [
 		(tested with xz-5.2.3-windows\[bin_i686|bin_i686-sse2]\liblzma.dll)
 	}
 ]
+
+#enum lzma_check! [
+	LZMA_CHECK_NONE:   0  ;Size of the Check field: 0 bytes
+	LZMA_CHECK_CRC32:  1  ;Size of the Check field: 4 bytes
+	LZMA_CHECK_CRC64:  4  ;Size of the Check field: 8 bytes
+	LZMA_CHECK_SHA256: 10 ;Size of the Check field: 32 bytes
+]
+
+#enum lzma_ret! [
+	LZMA_OK
+	LZMA_STREAM_END
+	LZMA_NO_CHECK
+	LZMA_UNSUPPORTED_CHECK
+	LZMA_GET_CHECK
+	LZMA_MEM_ERROR
+	LZMA_MEMLIMIT_ERROR
+	LZMA_FORMAT_ERROR
+	LZMA_OPTIONS_ERROR
+	LZMA_DATA_ERROR
+	LZMA_BUF_ERROR
+	LZMA_PROG_ERROR
+]
+
+#enum lzma_action! [
+	LZMA_RUN:          0 ;-- Continue coding
+	 ;* Encoder: Encode as much input as possible. Some internal
+	 ;* buffering will probably be done (depends on the filter
+	 ;* chain in use), which causes latency: the input used won't
+	 ;* usually be decodeable from the output of the same
+	 ;* lzma_code() call.
+	 ;*
+	 ;* Decoder: Decode as much input as possible and produce as
+	 ;* much output as possible.
+	LZMA_SYNC_FLUSH:   1 ;-- Make all the input available at output
+	 ;* Normally the encoder introduces some latency.
+	 ;* LZMA_SYNC_FLUSH forces all the buffered data to be
+	 ;* available at output without resetting the internal
+	 ;* state of the encoder. This way it is possible to use
+	 ;* compressed stream for example for communication over
+	 ;* network.
+	 ;*
+	 ;* Only some filters support LZMA_SYNC_FLUSH. Trying to use
+	 ;* LZMA_SYNC_FLUSH with filters that don't support it will
+	 ;* make lzma_code() return LZMA_OPTIONS_ERROR. For example,
+	 ;* LZMA1 doesn't support LZMA_SYNC_FLUSH but LZMA2 does.
+	 ;*
+	 ;* Using LZMA_SYNC_FLUSH very often can dramatically reduce
+	 ;* the compression ratio. With some filters (for example,
+	 ;* LZMA2), fine-tuning the compression options may help
+	 ;* mitigate this problem significantly (for example,
+	 ;* match finder with LZMA2).
+	 ;*
+	 ;* Decoders don't support LZMA_SYNC_FLUSH.
+	LZMA_FULL_FLUSH:   2 ;-- Finish encoding of the current Block
+	 ;* All the input data going to the current Block must have
+	 ;* been given to the encoder (the last bytes can still be
+	 ;* pending in *next_in). Call lzma_code() with LZMA_FULL_FLUSH
+	 ;* until it returns LZMA_STREAM_END. Then continue normally
+	 ;* with LZMA_RUN or finish the Stream with LZMA_FINISH.
+	 ;*
+	 ;* This action is currently supported only by Stream encoder
+	 ;* and easy encoder (which uses Stream encoder). If there is
+	 ;* no unfinished Block, no empty Block is created.
+	LZMA_FULL_BARRIER: 4 ;-- Finish encoding of the current Block
+	 ;* This is like LZMA_FULL_FLUSH except that this doesn't
+	 ;* necessarily wait until all the input has been made
+	 ;* available via the output buffer. That is, lzma_code()
+	 ;* might return LZMA_STREAM_END as soon as all the input
+	 ;* has been consumed (avail_in == 0).
+	 ;*
+	 ;* LZMA_FULL_BARRIER is useful with a threaded encoder if
+	 ;* one wants to split the .xz Stream into Blocks at specific
+	 ;* offsets but doesn't care if the output isn't flushed
+	 ;* immediately. Using LZMA_FULL_BARRIER allows keeping
+	 ;* the threads busy while LZMA_FULL_FLUSH would make
+	 ;* lzma_code() wait until all the threads have finished
+	 ;* until more data could be passed to the encoder.
+	 ;*
+	 ;* With a lzma_stream initialized with the single-threaded
+	 ;* lzma_stream_encoder() or lzma_easy_encoder(),
+	 ;* LZMA_FULL_BARRIER is an alias for LZMA_FULL_FLUSH.
+	LZMA_FINISH:       3 ;-- Finish the coding operation
+	 ;* All the input data must have been given to the encoder
+	 ;* (the last bytes can still be pending in next_in).
+	 ;* Call lzma_code() with LZMA_FINISH until it returns
+	 ;* LZMA_STREAM_END. Once LZMA_FINISH has been used,
+	 ;* the amount of input must no longer be changed by
+	 ;* the application.
+	 ;*
+	 ;* When decoding, using LZMA_FINISH is optional unless the
+	 ;* LZMA_CONCATENATED flag was used when the decoder was
+	 ;* initialized. When LZMA_CONCATENATED was not used, the only
+	 ;* effect of LZMA_FINISH is that the amount of input must not
+	 ;* be changed just like in the encoder.
+]
+
 
 lzma: context [
 	uint64!: alias struct! [lo [integer!] hi [integer!]] ;@@ temporary solution!
@@ -36,28 +132,6 @@ lzma: context [
 	#define LZMA_IGNORE_CHECK               10h
 	#define LZMA_CONCATENATED               08h
 
-
-	#enum lzma_check! [
-		LZMA_CHECK_NONE:   0  ;Size of the Check field: 0 bytes
-		LZMA_CHECK_CRC32:  1  ;Size of the Check field: 4 bytes
-		LZMA_CHECK_CRC64:  4  ;Size of the Check field: 8 bytes
-		LZMA_CHECK_SHA256: 10 ;Size of the Check field: 32 bytes
-	]
-
-	#enum lzma_ret! [
-		LZMA_OK
-		LZMA_STREAM_END
-		LZMA_NO_CHECK
-		LZMA_UNSUPPORTED_CHECK
-		LZMA_GET_CHECK
-		LZMA_MEM_ERROR
-		LZMA_MEMLIMIT_ERROR
-		LZMA_FORMAT_ERROR
-		LZMA_OPTIONS_ERROR
-		LZMA_DATA_ERROR
-		LZMA_BUF_ERROR
-		LZMA_PROG_ERROR
-	]
 
 	form-error-msg: func[id [integer!] return: [c-string!]][
 		switch id [
@@ -82,7 +156,30 @@ lzma: context [
 		opaque [int-ptr!] ;Pointer passed to .alloc() and .free()
 	]
 
-	#import [liblzma stdcall [
+	lzma_stream!: alias struct! [
+		next_in   [byte-ptr!]     ;Pointer to the next input byte
+		avail_in  [integer!]      ;Number of available input bytes in next_in.
+		total_in  [uint64! value] ;Total number of bytes read by liblzma.
+		next_out  [byte-ptr!]     ;Pointer to the next input byte
+		avail_out [integer!]      ;Number of available input bytes in next_in.
+		total_out [uint64! value] ;Total number of bytes read by liblzma.
+		allocator [lzma_allocator!]
+		internal  [int-ptr!]      ;Internal state is not visible to applications
+
+		;Reserved space to allow possible future extensions:
+		reserved_ptr1  [int-ptr!]
+		reserved_ptr2  [int-ptr!]
+		reserved_ptr3  [int-ptr!]
+		reserved_ptr4  [int-ptr!]
+		reserved_int1  [uint64! value]
+		reserved_int2  [uint64! value]
+		reserved_int3  [integer!]
+		reserved_int4  [integer!]
+		reserved_enum1 [integer!]
+		reserved_enum2 [integer!]
+	]
+
+	#import [liblzma cdecl [
 		version_number: "lzma_version_number" [
 			"Run-time version number as an integer"
 			return:   [integer!]
@@ -120,6 +217,43 @@ lzma: context [
 			out-size  [integer!]         ;Size of the out buffer
 			return: [lzma_ret!]
 		]
+		end: "lzma_end" [
+			"Free memory allocated for the coder data structures"
+			 ;After lzma_end(strm), strm->internal is guaranteed to be NULL. No other
+ 			 ;members of the lzma_stream structure are touched.
+			strm  [lzma_stream!]
+		]
+		get_progress: "lzma_get_progress" [
+			"Get progress information"
+			strm         [lzma_stream!]
+			progress_in  [uint64!]
+			progress_out [uint64!]
+		]
+		easy_encoder: "lzma_easy_encoder" [
+			"Initialize .xz Stream encoder using a preset number"
+			strm      [lzma_stream!]
+			preset    [integer!]     "Compression preset to use."
+			check     [lzma_check!]
+			return: [lzma_ret!]
+		]
+		stream_decoder: "lzma_stream_decoder"[
+			strm      [lzma_stream!]
+			memlimit  [uint64!]    ;Pointer to how much memory the decoder is allowed to allocate
+			flags     [integer!]
+			return: [lzma_ret!]
+		]
+		auto_decoder: "lzma_auto_decoder"[
+			strm      [lzma_stream!]
+			memlimit  [uint64!]    ;Pointer to how much memory the decoder is allowed to allocate
+			flags     [integer!]
+			return: [lzma_ret!]
+		]
+		code: "lzma_code" [
+			"Encode or decode data"
+			strm      [lzma_stream!]
+			action    [lzma_action!]
+			return: [lzma_ret!]
+		]
 	]; #import [liblzma
 
 	LIBC-file cdecl [
@@ -150,7 +284,7 @@ lzma: context [
 			print-line "LZMA Compress Error : Output buffer allocation error."
 			return NULL
 		]
-		ret: easy_buffer_encode level 0 NULL in-buf in-size out-buf out-pos out-size/value
+		ret: easy_buffer_encode level LZMA_CHECK_CRC64 NULL in-buf in-size out-buf out-pos out-size/value
 		if ret <> LZMA_OK [
 			print-line ["LZMA Compress Error : " ret " = " form-error-msg ret]
 			free out-buf
@@ -204,5 +338,11 @@ lzma: context [
 			set-memory (out-buf + out-pos/value) #"^@" (out-size/value - out-pos/value)
 		]
 		out-buf
+	]
+
+	create-stream: func[return: [lzma_stream!] /local strm][
+		strm: allocate size? lzma_stream!
+		set-memory strm #"^@" size? lzma_stream!
+		as lzma_stream! strm
 	]
 ] ; context lzma
