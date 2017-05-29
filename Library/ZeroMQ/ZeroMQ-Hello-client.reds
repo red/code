@@ -47,7 +47,7 @@ while [n < 10][
 
     r: zmq/recv requester buffer 10 0
     ZMQ_ASSERT(r) if r < 0 [break]
-    print-line ["Received World " n]
+    print-line ["Received " n ": " as c-string! buffer]
 ]
 
 zmq/close requester

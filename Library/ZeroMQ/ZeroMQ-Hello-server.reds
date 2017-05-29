@@ -45,7 +45,7 @@ forever [
 	print-line "Waiting for request..."
 	r: zmq/recv responder buffer 10 0
 	ZMQ_ASSERT(r)
-	print-line "Received Hello"
+	print-line ["Received request: " as c-string! buffer]
 	r: zmq/send responder as byte-ptr! "World" 5 0
 	ZMQ_ASSERT(r)
 ]
