@@ -17,31 +17,37 @@ Red/System [
 
 #include %ZeroMQ.reds 
 
-a: 0
-b: 0
-c: 0
+#define ZMQ_ASSERT(r) [
+	if r < 0 [print-line ["ZMQ [" zmq/errno "]: " zmq/strerror zmq/errno ]]
+]
+
+a: 0 b: 0 c: 0
 zmq/version :a :b :c
 print-line ["ZMQ version: " a "." b "." c]
 
 ctx: zmq/ctx_new
 responder: zmq/socket ctx ZMQ_REP
 
+print-line ["ZMQ Context:   " ctx]
 print-line ["ZMQ Responder: " responder]
-print-line ["ZMQ [" zmq/errno "]: " zmq/strerror zmq/errno]
 
-rc: zmq/bind responder "tcp://*:85555"
 
-if rc = 0 [
+r: zmq/bind responder "tcp://*:5556"
+ZMQ_ASSERT(r)
+
+if r <> 0 [
 	print-line  "ZMQ bind failed!"
-	print-line ["ZMQ [" zmq/errno "]: " zmq/strerror zmq/errno]
 	quit -1
 ]
 
 buffer: allocate 10
 forever [
-	zmq/recv responder buffer 10 0
+	print-line "Waiting for request..."
+	r: zmq/recv responder buffer 10 0
+	ZMQ_ASSERT(r)
 	print-line "Received Hello"
-	zmq/send responder as byte-ptr! "World" 5 0
+	r: zmq/send responder as byte-ptr! "World" 5 0
+	ZMQ_ASSERT(r)
 ]
 
 

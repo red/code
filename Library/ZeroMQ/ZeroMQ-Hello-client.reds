@@ -17,18 +17,24 @@ Red/System [
 
 #include %ZeroMQ.reds 
 
+#define ZMQ_ASSERT(r) [
+	if r < 0 [print-line ["ZMQ [" zmq/errno "]: " zmq/strerror zmq/errno]]
+]
+
 a: 0 b: 0 c: 0
 zmq/version :a :b :c
 print-line ["ZMQ version: " a "." b "." c]
 
-print-line "Connecting to hello world server…"
+print-line "Connecting to hello world server..."
 
 ctx: zmq/ctx_new
-requester: zmq/socket ctx ZMQ_REP
+requester: zmq/socket ctx ZMQ_REQ
 
-print-line ["requester: " requester]
+print-line ["ZMQ Context:   " ctx]
+print-line ["ZMQ Requester: " requester]
 
-zmq/connect requester "tcp://localhost:85555"
+r: zmq/connect requester "tcp://127.0.0.1:5556"
+ZMQ_ASSERT(r)
 
 buffer: allocate 10
 
@@ -36,8 +42,11 @@ n: 0
 while [n < 10][
 	n: n + 1
 	print-line ["Sending Hello " n]
-	zmq/send requester as byte-ptr! "Hello" 5 0
-    zmq/recv requester buffer 10 0
+	r: zmq/send requester as byte-ptr! "Hello" 5 0
+	ZMQ_ASSERT(r) if r < 0 [break]
+
+    r: zmq/recv requester buffer 10 0
+    ZMQ_ASSERT(r) if r < 0 [break]
     print-line ["Received World " n]
 ]
 
