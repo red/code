@@ -11,7 +11,7 @@ Red/System [
 	Comment: {
 		This script needs external library, which can be downloaded from this site:
 		http://zeromq.org/area:download
-		(tested with xz-5.2.3-windows\[bin_i686|bin_i686-sse2]\liblzma.dll)
+		(tested with libzmq-v120-mt-4_0_4.dll - renamed to libzmq.dll - on Win10)
 	}
 ]
 
@@ -355,6 +355,26 @@ ZMQ: context [
 			nitems  [integer!]
 			timeout [integer!]
 			return: [integer!]
+		]
+		;*  Built-in message proxy (3-way)
+		proxy: "zmq_proxy" [
+			frontend [zmq-socket!]
+			backend  [zmq-socket!]
+			capture  [zmq-socket!]
+			return: [integer!]
+		]
+		;*  Encode a binary key as printable text using ZMQ RFC 32
+		z85_encode: "zmq_z85_encode" [
+			dest   [c-string!]
+			data   [byte-ptr!]
+			size   [integer!]
+			return: [c-string!]
+		]
+		;*  Encode a binary key from printable text per ZMQ RFC 32
+		z85_decode: "zmq_z85_decode" [
+			dest    [byte-ptr!]
+			string  [c-string!]
+			return: [byte-ptr!]
 		]
 	]]
 ]

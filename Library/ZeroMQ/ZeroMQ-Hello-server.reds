@@ -11,7 +11,7 @@ Red/System [
 	Comment: {
 		This script needs external library, which can be downloaded from this site:
 		http://zeromq.org/area:download
-		(tested with xz-5.2.3-windows\[bin_i686|bin_i686-sse2]\liblzma.dll)
+		(tested with libzmq-v120-mt-4_0_4.dll - renamed to libzmq.dll - on Win10)
 	}
 ]
 
@@ -40,11 +40,17 @@ if r <> 0 [
 	quit -1
 ]
 
-buffer: allocate 10
+buffer: allocate 256
+bytes: 0
 forever [
 	print-line "Waiting for request..."
-	r: zmq/recv responder buffer 10 0
-	ZMQ_ASSERT(r)
+	bytes: zmq/recv responder buffer 255 0
+	ZMQ_ASSERT(bytes)
+	if bytes >= 0 [
+		if bytes > 255 [bytes: 255]
+		bytes: bytes + 1
+		buffer/bytes: #"^@" ;to create valid c-string ending just in case
+	]
 	print-line ["Received request: " as c-string! buffer]
 	r: zmq/send responder as byte-ptr! "World" 5 0
 	ZMQ_ASSERT(r)
