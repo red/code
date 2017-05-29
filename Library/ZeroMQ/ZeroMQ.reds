@@ -356,5 +356,25 @@ ZMQ: context [
 			timeout [integer!]
 			return: [integer!]
 		]
+		;*  Built-in message proxy (3-way)
+		proxy: "zmq_proxy" [
+			frontend [zmq-socket!]
+			backend  [zmq-socket!]
+			capture  [zmq-socket!]
+			return: [integer!]
+		]
+		;*  Encode a binary key as printable text using ZMQ RFC 32
+		z85_encode: "zmq_z85_encode" [
+			dest   [c-string!]
+			data   [byte-ptr!]
+			size   [integer!]
+			return: [c-string!]
+		]
+		;*  Encode a binary key from printable text per ZMQ RFC 32
+		z85_decode: "zmq_z85_decode" [
+			dest    [byte-ptr!]
+			string  [c-string!]
+			return: [byte-ptr!]
+		]
 	]]
 ]
