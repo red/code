@@ -36,19 +36,31 @@ print-line ["ZMQ Requester: " requester]
 r: zmq/connect requester "tcp://127.0.0.1:5556"
 ZMQ_ASSERT(r)
 
-buffer: allocate 10
+buffer: allocate 256
 
 n: 0
+bytes: 0
+
 while [n < 10][
 	n: n + 1
 	print-line ["Sending Hello " n]
-	r: zmq/send requester as byte-ptr! "Hello" 5 0
-	ZMQ_ASSERT(r) if r < 0 [break]
-
-    r: zmq/recv requester buffer 10 0
-    ZMQ_ASSERT(r) if r < 0 [break]
+	bytes: zmq/send requester as byte-ptr! "Hello" 5 0
+	if bytes < 0 [
+		ZMQ_ASSERT(bytes)
+		break
+	]
+    bytes: zmq/recv requester buffer 255 0
+    either bytes < 0 [
+    	ZMQ_ASSERT(bytes)
+    	break
+    ][
+		if bytes > 255 [bytes: 255]
+		bytes: bytes + 1
+		buffer/bytes: #"^@" ;to create valid c-string ending just in case
+	]
     print-line ["Received " n ": " as c-string! buffer]
 ]
 
 zmq/close requester
 zmq/ctx_destroy ctx
+free buffer
