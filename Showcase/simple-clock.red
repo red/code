@@ -40,7 +40,7 @@ view [
 	across
 	
 	source: area #13181E 410x300 no-border clock-demo font [
-		name: "Consolas"
+		name: font-fixed
 		size: 9
 		color: hex-to-rgb #9EBACB
 	]
