@@ -5,7 +5,7 @@ Red [
 	File: 	 %picosheet.red
 	Needs:	 'View
 	Purpose: {
-		Shows how to implement a native reactice spreadsheet in a single page
+		Shows how to implement a native reactive spreadsheet in a single page
 		of code.
 		
 		For more information about this demo see the related article:
@@ -49,7 +49,7 @@ repeat y 9 [
 			]
 			actors: context [
 				on-create: on-unfocus: function [f e][
-					f/color: none
+					f/color: white
 					if rel: f/extra/old [react/unlink rel 'all]
 					
 					text: copy f/text
