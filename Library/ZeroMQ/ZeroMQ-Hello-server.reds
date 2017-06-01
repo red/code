@@ -15,7 +15,8 @@ Red/System [
 	}
 ]
 
-#include %ZeroMQ.reds 
+#include %ZeroMQ.reds
+#include %../os/wait.reds
 
 #define ZMQ_ASSERT(r) [
 	if r < 0 [print-line ["ZMQ [" zmq/errno "]: " zmq/strerror zmq/errno ]]
@@ -40,6 +41,9 @@ if r <> 0 [
 	quit -1
 ]
 
+r: zmq/setsockopt responder ZMQ_SUB as byte-ptr! "" 0
+ZMQ_ASSERT(r)
+
 buffer: allocate 256
 bytes: 0
 forever [
@@ -54,6 +58,7 @@ forever [
 	print-line ["Received request: " as c-string! buffer]
 	r: zmq/send responder as byte-ptr! "World" 5 0
 	ZMQ_ASSERT(r)
+	wait 1
 ]
 
 
