@@ -7,21 +7,12 @@ Red/System [
 	
 ]
 
+#include %../os/wait.reds
+#include %../os/key-hit.reds
+
 BASS: context [
 
 	#include %bass.reds
-
-	#import [
-		"kernel32.dll" stdcall [
-			Sleep: "Sleep" [
-				dwMilliseconds	[integer!]
-			]
-		]
-		LIBC-file cdecl [
-			_kbhit: "_kbhit" [ return: [integer!] ]
-			_getch: "_getch" [ return: [integer!] ]
-		]
-	]
 
 	if false = BASS_Init -1 44100 BASS_DEVICE_3D 0 null [
 		print ["BASS Error [" BASS_ErrorGetCode "]: Can't initialize device!" lf]
@@ -86,17 +77,16 @@ BASS: context [
 	print "Press '3' to toggle MOD music^/"
 	print "Press 'e' to toggle MOD music echo^/^/"
 
-	quit?: false
 	key: 0
 	channel2: 0
 	fx_echo: 0
 	err: 0
 
-	until [ ;Main loop
-		if 0 <> _kbhit [
-			key: _getch
+	forever [ ;Main loop
+		if key-hit [
+			key: key-hit-char
 			switch key [
-				13 [ quit?: true ] ;pressed ENTER
+				13 [ break ] ;pressed ENTER
 				#"1" [
 					either BASS_ACTIVE_PLAYING = BASS_ChannelIsActive channel1 [
 						BASS_ChannelPause channel1
@@ -126,12 +116,12 @@ BASS: context [
 						print-line "music FX removed"
 					]
 				]
+				default [true]
 			]
 			err: BASS_ErrorGetCode
 			if err > 0 [ print-line ["BASS Error [" err "]"] ]
 		]
-		Sleep 10
-		quit?
+		wait 10
 	]
 	BASS_Stop
 	BASS_SampleFree sound1
