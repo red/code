@@ -15,7 +15,8 @@ Red/System [
 	}
 ]
 
-#include %ZeroMQ.reds 
+#include %ZeroMQ.reds
+#include %../os/wait.reds
 
 #define ZMQ_ASSERT(r) [
 	if r < 0 [print-line ["ZMQ [" zmq/errno "]: " zmq/strerror zmq/errno]]
@@ -59,6 +60,7 @@ while [n < 10][
 		buffer/bytes: #"^@" ;to create valid c-string ending just in case
 	]
     print-line ["Received " n ": " as c-string! buffer]
+    wait 500
 ]
 
 zmq/close requester
