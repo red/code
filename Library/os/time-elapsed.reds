@@ -53,7 +53,7 @@ ctx-timing: context [
 	update ;does the initial update (application starts)
 ]
 
-time-elapsed: func [
+#either red-pass? = no [time-elapsed:][_time-elapsed:] func [
 	"Returns number of seconds since last call (or application start for the first call)"
 	return: [float!]
 	/local time
