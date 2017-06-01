@@ -10,6 +10,8 @@ Red [
 	}
 ]
 
-events: read https://api.github.com/repos/red/red/events
-list: parse events [collect [any [thru "message" 3 skip keep to ["\n" | {"}]]]]
-view [text-list data list]
+view [
+	text-list data parse
+		read https://api.github.com/repos/red/red/events
+		[collect [any [thru "message" 3 skip keep to ["\n" | {"}]]]]
+]
