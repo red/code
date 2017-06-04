@@ -49,7 +49,7 @@ repeat y 9 [
 			]
 			actors: context [
 				on-create: on-unfocus: function [f e][
-					f/color: none
+					f/color: white
 					if rel: f/extra/old [react/unlink rel 'all]
 					
 					text: copy f/text
