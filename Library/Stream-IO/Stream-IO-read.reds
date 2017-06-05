@@ -12,7 +12,7 @@ Red/System [
 
 #define SIO_ASSERT_IN_SPACE(bytes) [
 	if in/tail < (in/pos + bytes) [
-		print-line "Reading out out bondaries!"
+		realloc-buffer in as integer! (in/pos + bytes - in/head)
 	]
 ]
 
@@ -233,4 +233,13 @@ readCount: func[
 ][
 	i: readUI8
 	either 255 = i [readUI16][i]
+]
+
+readString: func[
+	return: [c-string!]
+	/local str [c-string!]
+][
+	str: as c-string! in/pos
+	in/pos: (memchr in/pos #"^@" as-integer (in/end - in/pos)) + 1
+	str
 ]

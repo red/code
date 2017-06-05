@@ -10,16 +10,15 @@ Red/System [
 	}
 ]
 
-#define SIO_BUFFER_SIZE 32768
 #define SIO_ASSERT_OUT_SPACE(bytes) [
 	if out/end < (out/pos + bytes) [
-		return 0
+		realloc-buffer out as integer! (out/pos + bytes - out/head)
 	]
 ]
 
 out: declare sio-buffer!
 
-alloc-buffer out SIO_BUFFER_SIZE
+alloc-buffer out 255
 
 
 writeUI8: func[i [integer!] return: [integer!]][
@@ -173,4 +172,13 @@ writeCount: func[
 		writeUI16 value
 	]
 ]
-
+writeString: func[
+	value [c-string!]
+	/local bytes
+][
+	writeBitAlign
+	bytes: 1 + length? value
+	SIO_ASSERT_OUT_SPACE(bytes)
+	copy-memory out/pos as byte-ptr! value bytes
+	out/pos: out/pos + bytes
+]
