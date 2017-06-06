@@ -48,6 +48,12 @@ writeSB -1 8
 writeUB -1 8
 writeFB 1.2 18
 writeBitAlign
+writeString "Hello Red"
+writeString "ending?"
+writeUI8 10
+
+
+print-line "end writing^/"
 
 simple-io/write-data file out/head as integer! (out/pos - out/head)
 
@@ -77,3 +83,11 @@ print-line readUB 8
 print-line readSB 8
 print-line readUB 8
 print-line readFB 18
+
+;print-line [readString " " readString readUI8] ;this does not work as expected!
+print-line readString ;= Hello Red
+print-line readString ;= ending?
+print-line readUI8 ;=10
+
+
+print-line "end reading"

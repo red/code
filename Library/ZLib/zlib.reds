@@ -17,8 +17,9 @@ Red/System [
 	}
 ]
 
+#include %../os/definitions.reds
+
 #define file! int-ptr!
-#define handle! int-ptr!
 
 zlib: context [
 	#define gzfile!  integer!
