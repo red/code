@@ -89,11 +89,11 @@ do-input: func [
 					quit 1
 				]
 			]
-			IS_ARG?("--header")  [ actions: swf/EXTRACT_HEADER   ]
-			IS_ARG?("--tags")    [ actions: swf/EXTRACT_TAGS     ]
-			IS_ARG?("--exports") [ actions: swf/EXTRACT_EXPORTS  ]
-			IS_ARG?("--bitmaps") [ actions: swf/EXTRACT_BITMAPS  ]
-			IS_ARG?("--sounds")  [ actions: swf/EXTRACT_SOUNDS   ]
+			IS_ARG?("--header")  [ actions: actions or swf/EXTRACT_HEADER   ]
+			IS_ARG?("--tags")    [ actions: actions or swf/EXTRACT_TAGS     ]
+			IS_ARG?("--exports") [ actions: actions or swf/EXTRACT_EXPORTS  ]
+			IS_ARG?("--bitmaps") [ actions: actions or swf/EXTRACT_BITMAPS  ]
+			IS_ARG?("--sounds")  [ actions: actions or swf/EXTRACT_SOUNDS   ]
 			true [
 				break ;continue processing file names
 			]
