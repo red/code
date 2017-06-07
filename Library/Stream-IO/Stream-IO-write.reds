@@ -12,7 +12,10 @@ Red/System [
 
 #define SIO_ASSERT_OUT_SPACE(bytes) [
 	if out/end < (out/pos + bytes) [
-		realloc-buffer out as integer! (out/pos + bytes - out/head)
+		if not realloc-buffer out as integer! (out/pos + bytes - out/head) [
+			print-line "FAILED TO REALLOCATE OUTPUT BUFFER"
+			quit 1
+		]
 	]
 ]
 
@@ -181,4 +184,77 @@ writeString: func[
 	SIO_ASSERT_OUT_SPACE(bytes)
 	copy-memory out/pos as byte-ptr! value bytes
 	out/pos: out/pos + bytes
+]
+
+writeFormated: func[
+	[typed]	count [integer!] list [typed-value!]
+	/local 
+		fp		 [typed-float!]
+		fp32	 [typed-float32!]
+		s		 [c-string!]
+		i        [integer!]
+		f        [float!]
+		e?
+][
+	until [
+		switch list/type [
+			type-logic!	   [
+				writeString either as-logic list/value ["true"]["false"]
+				out/pos: out/pos - 1 ;not including NULL char from the c-string
+				i: 0
+			]
+			type-integer!  [
+				SIO_ASSERT_OUT_SPACE(16) ;should be large enough for 32bit int
+				i: sprintf [out/pos "%i" list/value]
+			]
+			type-float!    [
+				SIO_ASSERT_OUT_SPACE(24)
+				fp: as typed-float! list
+				f: as float! fp/value
+				either f - (floor f) = 0.0 [
+					i: sprintf [out/pos "%g.0" f]
+					if i > 0 [
+						e?: no
+						while [out/pos/1 <> null-byte][
+							if out/pos/1 = #"e" [e?: yes]
+							out/pos: out/pos + 1
+						]
+						if e? [out/pos: out/pos - 2 out/pos/1: null-byte]
+					]
+					i: 0
+				][
+					i: sprintf [out/pos "%.16g" f]
+				]
+			]
+			type-float32!  [
+				SIO_ASSERT_OUT_SPACE(24)
+				fp32: as typed-float32! list
+				f: as float! fp32/value
+				either f - (floor f) = 0.0 [
+					i: sprintf [out/pos "%g.0" f]
+				][
+					i: sprintf [out/pos "%.7g" f]
+				]
+			]
+			type-byte!     [
+				SIO_ASSERT_OUT_SPACE(1)
+				out/pos/1: as-byte list/value
+				i: 1
+			]
+			type-c-string! [
+				s: as-c-string list/value
+				i: length? s
+				SIO_ASSERT_OUT_SPACE(i)
+				copy-memory out/pos as byte-ptr! s i
+			]
+			default 	   [
+				SIO_ASSERT_OUT_SPACE(9)
+				i: sprintf [out/pos "%08Xh" list/value]
+			]
+		]
+		if i > 0 [out/pos: out/pos + i]
+		count: count - 1
+		list: list + 1
+		zero? count
+	]
 ]

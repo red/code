@@ -12,7 +12,10 @@ Red/System [
 
 #define SIO_ASSERT_IN_SPACE(bytes) [
 	if in/tail < (in/pos + bytes) [
-		realloc-buffer in as integer! (in/pos + bytes - in/head)
+		if not realloc-buffer in as integer! (in/pos + bytes - in/head) [
+			print-line "FAILED TO REALLOCATE INPUT BUFFER"
+			quit 1
+		]
 	]
 ]
 
