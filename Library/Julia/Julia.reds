@@ -73,6 +73,7 @@ julia: context [
 				v [jl-value!]
 				return: [float!]
 			]
+			;@@TODO: add more import functions
 
 			jl_any_type: "jl_any_type" [integer!]
 			jl_slotnumber_type: "jl_slotnumber_type" [integer!]
@@ -81,6 +82,7 @@ julia: context [
 			jl_uint32_type: "jl_uint32_type" [integer!]
 			jl_float64_type: "jl_float64_type" [integer!]
 			jl_char_type: "jl_char_type" [integer!]
+			;@@TODO: add more types
 
 		]; libjulia
 	]; #import 
@@ -90,10 +92,10 @@ julia: context [
 		jval [jl-value!]
 	][
 		print-line [
-			"VAL " jval " has: " as int-ptr! jval/1 " " as int-ptr! jval/2 " " as int-ptr! jval/3
+			"VAL " jval " has: "
+			     as int-ptr! jval/0 " " as int-ptr! jval/1 " " as int-ptr! jval/2 " " as int-ptr! jval/3
 			 " " as int-ptr! jval/4 " " as int-ptr! jval/5 " " as int-ptr! jval/6 " " as int-ptr! jval/7
-			 " " as int-ptr! jval/8 " " as int-ptr! jval/9
-			 lf as int-ptr! jval/-1 " " as int-ptr! jval/0 
+			 " " as int-ptr! jval/8
 		]
 	]
 ] ; context julia

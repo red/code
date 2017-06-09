@@ -14,7 +14,6 @@ Red/System [
 	}
 ]
 
-print-line "KUK"
 #include %Julia.reds
 
 main: func [
@@ -64,52 +63,6 @@ main: func [
 		ret: jl_eval_string {c}
 		print-line ["c is:  "  jl_unbox_int32 ret]
 
-
-		ret: jl_eval_string {2.0}
-		print "ret float?:  "  probe-jl-value ret
-		ret: jl_eval_string {2.0}
-		print "ret float?:  "  probe-jl-value ret
-
-
-;		ret: jl_eval_string {a = 2; a}
-;		print "ret a?:      " probe-jl-value ret
-;
-;		print-line ["A is: " jl_unbox_int32 ret]
-;
-;		ret: jl_eval_string {typeof(a)}
-;		print "ret typeof?: " probe-jl-value ret
-;
-;		ret: jl_eval_string {a}
-;		print "ret int?:    " probe-jl-value ret
-;		ret: jl_eval_string {2}
-;		print "ret int?:    " probe-jl-value ret
-;		ret: jl_eval_string {3}
-;		print "ret int?:    " probe-jl-value ret
-;		ret: jl_eval_string {42}
-;		print "ret int?:    " probe-jl-value ret
-;
-;		ret: jl_eval_string {Char(120)}
-;		print "ret char?:   " probe-jl-value ret
-;		ret: jl_eval_string {Char(1	)}
-;		print "ret char?:   " probe-jl-value ret
-;
-;		print-line ["string-type: " as int-ptr! jl_string_type]
-;		probe-jl-value as int-ptr! jl_string_type
-;
-;		print-line ["slotnumber-type: " as int-ptr! jl_slotnumber_type]
-;		probe-jl-value as int-ptr! jl_slotnumber_type
-;
-;		print-line ["any-type: " as int-ptr! jl_any_type]
-;		probe-jl-value as int-ptr! jl_any_type
-;
-;		print-line ["int32-type: " as int-ptr! jl_int32_type]
-;		probe-jl-value as int-ptr! jl_int32_type
-;
-;		print-line ["uint32-type: " as int-ptr! jl_uint32_type]
-;		probe-jl-value as int-ptr! jl_uint32_type
-;
-;		print-line ["char-type: " as int-ptr! jl_char_type]
-;		probe-jl-value as int-ptr! jl_char_type
 
 		jl_atexit_hook 0
 	]
