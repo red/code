@@ -1129,7 +1129,7 @@ Red [
 								bytes: bitmapData/scan0
 								result: MagickExportImagePixels *wand 0 0 width height "BGRA" CharPixel bytes
 								pixels: as int-ptr! bytes
-								OS-image/unlock-bitmap bitmap as-integer bitmapData
+								OS-image/unlock-bitmap-fmt bitmap as-integer bitmapData
 								img/node: as node! bitmap
 								return as red-value! img
 							]
