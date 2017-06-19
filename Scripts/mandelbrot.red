@@ -51,6 +51,7 @@ mandelbrot: function [img xmin xmax ymin ymax iterations][
 			pix: skip pix 3
 			ix: ix + 1
 		]
+		unless img/state [exit]
 		img/image/rgb: head pix
  		show img
  		do-events/no-wait								;-- allow GUI msgs to be processed
