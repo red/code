@@ -64,6 +64,24 @@ sio-decimal-pair!: alias struct! [
 	y [float!]
 ]
 
+sio-decimal-matrix!: alias struct! [
+	ScaleX      [float!]
+	ScaleY      [float!]
+	RotateSkew0 [float!]
+	RotateSkew1 [float!]
+	TranslateX  [float!]
+	TranslateY  [float!]
+]
+
+sio-cxform!: alias struct! [
+	RMult [integer!]
+	GMult [integer!]
+	BMult [integer!]
+	RAdd  [integer!]
+	GAdd  [integer!]
+	BAdd  [integer!]
+]
+
 sio-buffer!: alias struct! [
 	pos   [byte-ptr!]
 	head  [byte-ptr!]
@@ -96,7 +114,7 @@ realloc-buffer: func[
 ][
 	head: buffer/head
 	old-size: as integer! (buffer/end - head)
-	print-line ["REALLOCK " old-size " -> " size] 
+	;print-line ["REALLOCK " old-size " -> " size] 
 	
 	ofs-pos: as integer! (buffer/pos - head)
 	ofs-tail: as integer! (buffer/tail - head)
