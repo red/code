@@ -33,7 +33,7 @@ julia: context [
 
 	#switch OS [
 		Windows   [ #define libjulia "libjulia.dll" ]
-		MacOSX    [ #define libjulia "libjulia.dylib" ] ;@@ FIXME: use real file name
+		MacOS     [ #define libjulia "libjulia.dylib" ] ;@@ FIXME: use real file name
 		#default  [ #define libjulia "libjulia.so" ]    ;@@ FIXME: use real file name
 	]
 

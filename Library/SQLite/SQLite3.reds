@@ -8,7 +8,7 @@ Red/System [
 
 #switch OS [
 	Windows   [	#define SQLITE_LIBRARY "sqlite3.dll" ]
-	MacOSX    [ #define SQLITE_LIBRARY "libsqlite3.dylib" ]
+	MacOS     [ #define SQLITE_LIBRARY "libsqlite3.dylib" ]
 	#default  [ #define SQLITE_LIBRARY "libsqlite3.so.0"]
 ]
 

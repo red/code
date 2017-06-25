@@ -46,8 +46,8 @@ curses: context [
 			#include %curses-win32.reds
 			#define curses-library "pdcurses.dll"
 		]
-		MacOSX    [
-			#include %curses-macosx.reds				;-- TODO: missing file, to be written with macosx curses.h
+		MacOS    [
+			#include %curses-macos.reds				;-- TODO: missing file, to be written with MacOS curses.h
 			#define curses-library "libncursesw.5.dylib";-- TODO: check this
 		]
 		#default  [
@@ -957,7 +957,7 @@ curses: context [
 					return:   [integer!]
 				]
 			]
-			MacOSX    [
+			MacOS    [
 			]
 			#default  [
 				ungetch: "ungetch" [    				;-- Push a character onto the input queue.
