@@ -122,7 +122,7 @@ get-tag-name: func[
 		82      ["DoAction3"]
 		83      ["DefineShape5"]
 		84      ["DefineMorphShape2"]
-		86      ["DefineSceneAndFrameLabelData"]
+		86      ["SceneAndFrameLabelData"]
 		87      ["DefineBinaryData"]
 		88      ["DefineFontName"]
 		89      ["StartSound2"]
@@ -148,6 +148,10 @@ swf: context [
 
 	tagId:     0
 	tagLength: 0
+	tagPos: as byte-ptr! 0
+
+	tmpMatrix: declare sio-decimal-matrix!
+	tmpCXFORM: declare sio-cxform!
 
 	#enum swf-tag-action! [
 		EXTRACT_HEADER:   01h
@@ -155,17 +159,27 @@ swf: context [
 		EXTRACT_EXPORTS:  04h
 		EXTRACT_BITMAPS:  08h
 		EXTRACT_SOUNDS:   10h
+		EXTRACT_INFO:     20h  
 	]
 	tag-actions: EXTRACT_TAGS ;or EXTRACT_EXPORTS or EXTRACT_BITMAPS
 
 	#define SWF_TAG_ACTION(id) [id = (tag-actions and id)]
 	#define PRINT_TAG_INFO [
 		case [
-			verbose > 1 [
-				writeFormated ["Tag: " tagId #"^-" (in/pos - in/head) " size: " tagLength "^-;" get-tag-name tagId lf]
+			SWF_TAG_ACTION(EXTRACT_INFO) [
+				writeFormated [get-tag-name tagId lf]
+				writeFormated ["At: " (tagPos - in/head) " tagId: " tagId " bytes: " tagLength lf lf]
+			] 
+			verbose > 2 [
+				writeFormated ["At: " (tagPos - in/head) " Tag: " tagId "^-size: " tagLength "^-;" get-tag-name tagId lf]
+			]
+			verbose = 2 [
+				writeFormated [(tagPos - in/head) #" " tagId]
+				writePaddingTo #" " 14
+				writeFormated [get-tag-name tagId lf]
 			]
 			verbose = 1 [
-				writeFormated [tagId #"^-" (in/pos - in/head) #" " tagLength lf]
+				writeFormated [(tagPos - in/head) #" " tagId lf]
 			]
 			true [0] ;else print nothing
 		]
@@ -264,80 +278,209 @@ swf: context [
 
 		in/pos: Content
 		while [in/pos < in/tail][
-			i: readUI16 ;tagAndLength
-			tagId:     (65472 and i) >> 6
-			tagLength: i and 63
-			if tagLength = 63 [tagLength: readUI32]
-
-			case [
-				all [
-					any [tagId = 56 tagId = 76]
-					SWF_TAG_ACTION(EXTRACT_EXPORTS)
-				][
-					PRINT_TAG_INFO
-					writeFormated ["Exports: [" lf]
-					i: readUI16 ;Number of assets to export
-					while [i > 0][
-						writeFormated ["^-"  readUI16     ] ;ID
-						writeFormated ["^-%" readString lf] ;Identifier
-						i: i - 1
-					]
-					writeFormated ["]" lf]
-				]
-				all [
-					tagId = 21
-					SWF_TAG_ACTION(EXTRACT_BITMAPS)
-				][
-					PRINT_TAG_INFO
-					i: readUI16 ;ID
-					writeFormated ["^-BitmapID: " i lf]
-					writeFormated ["^-BitmapData: " in/pos " " (tagLength - 2) " bytes" lf]
-					in/pos: in/pos + tagLength - 2
-				]
-				all [
-					tagId = 20
-					SWF_TAG_ACTION(EXTRACT_BITMAPS)
-				][
-					PRINT_TAG_INFO
-					pos: in/pos + tagLength
-					i:      readUI16 ;ID
-					format: readUI8
-					writeFormated ["^-BitmapFormat: " format   lf]
-					writeFormated ["^-BitmapWidth:  " readUI16 lf]
-					writeFormated ["^-BitmapHeight: " readUI16 lf]
-					if format = 3 [
-						writeFormated ["^-BitmapColorTableSize: " readUI8 lf]
-					]
-					writeFormated ["^-ZlibBitmapData: " in/pos " " as integer! (pos - in/pos) " bytes" lf]
-					in/pos: pos
-				]
-				all [
-					any [tagId = 36 tagId = 35]
-					SWF_TAG_ACTION(EXTRACT_BITMAPS)
-				][
-					;@@ TODO
-					PRINT_TAG_INFO
-					in/pos: in/pos + tagLength
-				]
-				all [
-					tagId = 14 ;DefineSound
-					SWF_TAG_ACTION(EXTRACT_SOUNDS)
-				][
-					;@@ TODO
-					PRINT_TAG_INFO
-					in/pos: in/pos + tagLength
-				]
-				true [
-					if SWF_TAG_ACTION(EXTRACT_TAGS) [ PRINT_TAG_INFO ]
-					in/pos: in/pos + tagLength
-				]
-			]
+			tagPos: in/pos
+			process-tag
 		]
 
 		writeUI8 0 ;closing c-string
 		as c-string! out/head
 	]
 	
+	parse-tag: func[
+		tag-offset   [integer!]
+		return: [c-string!]
+	][
+		if not all [Content >= in/head Content <= in/end][ return {ERROR: "no data"} ]
+		tagPos: in/head + tag-offset
+		if any [tagPos > in/end tagPos < in/head][ return {ERROR: "index out of range"}]
+		in/pos: tagPos
+
+		out: alloc-buffer out 32768
+
+		process-tag
+
+		writeUI8 0 ;closing c-string
+		as c-string! out/head
+	]
+
+	process-tag: func[
+		/local i format pos offset tagEnd R G B is? col
+	][
+		i: readUI16 ;tagAndLength
+		tagId:     (65472 and i) >> 6
+		tagLength: i and 63
+		if tagLength = 63 [tagLength: readUI32]
+		tagEnd: in/pos + tagLength
+
+		case [
+			;-- Display list tags
+			all [
+				tagId = 4 ;PlaceObject
+				SWF_TAG_ACTION(EXTRACT_INFO)
+			][
+				PRINT_TAG_INFO
+				i: readUI16 ;ID
+				writeFormated ["CharacterID: " i lf]
+				writeFormated ["Depth:       " readUI16 lf]
+				readMatrixTo tmpMatrix
+				writeFormated ["Matrix: ["
+					"^/^-" tmpMatrix/scaleX 
+					"^/^-" tmpMatrix/scaleY
+					"^/^-" tmpMatrix/RotateSkew0
+					"^/^-" tmpMatrix/RotateSkew1
+					"^/^-" tmpMatrix/TranslateX
+					"^/^-" tmpMatrix/TranslateY
+					"^/]^/"
+				]
+				if in/pos < tagEnd [
+					readCXFORMTo tmpCXFORM
+					writeFormated ["CXFORM: ["
+						"^/^-" tmpCXFORM/RMult 
+						"^/^-" tmpCXFORM/GMult
+						"^/^-" tmpCXFORM/BMult
+						"^/^-" tmpCXFORM/RAdd
+						"^/^-" tmpCXFORM/GAdd
+						"^/^-" tmpCXFORM/BAdd
+						"^/]^/"
+					]
+				]
+			]
+
+			all [
+				tagId = 39 ;DefineSprite
+				SWF_TAG_ACTION(EXTRACT_INFO)
+			][
+				PRINT_TAG_INFO
+				i: readUI16 ;ID
+				writeFormated ["SpriteID: " i lf]
+				writeFormated ["FrameCount: " readUI16 lf]
+				writeFormated "ControlTags: [^/"
+				i: 0
+				while [in/pos < tagEnd][
+					tagPos: in/pos
+					i: i + 1
+					;writeFormated ["^/;#### tag number: " i lf]
+					process-sprite-tag
+				]
+			]
+
+			;-- Control Tags
+			all [
+				tagId = 9 ;SetBackgroundColor
+				SWF_TAG_ACTION(EXTRACT_INFO)
+			][
+				PRINT_TAG_INFO
+				R: readUI8
+				G: readUI8
+				B: readUI8
+				writeFormated ["BackgroundColor: " R #"." G #"." B lf]
+			]
+			all [
+				tagId = 43 ;FrameLabel
+				SWF_TAG_ACTION(EXTRACT_INFO)
+			][
+				writeFormated ["FrameLabel: " readString lf]
+				is?: all [
+					in/pos < tagEnd
+					readUI8 > 0
+				]
+				writeFormated ["IsAnchor:   " is? lf]
+			]
+
+
+			all [
+				any [tagId = 56 tagId = 76]
+				any [SWF_TAG_ACTION(EXTRACT_INFO) SWF_TAG_ACTION(EXTRACT_EXPORTS)]
+			][
+				PRINT_TAG_INFO
+				writeFormated ["Exports: [" lf]
+				i: readUI16 ;Number of assets to export
+				while [i > 0][
+					writeFormated ["^-"  readUI16     ] ;ID
+					writeFormated ["^-%" readString lf] ;Identifier
+					i: i - 1
+				]
+				writeFormated ["]" lf]
+			]
+			all [
+				tagId = 21
+				any [SWF_TAG_ACTION(EXTRACT_INFO) SWF_TAG_ACTION(EXTRACT_BITMAPS)]
+			][
+				PRINT_TAG_INFO
+				i: readUI16 ;ID
+				writeFormated ["BitmapID: " i lf]
+				writeFormated ["BitmapData: " in/pos " " (tagLength - 2) " bytes" lf]
+				in/pos: in/pos + tagLength - 2
+			]
+			all [
+				any [tagId = 36 tagId = 20]
+				any [SWF_TAG_ACTION(EXTRACT_INFO) SWF_TAG_ACTION(EXTRACT_BITMAPS)]
+			][
+				PRINT_TAG_INFO
+				pos: in/pos + tagLength
+				i:      readUI16 ;ID
+				format: readUI8
+				writeFormated ["BitmapID: " i lf]
+				writeFormated ["BitmapFormat: " format   lf]
+				writeFormated ["BitmapWidth:  " readUI16 lf]
+				writeFormated ["BitmapHeight: " readUI16 lf]
+				if format = 3 [
+					writeFormated ["BitmapColorTableSize: " readUI8 lf]
+				]
+				writeFormated ["ZlibBitmapData: " in/pos " " as integer! (pos - in/pos) " bytes" lf]
+				in/pos: pos
+			]
+
+			all [
+				tagId = 35
+				any [SWF_TAG_ACTION(EXTRACT_INFO) SWF_TAG_ACTION(EXTRACT_BITMAPS)]
+			][
+				PRINT_TAG_INFO
+				pos: in/pos + tagLength
+				i:      readUI16 ;ID
+				writeFormated ["BitmapID: " i]
+				offset: readUI32
+				writeFormated ["BmpImageData: " in/pos " bytes: " offset lf]
+				in/pos: in/pos + offset
+				writeFormated ["BmpAlphaData: " in/pos " bytes: " (pos - in/pos) lf]
+				in/pos: pos
+			]
+			all [
+				tagId = 14 ;DefineSound
+				SWF_TAG_ACTION(EXTRACT_SOUNDS)
+			][
+				;@@ TODO
+				PRINT_TAG_INFO
+			]
+			true [
+				if SWF_TAG_ACTION(EXTRACT_TAGS) [ PRINT_TAG_INFO ]
+				if SWF_TAG_ACTION(EXTRACT_INFO) [
+					writeFormated "Raw: #{^/"
+					writeFormatedBinary in/pos as integer! (tagEnd - in/pos)
+					if any [out/pos/0 = #"^/" out/pos/0 = #" "][out/pos: out/pos - 1]
+					writeFormated "}^/"
+				]
+			]
+		]
+		in/pos: tagEnd ;to make sure that we are really at the end of tag after parsing it
+	]
+
+	process-sprite-tag: func[
+		/local i format pos offset tagEnd R G B is? col
+	][
+		i: readUI16 ;tagAndLength
+		tagId:     (65472 and i) >> 6
+		tagLength: i and 63
+		if tagLength = 63 [tagLength: readUI32]
+		tagEnd: in/pos + tagLength
+
+		case [
+			true [
+				 writeFormated ["^-" get-tag-name tagId lf]
+			]
+		]
+		in/pos: tagEnd ;to make sure that we are really at the end of tag after parsing it
+	]
 ]
 
 

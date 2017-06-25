@@ -1,5 +1,5 @@
 Red/System [
-	Title:	"SWF tool"
+	Title:	"SWF tool - Red/System version"
 	Purpose: "Just a simple test. So far it displays some info about given SWF file"
 	Author: "Oldes"
 	File: 	%swf-tool.reds
