@@ -75,7 +75,7 @@ zlib: context [
 
 	#switch OS [
 		Windows   [ #define z-library "zlib1.dll" ]
-		MacOS     [ #define z-library "libz.1.dylib" ]
+		macOS     [ #define z-library "libz.1.dylib" ]
 		#default  [ #define z-library "libz.so.1" ]
 	]
 
