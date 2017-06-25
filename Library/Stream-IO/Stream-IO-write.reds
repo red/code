@@ -258,3 +258,70 @@ writeFormated: func[
 		zero? count
 	]
 ]
+
+writePaddingTo: func[
+	"Writes provided char from current position upto absolute position from the line start"
+	char   [byte!]
+	column [integer!]
+	/local p c i
+][
+	;search for current column position
+	p: out/pos
+	i: -1
+	while [p > out/head][
+		c: p/0
+		if any [c = #"^/" c = #"^M"][
+			i: as integer! (out/pos - p)
+			break
+		]
+		p: p - 1
+	]
+	if i < 0 [i: as integer! (out/pos - p)] ;<- no line break was found
+	i: either i >= column [
+		1 ;<- current position is over required column, still adding at least one char
+	][
+		column - i ;<-gets number of chars we must write
+	] 
+	SIO_ASSERT_OUT_SPACE(i)
+	set-memory out/pos char i
+	out/pos: out/pos + i
+]
+
+writeFormatedBinary: func[
+	"Writes a byte array as an hex string."
+	;-- inspired by Bruno Anselme's bin-to-str function
+	address [byte-ptr!] "Memory address where the conversion starts"
+	limit   [integer!]  "Number of bytes to convert"
+	/local i end byte major minor sp1 sp2
+][
+	i: (1 + (2 * limit) + (limit // 4))
+	SIO_ASSERT_OUT_SPACE(i)
+	end: address + limit
+	sp1: 0
+	sp2: 0
+	while [address < end][
+		byte: as integer! address/value
+		minor: byte // 16
+		if minor > 9 [minor: minor + 7]			;-- 7 = (#"A" - 1) - #"9"
+		byte: byte >>> 4
+		major: byte // 16
+		if major > 9 [major: major + 7]			;-- 7 = (#"A" - 1) - #"9"
+
+		out/pos/1: #"0" + major
+		out/pos/2: #"0" + minor
+		out/pos: out/pos + 2
+
+		sp1: sp1 + 1
+		if sp1 = 4 [
+			sp1: 0
+			sp2: sp2 + 1
+			either sp2 = 4 [
+				sp2: 0
+				out/pos/1: #"^/"
+			][	out/pos/1: #" " ]
+			out/pos: out/pos + 1
+		]
+
+		address: address + 1
+	]
+]
