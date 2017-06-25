@@ -12,7 +12,10 @@ Red/System [
 
 #define SIO_ASSERT_IN_SPACE(bytes) [
 	if in/tail < (in/pos + bytes) [
-		realloc-buffer in as integer! (in/pos + bytes - in/head)
+		if not realloc-buffer in as integer! (in/pos + bytes - in/head) [
+			print-line "FAILED TO REALLOCATE INPUT BUFFER"
+			quit 1
+		]
 	]
 ]
 
@@ -227,6 +230,85 @@ readPair: func[
 	p/y:  readFB nbits
 	p
 ]
+
+readMatrix: func[
+	return: [sio-decimal-matrix!]
+	/local 
+		m   [sio-decimal-matrix!]
+][
+	m: declare sio-decimal-matrix!
+	readMatrixTo m
+	m
+]
+readMatrixTo: func[
+	m [sio-decimal-matrix!]
+	return: [sio-decimal-matrix!]
+	/local 
+		nbits [integer!]
+][
+	in/bit-mask: 0 ;byte align
+	either readBit [ ;HasScale
+		nbits: readUB 5
+		m/ScaleX: readFB nbits
+		m/ScaleY: readFB nbits
+	][
+		m/ScaleX: 1.0
+		m/ScaleY: 1.0
+	]
+	either readBit [ ;HasRotate
+		nbits: readUB 5
+		m/RotateSkew0: readFB nbits
+		m/RotateSkew1: readFB nbits
+	][
+		m/RotateSkew0: 0.0
+		m/RotateSkew1: 0.0
+	]
+	nbits: readUB 5
+	m/TranslateX: readFB nbits
+	m/TranslateY: readFB nbits
+	m
+]
+
+readCXFORM: func[
+	return: [sio-cxform!]
+	/local 
+		c     [sio-cxform!]
+][
+	c: declare sio-cxform!
+	readCXFORMTo c
+	c
+]
+
+readCXFORMTo: func[
+	c [sio-cxform!]
+	return: [sio-cxform!]
+	/local HasAddTerms? HasMultTerms? nbits
+][
+	HasAddTerms?:  readBit
+	HasMultTerms?: readBit
+	nbits: readUB 4
+	either HasMultTerms? [
+		c/RMult: readSB nbits
+		c/GMult: readSB nbits
+		c/BMult: readSB nbits
+	][
+		c/RMult: 256
+		c/GMult: 256
+		c/BMult: 256
+	]
+	either HasAddTerms? [
+		c/RAdd: readSB nbits
+		c/GAdd: readSB nbits
+		c/BAdd: readSB nbits
+	][
+		c/RAdd: 0
+		c/GAdd: 0
+		c/BAdd: 0
+	]
+	in/bit-mask: 0 ;byte align
+	c
+]
+
 readCount: func[
 	return: [integer!]
 	/local i [integer!]

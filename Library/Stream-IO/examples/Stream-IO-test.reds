@@ -8,6 +8,15 @@ Red/System [
 		Distributed under the Boost Software License, Version 1.0.
 		See https://github.com/red/red/blob/master/BSL-License.txt
 	}
+	Note: {
+		Don't use code like:
+			print-line [readString readUI8]
+		as "Arguments are pushed in reverse order in the C calling convention for IA-32"
+		so the result would not be in correct order.
+		Instead use:
+			print readString print readUI8
+		or something like that!
+	}
 ]
 
 #include %../Stream-IO-core.reds
@@ -49,11 +58,16 @@ writeUB -1 8
 writeFB 1.2 18
 writeBitAlign
 writeString "Hello Red"
-writeString "ending?"
 writeUI8 10
 
 
-print-line "end writing^/"
+writeFormated ["Integer: " 42 " float: " 3.14] ;NOTE: writeFormated does not add ending NULL char..
+writeFormated [" pos: " (out/pos - out/head) " logic: " true] ;so multiple calls to it will be treated like one c-string!
+writeUI8 0 ;closes above formated string as a c-string!
+
+writeString "ending?"
+
+print-line "^/-- end writing --^/"
 
 simple-io/write-data file out/head as integer! (out/pos - out/head)
 
@@ -84,10 +98,11 @@ print-line readSB 8
 print-line readUB 8
 print-line readFB 18
 
-;print-line [readString " " readString readUI8] ;this does not work as expected!
 print-line readString ;= Hello Red
-print-line readString ;= ending?
 print-line readUI8 ;=10
 
+print-line readString ;= Integer: 42 float: 3.14 pos: 00000042h logic: true
 
-print-line "end reading"
+print-line readString ;= ending?
+
+print-line "^/-- end reading --^/"

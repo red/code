@@ -13,6 +13,7 @@ Red/System [
 #if red-pass? = no [
 	;No Red runtime embedded, so import stand alone dependencies
 	#include %simple-io-minimal.reds
+	#include %../os/definitions.reds
 ]
 
 #import [
@@ -32,10 +33,53 @@ Red/System [
 		]
 	]
 ]
+#if OS = 'Windows [
+	#import [
+		"Kernel32.dll" stdcall [
+			WriteConsole: 	 "WriteConsoleW" [
+				consoleOutput	[integer!]
+				buffer			[byte-ptr!]
+				charsToWrite	[integer!]
+				numberOfChars	[int-ptr!]
+				_reserved		[int-ptr!]
+				return:			[integer!]
+			]
+			MultiByteToWideChar: "MultiByteToWideChar" [
+				CodePage				[integer!]
+				dwFlags					[integer!]
+				lpMultiByteStr			[byte-ptr!]
+				cbMultiByte				[integer!]
+				lpWideCharStr			[byte-ptr!]
+				cchWideChar				[integer!]
+				return:					[integer!]
+			]
+		]
+	]
+	MB_BUFFER_CHARS: 2048
+	__mb-buffer: allocate 2 * MB_BUFFER_CHARS
+]
 
 sio-decimal-pair!: alias struct! [
 	x [float!]
 	y [float!]
+]
+
+sio-decimal-matrix!: alias struct! [
+	ScaleX      [float!]
+	ScaleY      [float!]
+	RotateSkew0 [float!]
+	RotateSkew1 [float!]
+	TranslateX  [float!]
+	TranslateY  [float!]
+]
+
+sio-cxform!: alias struct! [
+	RMult [integer!]
+	GMult [integer!]
+	BMult [integer!]
+	RAdd  [integer!]
+	GAdd  [integer!]
+	BAdd  [integer!]
 ]
 
 sio-buffer!: alias struct! [
@@ -64,20 +108,23 @@ alloc-buffer: func[
 realloc-buffer: func[
 	buffer [sio-buffer!]
 	size   [integer!]
-	return: [sio-buffer!]
+	return: [logic!]
 	/local
 		old-size new-size head new-head ofs-pos ofs-tail ofs-end
 ][
 	head: buffer/head
 	old-size: as integer! (buffer/end - head)
-	print-line ["REALLOCK " old-size " -> " size] 
+	;print-line ["REALLOCK " old-size " -> " size] 
 	
 	ofs-pos: as integer! (buffer/pos - head)
 	ofs-tail: as integer! (buffer/tail - head)
 
 	if any [size < ofs-pos size < ofs-tail] [
-		print-line "WARNING: trying to reallocate buffer to smaller size than currently used!"
-		return buffer
+		;buffer-to-console out
+		print-line "^/WARNING: trying to reallocate buffer to smaller size than currently used!"
+		;print-line ["ofs-tail: " ofs-tail " ofs-pos: " ofs-pos " old-size: " old-size "->" size]
+		;print-line ["buffer/tail: " buffer/tail " buffer/end: " buffer/end]
+		return false
 	]
 
 	either size > old-size [
@@ -93,14 +140,14 @@ realloc-buffer: func[
 	new-head: reallocate head new-size
 	if new-head = NULL [
 		print-line ["STREAM-IO: Unable to reallocate buffer to size: " size]
-		return buffer ;will probably crash later
+		return false
 	]
 	buffer/head: new-head
 	;print-line ["REALLOCK " head " -> " buffer/head " size: " new-size]
 	buffer/pos: buffer/head + ofs-pos
-	buffer/tail: buffer/pos + ofs-tail
+	buffer/tail: buffer/head + ofs-tail
 	buffer/end:  buffer/head + new-size
-	buffer
+	true
 ]
 
 free-buffer: func[
@@ -132,4 +179,30 @@ getUBitsLength: func[
 	if value = 0 [return 0]
 	if value < 0 [value: 0 - value]
 	1 + as integer! (log-2 as float! value) / 0.6931471805599453
+]
+
+
+buffer-to-console:  func[
+	buffer [sio-buffer!]
+	/local pos tail count p pos-t
+][
+	#either OS = 'Windows [
+		pos: buffer/head
+		tail: buffer/pos
+		while [pos < tail][
+			count: as integer! (tail - pos)
+			if count > MB_BUFFER_CHARS [count: MB_BUFFER_CHARS]
+			p: __mb-buffer
+			pos-t: pos + count
+			while [all [pos < pos-t pos/1 <> #"^@"]][
+				p/1: pos/1
+				p/2: #"^@"
+				p: p + 2
+				pos: pos + 1
+			]
+			WriteConsole stdout __mb-buffer as integer! (p - __mb-buffer) :count null
+		]
+	][
+		print-line as c-string! buffer/head
+	]
 ]
