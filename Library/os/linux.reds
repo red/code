@@ -55,7 +55,7 @@ Red/System [
 	#define F_SETFL   4
 
 	#case [
-		any [OS = 'FreeBSD OS = 'MacOSX] [
+		any [OS = 'FreeBSD OS = 'macOS] [
 			#define O_CREAT		0200h
 			#define O_TRUNC		0400h
 			#define O_EXCL		0800h

@@ -181,7 +181,7 @@ zmq-poll-item!: alias struct! [
 
 #switch OS [
 	Windows   [ #define ZMQ-library "libzmq.dll"]
-	MacOSX    [ #define ZMQ-library "libzmq.dylib"] ;@@ FIXME: use real file name
+	macOS     [ #define ZMQ-library "libzmq.dylib"] ;@@ FIXME: use real file name
 	#default  [ #define ZMQ-library "libzmq.so.4" ]    ;@@ FIXME: use real file name
 ]
 

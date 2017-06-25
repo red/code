@@ -22,7 +22,7 @@ panel: context [
 
 	#switch OS [
 		Windows   [ #define panel-library "pdcurses.dll" ]
-		MacOSX    [ #define panel-library "panelw.dylib" ] ;-- TODO: check this
+		macOS     [ #define panel-library "panelw.dylib" ] ;-- TODO: check this
 		#default  [ #define panel-library "libpanelw.so.5" ]
 	]
 

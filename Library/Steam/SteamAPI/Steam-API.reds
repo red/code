@@ -10,7 +10,7 @@ Red/System [
 
 #switch OS [
 	Windows   [ #define STEAM_LIBRARY "Steam_api.dll"      ]
-	MacOSX    [ #define STEAM_LIBRARY "libsteam_api.dylib" ]
+	macOS     [ #define STEAM_LIBRARY "libsteam_api.dylib" ]
 	#default  [ #define STEAM_LIBRARY "libsteam_api.so"    ]
 ]
 

@@ -8,7 +8,7 @@ Red/System [
 
 #switch OS [
 	Windows   [	#define SQLITE_LIBRARY "sqlite3.dll" ]
-	MacOSX    [ #define SQLITE_LIBRARY "libsqlite3.dylib" ]
+	macOS     [ #define SQLITE_LIBRARY "libsqlite3.dylib" ]
 	#default  [ #define SQLITE_LIBRARY "libsqlite3.so.0"]
 ]
 
@@ -5921,7 +5921,7 @@ sqlite3_update_hook: "sqlite3_update_hook" [
 ;  future releases of SQLite.  Applications that care about shared
 ;  cache setting should set it explicitly.
 ; 
-;  Note: This method is disabled on MacOS X 10.7 and iOS version 5.0
+;  Note: This method is disabled on macOS X 10.7 and iOS version 5.0
 ;  and will always return SQLITE_MISUSE. On those systems, 
 ;  shared cache mode should be enabled per-database connection via 
 ;  [sqlite3_open_v2()] with [SQLITE_OPEN_SHAREDCACHE].

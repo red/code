@@ -23,7 +23,7 @@ Red/System [
 
 #switch OS [
 	Windows   [ op-sys: "Windows" op-num: 1 ]
-	MacOSX    [ op-sys: "MacOSX"  op-num: 2 ]
+	macOS     [ op-sys: "macOS"   op-num: 2 ]
 	#default  [ op-sys: "Linux"   op-num: 0 ]
 ]
 

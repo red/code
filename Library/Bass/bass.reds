@@ -9,7 +9,7 @@ Red/System [
 
 #switch OS [
 	Windows   [	#define BASS_LIBRARY "bass.dll" ]
-	MacOSX    [ #define BASS_LIBRARY "libbass.dylib " ] ;@@ not tested!
+	macOS     [ #define BASS_LIBRARY "libbass.dylib " ] ;@@ not tested!
 	#default  [   ]
 ]
 

@@ -119,7 +119,7 @@ lzma: context [
 
 	#switch OS [
 		Windows   [ #define liblzma "liblzma.dll" ]
-		MacOSX    [ #define liblzma "liblzma.1.dylib" ] ;@@ FIXME: use real file name
+		macOS     [ #define liblzma "liblzma.1.dylib" ] ;@@ FIXME: use real file name
 		#default  [ #define liblzma "liblzma.so.1" ]    ;@@ FIXME: use real file name
 	]
 
