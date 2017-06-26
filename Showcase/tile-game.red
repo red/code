@@ -24,7 +24,8 @@ Red [
 view/tight [
 	title "Tile game"
 	style piece: button 60x60 font-size 12 bold [
-		unless find [0x60 60x0 0x-60 -60x0] face/offset - empty/offset [exit]
+		delta: absolute face/offset - empty/offset
+		if delta/x + delta/y > 90 [exit]
 		pos: face/offset face/offset: empty/offset empty/offset: pos
 	]
 	piece "1"  piece  "2" piece  "3" piece  "4" return
