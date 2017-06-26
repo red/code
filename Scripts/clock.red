@@ -103,7 +103,7 @@ context [
 	]
 
 	size-handler: insert-event-func [
-		if all [event/window = win event/type = 'resizing clock/parent][
+		if all [event/window = win event/type = 'resizing clock/state][
 			clock/size: face/size
 			draw-clock/resize clock
 		]
