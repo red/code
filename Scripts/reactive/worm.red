@@ -12,6 +12,8 @@ Red [
 	}
 ]
 
+system/reactivity/eat-events?: no						;-- make it as smooth as possible
+
 win: layout [
 	size 400x500
 	across
