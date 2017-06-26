@@ -77,7 +77,7 @@ view [
 		mandelbrot img xmin/data xmax/data ymin/data ymax/data iterations/data
 		dt/data: round now/time/precise - t0
 	]
-	txt "time (s):" dt: txt 100
-	return
+	across txt "time (s):" dt: txt
+	below return
 	img: image 900x600
 ]
