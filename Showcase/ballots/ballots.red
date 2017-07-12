@@ -60,6 +60,21 @@ shapes: [
 		line-width 2 circle 11x25 1 circle 29x25 1
 		line 13x29 27x29
 	]
+	circle: [
+		at 0x0 person draw [
+			(shapes/axis) pen gray fill-pen off
+			line-width 4 disk: circle -1x-1 100
+		] 260x260
+	]
+	circles: [
+		at 0x0 person draw [
+			(shapes/axis) pen gray fill-pen off disks:
+			line-width 1 circle -1x-1 120
+			line-width 2 circle -1x-1 90
+			line-width 3 circle -1x-1 60
+			line-width 4 circle -1x-1 30
+		] 260x260
+	]
 	winners: [
 		s-win: image ballot-box 30x102 80x152 crop 0x0   100x100
 		t-win: image ballot-box 30x147 80x197 crop 0x100 100x100
@@ -212,11 +227,8 @@ view compose/deep [
 	style person: base 40x40 loose transparent
 	origin 1x1
 	
-	panel 260x260 white draw [
-		(shapes/axis) pen gray fill-pen off
-		line-width 4 disk: circle -1x-1 100
-	][
-		(kind: 'pie-voter compose/deep shapes/layout-4)
+	panel 260x260 white [
+		(kind: 'pie-voter compose/deep append shapes/circle shapes/layout-4)
 		do [reset-arcs]
 	] react [
 		[square/offset triangle/offset hexagon/offset]
@@ -255,14 +267,8 @@ view compose/deep [
 	style person: base 40x40 loose transparent
 	origin 1x1
 	
-	panel 260x260 white draw [
-		(shapes/axis) pen gray fill-pen off disks:
-		line-width 1 circle -1x-1 120
-		line-width 2 circle -1x-1 90
-		line-width 3 circle -1x-1 60
-		line-width 4 circle -1x-1 30
-	][
-		(kind: 'pie-voter compose/deep shapes/layout-4)
+	panel 260x260 white [
+		(kind: 'pie-voter compose/deep append shapes/circles shapes/layout-4)
 		do [reset-arcs]
 	] react [
 		[square/offset triangle/offset hexagon/offset]
