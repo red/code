@@ -202,6 +202,8 @@ PaDeviceInfo!: alias struct! [
 PaStreamInfo!: alias struct! [
     structVersion [integer!] ;this is struct version 1
 
+    pad [integer!]
+    
     inputLatency [PaTime!]
     ; The input latency of the stream in seconds. This value provides the most
     ; accurate estimate of input latency available to the implementation. It may
@@ -242,6 +244,8 @@ PaStreamParameters!: alias struct! [
     ; The sample format of the buffer provided to the stream callback,
     ; a_ReadStream() or Pa_WriteStream(). It may be any of the formats described
     ; by the PaSampleFormat enumeration.
+
+    pad [integer!]
     
     suggestedLatency [PaTime!]
     ; The desired latency in seconds. Where practical, implementations should
