@@ -1,7 +1,7 @@
 Red/System [
-	Title:   "Red/System BASS binding"
+	Title:   "Red/System BASS binding - basic test"
 	Author:  "Oldes"
-	File: 	 %bass.reds
+	File: 	 %bass-test.reds
 	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
 	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
 	
@@ -54,6 +54,20 @@ BASS: context [
 		]
 		n: n + 1
 	]
+
+	n: 0
+	print-line "^/Record devices:"
+	while [BASS_RecordGetDeviceInfo n di][
+		print ["Device " n lf]
+		print ["  name__: " di/name lf]
+		print ["  driver: " di/driver lf]
+		print ["  flags_: " as byte-ptr! di/flags lf]
+		print ["     enabled? "    as logic! (di/flags and BASS_DEVICE_ENABLED) lf]
+		print ["     microphone? " ((di/flags and BASS_DEVICE_TYPE_MASK) = BASS_DEVICE_TYPE_MICROPHONE) lf]
+		n: n + 1
+	]
+
+	print lf
 
 	version: BASS_GetVersion
 	print ["BASS version: " as byte-ptr! version lf]
