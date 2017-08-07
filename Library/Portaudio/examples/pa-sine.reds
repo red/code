@@ -103,15 +103,8 @@ playSound: func[
     /local 
         userData
         outputParameters [PaStreamParameters!]
-        phase-left phase-right
-        inc-left inc-right
         err
         stream-ref stream streamInfo
-        buffer
-        bufferCount
-        data
-        sine
-        i j k p
 ][
     userData: as testData! allocate size? testData!
     userData/sine: precountSineTable TABLE_SIZE 2.0
