@@ -601,7 +601,7 @@ simple-io: context [
 		#either OS = 'Windows [
 			read-sz: -1
 			res: ReadFile file buffer size :read-sz null
-			res: either zero? res [-1][1]
+			res: either zero? res [-1][read-sz]
 		][
 			res: _read file buffer size
 		]
