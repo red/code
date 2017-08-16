@@ -8,9 +8,9 @@ Red/System [
 ]
 
 #switch OS [
-	Windows   [	#define OGG_LIBRARY "libOGG.dll" ]
-	macOS     [ #define OGG_LIBRARY "libOGG.dylib" ] ;@@ not tested!
-	#default  [ #define OGG_LIBRARY "libOGG.so" ] ;@@ not tested!
+	Windows   [	#define OGG_LIBRARY "libogg.dll" ]
+	macOS     [ #define OGG_LIBRARY "libogg.dylib" ] ;@@ not tested!
+	#default  [ #define OGG_LIBRARY "libogg.so" ] ;@@ not tested!
 ]
 
 ogg_int64_t!: alias struct! [lo [integer!] hi [integer!]]
