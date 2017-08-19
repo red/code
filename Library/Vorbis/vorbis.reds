@@ -534,7 +534,5 @@ ovectl_ratemanage2_arg!: alias struct! [
             arg     [byte-ptr!] ;pointing to a data structure matching the request argument. 
             return: [integer!] ;Zero for success, and negative values for failure.
         ]
-
-        ;depreceted: vorbis_encode_ctl
     ]
 ]
