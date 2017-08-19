@@ -17,10 +17,6 @@ Red/System [
 
 #define OGG_BLOCK_SIZE 4096
 
-
-
-
-
 vorbis-decoder: context [
     convbuffer: allocate 2 * OGG_BLOCK_SIZE ;ogg_int16_t convbuffer[4096];
 
@@ -29,8 +25,8 @@ vorbis-decoder: context [
     os: as ogg_stream_state! allocate 1024 ;@@ don't have full struct spec, so cannot use `size?`
     op: as ogg_packet!       allocate size? ogg_packet!
 
-    vi: as vorbis_info! allocate size? vorbis_info!
-    vc: as vorbis_comment! allocate size? vorbis_comment!
+    vi: as vorbis_info!      allocate size? vorbis_info!
+    vc: as vorbis_comment!   allocate size? vorbis_comment!
 
     vd: as vorbis_dsp_state! allocate size? vorbis_dsp_state!
     vb: as vorbis_block!     allocate size? vorbis_block!
@@ -42,7 +38,7 @@ vorbis-decoder: context [
             serialno i result
             buffer size bytes processed
             convsize eos pcm samples
-            j clipflag bout p
+            j clip? clips bout p mono channel val
     ][
         convsize: OGG_BLOCK_SIZE
         file: simple-io/open-file filename simple-io/RIO_READ no
@@ -58,6 +54,8 @@ vorbis-decoder: context [
         vorbis_comment_init vc
 
         serialno: 0
+        clips: 0
+        processed: 0
 
         forever [
             eos: false
@@ -66,8 +64,7 @@ vorbis-decoder: context [
             ogg_sync_wrote oy bytes
         
             if 1 <> ogg_sync_pageout oy og [
-                print-line ["^/bytes left: " bytes]
-
+                ;print-line ["^/bytes left: " bytes]
                 if bytes < OGG_BLOCK_SIZE [ break ] ;out of data
 
                 print-line ["Not an Ogg stream!"]
@@ -197,20 +194,47 @@ vorbis-decoder: context [
                                     ;print-line ["packet " result]
                                     if 0 = result [ ;test for success!
                                         vorbis_synthesis_blockin vd vb
+
+                                        ;pcm is a multichannel float vector.  In stereo, for
+                                        ;example, pcm[0] is left, and pcm[1] is right.  samples is
+                                        ;the size of each channel.  Convert the float values
+                                        ;(-1.<=range<=1.) to whatever PCM format and write it out
+
                                         pcm: 0
                                         while [ 
                                             samples: vorbis_synthesis_pcmout vd :pcm
                                             samples > 0
                                         ][
-                                            clipflag: 0
+                                            clip?: false
                                             bout: either samples < convsize [samples][convsize]
-                                            print-line ["samples: " samples]
+                                            channel: as int-ptr! pcm
+
+                                            print-line ["frame: " vd/sequence/hi " samples: " samples]
 
                                             i: 0
                                             while [i < vi/channels][
-                                                ;do something with samples here
                                                 i: i + 1
+                                                ;do something with samples here
+                                                mono: as float32-ptr! channel/value
+                                                j: 0
+                                                while [j < bout][
+                                                    j: j + 1
+                                                    ;convert floats to 16 bit signed ints (host order) and interleave
+                                                    val: as integer! ((mono/j * as float32! 32767.0) + as float32! 0.5)
+                                                    
+                                                    ;might as well guard against clipping
+                                                    if val >  32767 [ clip?: true val:  32767 ]
+                                                    if val < -32768 [ clip?: true val: -32768 ]
+                                                ]
+                                                channel: channel + 1
                                             ]
+
+                                            if clip? [
+                                                print-line ["Clipping in frame " vd/sequence/hi]
+                                                clips: clips + 1
+                                            ]
+
+                                            processed: processed + bout
 
                                             vorbis_synthesis_read vd bout ;tell libvorbis how many samples we actually consumed
                                         ]
@@ -236,7 +260,11 @@ vorbis-decoder: context [
             ][
                 print-line "Error: Corrupt header during playback initialization."
             ]
-            print-line "done?"
+
+            print-line ["^/Processed " processed " samples."]
+            either clips > 0 [
+                print-line ["Clipping found in " clips " frames."]
+            ][  print-line "Found no clipping."]
 
             ;clean up this logical bitstream; before exit we see if we're followed by another [chained] 
 
@@ -250,9 +278,12 @@ vorbis-decoder: context [
         ogg_sync_clear   oy
 
         simple-io/close-file file
-        print-line "end"
+        ;print-line "end"
     ]
 ]
+
+
+print-line ["vorbis_version_string: " vorbis_version_string]
 
 vorbis-decoder/decode "test-record.ogg"
 vorbis-decoder/decode "stereo.ogg"
