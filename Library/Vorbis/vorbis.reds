@@ -10,12 +10,12 @@ Red/System [
 #include %../ogg/ogg.reds
 
 #switch OS [
-	Windows   [	#define VORBIS_LIBRARY "libvorbis-debug.dll" ]
+	Windows   [	#define VORBIS_LIBRARY "libvorbis.dll" ]
 	macOS     [ #define VORBIS_LIBRARY "libvorbis.dylib" ] ;@@ not tested!
 	#default  [ #define VORBIS_LIBRARY "libvorbis.so" ] ;@@ not tested!
 ]
 
-float32-ref!: alias struct! [value [float32!]]
+float32-ptr-ref!: alias struct! [value [float32-ptr!]]
 
 ;-- Vorbis ERRORS and return codes --
 
@@ -73,8 +73,8 @@ vorbis_dsp_state!: alias struct! [
     analysisp [integer!]
     vi        [vorbis_info!]
 
-    pcm            [float32-ref!]
-    pcmret         [float32-ref!]
+    pcm            [float32-ptr-ref!]
+    pcmret         [float32-ptr-ref!]
     pcm_storage    [integer!]
     pcm_current    [integer!]
     pcm_returned   [integer!]
@@ -110,7 +110,7 @@ vorbis_block!: alias struct! [
     ;that logical bitstream.
 
     ;necessary stream state for linking to the framing abstraction
-    pcm          [float32-ref!] ;this is a pointer into local storage
+    pcm          [float32-ptr-ref!] ;this is a pointer into local storage
     opb          [oggpack_buffer! value]
 
     lW           [integer!]
@@ -161,6 +161,81 @@ vorbis_comment!: alias struct! [
 ; files.  Over the net (such as with UDP), the framing and
 ; packetization aren't necessary as they're provided by the transport
 ; and the streaming layer is not used 
+
+
+;-- `vorbis_encode_ctl` codes
+
+;ovectl_ratemanage_arg is deprecated
+
+ovectl_ratemanage2_arg!: alias struct! [
+    ; The ovectl_ratemanage2_arg structure is used with vorbis_encode_ctl() and
+    ; the OV_ECTL_RATEMANAGE2_GET and OV_ECTL_RATEMANAGE2_SET calls in order to
+    ; query and modify specifics of the encoder's bitrate management
+    ; configuration.
+    management_active            [integer!] ; nonzero if bitrate management is active
+    ; Lower allowed bitrate limit in kilobits per second
+    bitrate_limit_min_kbps       [integer!]
+    ; Upper allowed bitrate limit in kilobits per second
+    bitrate_limit_max_kbps       [integer!]
+    bitrate_limit_reservoir_bits [integer!] ;Size of the bitrate reservoir in bits
+    ; Regulates the bitrate reservoir's preferred fill level in a range from 0.0
+    ; to 1.0; 0.0 tries to bank bits to buffer against future bitrate spikes, 1.0
+    ; buffers against future sudden drops in instantaneous bitrate. Default is 0.1
+    bitrate_limit_reservoir_bias [float!]
+    ; Average bitrate setting in kilobits per second
+    bitrate_average_kbps         [integer!]
+    ; Slew rate limit setting for average bitrate adjustment; sets the minimum
+    ; time in seconds the bitrate tracker may swing from one extreme to the
+    ; other when boosting or damping average bitrate.
+    bitrate_average_damping      [float!]
+]
+
+#enum encctlcodes! [
+    ; These values are passed as the \c number parameter of vorbis_encode_ctl().
+    ; The type of the referent of that function's \c arg pointer depends on these
+    ; codes.
+
+    ; Query the current encoder bitrate management setting
+    OV_ECTL_RATEMANAGE2_GET:    14h ; argument: ovectl_ratemanage2_arg!
+    ; Used to query the current encoder bitrate management setting. Also used to
+    ; initialize fields of an ovectl_ratemanage2_arg structure for use with
+    ; OV_ECTL_RATEMANAGE2_SET.
+
+    ; Set the current encoder bitrate management settings.
+    OV_ECTL_RATEMANAGE2_SET:    15h ; argument: ovectl_ratemanage2_arg!
+    ; Used to set the current encoder bitrate management settings to the values
+    ; listed in the ovectl_ratemanage2_arg. Passing a NULL pointer will disable
+    ; bitrate management.
+
+    OV_ECTL_LOWPASS_GET:        20h ; argument: float! 
+    ; Returns the current encoder hard-lowpass setting (kHz) in the double
+    ; pointed to by arg.
+
+    OV_ECTL_LOWPASS_SET:        21h ; argument: float! 
+    ; Sets the encoder hard-lowpass to the value (kHz) pointed to by arg. Valid
+    ; lowpass settings range from 2 to 99.
+
+    OV_ECTL_IBLOCK_GET:         30h ; argument: float! 
+    ; Returns the current encoder impulse block setting in the double pointed
+    ; to by arg.
+
+    OV_ECTL_IBLOCK_SET:         31h ; argument: float! 
+    ; Sets the impulse block bias to the the value pointed to by arg.
+    ; Valid range is -15.0 to 0.0 [default]. A negative impulse block bias will
+    ; direct to encoder to use more bits when incoding short blocks that contain
+    ; strong impulses, thus improving the accuracy of impulse encoding.
+
+    OV_ECTL_COUPLING_GET:       40h ; argument: integer!
+    ; Returns the current encoder coupling setting in the int pointed
+    ; to by arg.
+
+    OV_ECTL_COUPLING_SET:       41h ; argument: integer!
+    ; Enables/disables channel coupling in multichannel encoding according to arg.
+    ; Zero disables channel coupling for multichannel inputs, nonzer enables
+    ; channel coupling.  Setting has no effect on monophonic encoding or
+    ; multichannel counts that do not offer coupling.  At present, coupling is
+    ; available for stereo and 5.1 encoding.
+] 
 
 #import [
 	VORBIS_LIBRARY cdecl [
@@ -252,7 +327,7 @@ vorbis_comment!: alias struct! [
         vorbis_analysis_buffer: "vorbis_analysis_buffer" [
             v [vorbis_dsp_state!]
             vals [integer!]
-            return: [float32-ref!]
+            return: [float32-ptr-ref!]
         ]
         vorbis_analysis_wrote: "vorbis_analysis_wrote" [
             v [vorbis_dsp_state!]
@@ -346,8 +421,120 @@ vorbis_comment!: alias struct! [
             v [vorbis_info!]
             return: [integer!]
         ]
+
+
+        ;-- encoder related functions:
+
+        vorbis_encode_init: "vorbis_encode_init" [
+            ; This is the primary function for setting up managed bitrate modes.
+            ;
+            ; Before this function is called, the `vorbis_info`
+            ; struct should be initialized by using `vorbis_info_init` from the libvorbis
+            ; API.  After encoding, `vorbis_info_clear should be called.
+            ;
+            ; The max_bitrate, nominal_bitrate, and min_bitrate settings are used to set
+            ; constraints for the encoded file.  This function uses these settings to
+            ; select the appropriate encoding mode and set it up.
+            vi              [vorbis_info!] ;Pointer to an initialized `vorbis_info!` struct.
+            channels        [integer!] ;The number of channels to be encoded.
+            rate            [integer!] ;The sampling rate of the source audio.
+            max_bitrate     [integer!] ;Desired maximum bitrate (limit). -1 indicates unset.
+            nominal_bitrate [integer!] ;Desired average, or central, bitrate. -1 indicates unset.
+            min_bitrate     [integer!] ;Desired minimum bitrate. -1 indicates unset.
+
+            return: [integer!] ;Zero for success, and negative values for failure.
+        ]
+
+        vorbis_encode_setup_managed: "vorbis_encode_setup_managed" [
+            ; This function performs step-one of a three-step bitrate-managed encode
+            ; setup.  It functions similarly to the one-step setup performed by 
+            ; `vorbis_encode_init` but allows an application to make further encode setup
+            ; tweaks using `vorbis_encode_ctl` before finally calling 
+            ; `vorbis_encode_setup_init` to complete the setup process.
+            ;
+            ; Before this function is called, the `vorbis_info` struct should be
+            ; initialized by using `vorbis_info_init` from the libvorbis API.  After
+            ; encoding, `vorbis_info_clear` should be called.
+            ;
+            ; The max_bitrate, nominal_bitrate, and min_bitrate settings are used to set
+            ; constraints for the encoded file.  This function uses these settings to
+            ; select the appropriate encoding mode and set it up.
+            vi              [vorbis_info!] ;Pointer to an initialized `vorbis_info!` struct.
+            channels        [integer!] ;The number of channels to be encoded.
+            rate            [integer!] ;The sampling rate of the source audio.
+            max_bitrate     [integer!] ;Desired maximum bitrate (limit). -1 indicates unset.
+            nominal_bitrate [integer!] ;Desired average, or central, bitrate. -1 indicates unset.
+            min_bitrate     [integer!] ;Desired minimum bitrate. -1 indicates unset.
+
+            return: [integer!] ;Zero for success, and negative values for failure.
+        ]
+
+        vorbis_encode_setup_vbr: "vorbis_encode_setup_vbr" [
+            ; This function performs step-one of a three-step variable bitrate
+            ; (quality-based) encode setup.  It functions similarly to the one-step setup
+            ; performed by `vorbis_encode_init_vbr` but allows an application to
+            ; make further encode setup tweaks using `vorbis_encode_ctl` before
+            ; finally calling `vorbis_encode_setup_init` to complete the setup
+            ; process.
+            ;
+            ; Before this function is called, the `vorbis_info` struct should be
+            ; initialized by using `vorbis_info_init` from the libvorbis API.  After
+            ; encoding, `vorbis_info_clear` should be called.
+            vi              [vorbis_info!] ;Pointer to an initialized `vorbis_info!` struct.
+            channels        [integer!] ;The number of channels to be encoded.
+            rate            [integer!] ;The sampling rate of the source audio.
+            quality         [float32!] ;Desired quality level, currently from -0.1 to 1.0 (lo to hi).
+
+            return: [integer!] ;Zero for success, and negative values for failure.
+        ]
+
+        vorbis_encode_init_vbr: "vorbis_encode_init_vbr" [
+            ; This is the primary function for setting up variable
+            ; bitrate ("quality" based) modes.
+            ;
+            ; Before this function is called, the vorbis_info struct should be
+            ; initialized by using `vorbis_info_init` from the libvorbis API. After
+            ; encoding, `vorbis_info_clear` should be called.
+            vi              [vorbis_info!] ;Pointer to an initialized `vorbis_info!` struct.
+            channels        [integer!] ;The number of channels to be encoded.
+            rate            [integer!] ;The sampling rate of the source audio.
+            base_quality    [float32!] ;Desired quality level, currently from -0.1 to 1.0 (lo to hi).
+
+            return: [integer!] ;Zero for success, and negative values for failure.
+        ]
+
+        vorbis_encode_setup_init: "vorbis_encode_setup_init" [
+            ; This function performs the last stage of three-step encoding setup, as
+            ; described in the API overview under managed bitrate modes.
+            ;
+            ; Before this function is called, the \ref vorbis_info struct should be
+            ; initialized by using vorbis_info_init() from the libvorbis API, one of
+            ; \ref vorbis_encode_setup_managed() or \ref vorbis_encode_setup_vbr() called to
+            ; initialize the high-level encoding setup, and \ref vorbis_encode_ctl()
+            ; called if necessary to make encoding setup changes.
+            ; vorbis_encode_setup_init() finalizes the highlevel encoding structure into
+            ; a complete encoding setup after which the application may make no further
+            ; setup changes.
+            vi              [vorbis_info!] ;Pointer to an initialized `vorbis_info!` struct.
+
+            return: [integer!] ;Zero for success, and negative values for failure.
+        ]
+
+        vorbis_encode_ctl: "vorbis_encode_ctl" [
+            ; This function implements a generic interface to miscellaneous encoder
+            ; settings similar to the classic UNIX `ioctl` system call.  Applications
+            ; may use `vorbis_encode_ctl` to query or set bitrate management or quality
+            ; mode details by using one of several request arguments detailed below.
+            ; `vorbis_encode_ctl must be called after one of
+            ; `vorbis_encode_setup_managed` or `vorbis_encode_setup_vbr`.  When used
+            ; to modify settings, `vorbis_encode_ctl` must be called before 
+            ; `vorbis_encode_setup_init`.
+            vi      [vorbis_info!] ;Pointer to an initialized `vorbis_info!` struct.
+            number  [integer!]  ;Specifies the desired action; See `encctlcodes` "the list of available requests".
+            arg     [byte-ptr!] ;pointing to a data structure matching the request argument. 
+            return: [integer!] ;Zero for success, and negative values for failure.
+        ]
+
+        ;depreceted: vorbis_encode_ctl
     ]
 ]
-
-
-print-line ["vorbis_version_string: " vorbis_version_string]
