@@ -55,8 +55,7 @@ ogg-decode: func[
             if bytes < OGG_BLOCK_SIZE [ break ] ;out of data
 
             print-line ["Not an Ogg stream!"]
-            simple-io/close-file file
-            quit 1
+            break
         ]
 
         if serialno = 0 [
@@ -73,10 +72,12 @@ ogg-decode: func[
         ]
     ]
 
-    ogg_stream_destroy os
-    ogg_sync_destroy oy
-    free op
-    free og
+    ogg_stream_clear os
+    ogg_sync_clear oy
+    free as byte-ptr! os
+    free as byte-ptr! oy
+    free as byte-ptr! op
+    free as byte-ptr! og
 
     simple-io/close-file file
 ]
