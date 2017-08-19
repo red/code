@@ -52,7 +52,7 @@ ogg_stream_state!: alias struct! [
 
 
     lacing_vals   [int-ptr!]  ; The values that will go to the segment table
-    granule_vals  [ogg_int64_t!] ; granulepos values for headers. Not compact
+    granule_vals  [ogg_int64_t! value] ; granulepos values for headers. Not compact
                                  ; this way, but it is simple coupled to the
                                  ; lacing fifo
     lacing_storage  [integer!]
@@ -85,9 +85,9 @@ ogg_packet!: alias struct! [
     b_o_s  [integer!]  ; Flag indicating whether this packet begins a logical bitstream. 1 indicates this is the first packet, 0 indicates any other position in the stream.
     e_o_s  [integer!]  ; Flag indicating whether this packet ends a bitstream. 1 indicates the last packet, 0 indicates any other position in the stream.
 
-    granulepos [ogg_int64_t!] ; A number indicating the position of this packet in the decoded data. This is the last sample, 
+    granulepos [ogg_int64_t! value] ; A number indicating the position of this packet in the decoded data. This is the last sample, 
                               ; frame or other unit of information ('granule') that can be completely decoded from this packet.
-    packetno   [ogg_int64_t!] ; sequence number for decode; the framing
+    packetno   [ogg_int64_t! value] ; sequence number for decode; the framing
                               ; knows where there's a hole in the data,
                               ; but we need coupling so that the codec
                               ; (which is in a separate abstraction
@@ -181,7 +181,7 @@ ogg_sync_state!: alias struct! [
         ogg_page_granulepos: "ogg_page_granulepos" [
             ;Returns the precise playback location of this page.
             og  [ogg_page!]
-            return: [ogg_int64_t!]
+            return: [ogg_int64_t! value]
         ]
         ogg_page_serialno: "ogg_page_serialno" [
             ;Returns the unique serial number of the logical bitstream associated with this page.
@@ -234,7 +234,7 @@ ogg_sync_state!: alias struct! [
             iov [ogg_iovec_t!] ;Length-encoded buffers held in an array of ogg_iovec_t.
             count [integer!]   ;Length of the iov array.
             e_o_s [integer!]   ;End of stream flag, analagous to the e_o_s field in an ogg_packet.
-            granulepos [ogg_int64_t!] ;Granule position value, analagous to the granpos field in an ogg_packet.
+            granulepos [ogg_int64_t! value] ;Granule position value, analagous to the granpos field in an ogg_packet.
             return: [integer!] ;0 if successful
         ]
         ogg_stream_pageout: "ogg_stream_pageout" [
