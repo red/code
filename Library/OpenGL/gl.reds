@@ -1112,6 +1112,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		params      [ binary-ref! ]
 	]
 	glGetPolygonStipple: "glGetPolygonStipple" [ mask [pointer! [GLubyte!]] ]
+	glGetString: "glGetString" [ name [GLenum!] return: [pointer! [GLubyte!]] ]
 	glGetTexEnvfv: "glGetTexEnvfv"[
 		target      [ GLenum! ]
 		pname       [ GLenum! ]
