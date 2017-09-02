@@ -36,7 +36,7 @@ Red/System [
 ]
 
 #switch OS [
-	Windows   [	#define GLFW3_LIBRARY "glfw3.dll" ]
+	Windows   [ #define GLFW3_LIBRARY "glfw3.dll" ]
 	macOS     [ #define GLFW3_LIBRARY "glfw3.dylib" ] ;@@ not tested!
 	#default  [ #define GLFW3_LIBRARY "glfw3.so" ] ;@@ not tested!
 ]
