@@ -57,6 +57,18 @@ glBufferData:               as glBufferData!               glfwGetProcAddress "g
 glEnableVertexAttribArray:  as glEnableVertexAttribArray!  glfwGetProcAddress "glEnableVertexAttribArray"
 glVertexAttribPointer:      as glVertexAttribPointer!      glfwGetProcAddress "glVertexAttribPointer"
 glDisableVertexAttribArray: as glDisableVertexAttribArray! glfwGetProcAddress "glDisableVertexAttribArray"
+glGetStringi:               as glGetStringi!               glfwGetProcAddress "glGetStringi"
+
+
+num-extensions: 0
+glGetIntegerv GL_NUM_EXTENSIONS :num-extensions
+print-line ["Supported extensions: " num-extensions]
+i: 0 while [i < num-extensions][
+	i: i + 1
+	print-line [#" " i ":^-" as c-string! glGetStringi GL_EXTENSIONS i - 1]
+]
+
+
 
 glfwSetInputMode window GLFW_STICKY_KEYS GL_TRUE
 glClearColor as float32! 1.0  as float32! 0.0 as float32! 0.1 as float32! 0.0
