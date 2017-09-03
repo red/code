@@ -1,7 +1,7 @@
 Red/System [
-	Title:   "Red/System glfw3 binding test"
+	Title:   "Red/System OpenGL basic triangle example using new OpenGL"
 	Author:  "Oldes"
-	File: 	 %glfw3-test.reds
+	File: 	 %gl3-triangle.reds
 	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
 	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
 	Note: {
@@ -11,22 +11,13 @@ Red/System [
 	}
 ]
 
-#include %glfw3.reds
-#include %gl.reds
+#include %common.reds
+
 ;some functions used in this example are defined as ARB extensions
-#include %extensions/gl-ARB.reds ;(Extensions officially approved by the OpenGL Architecture Review Board)
+#include %../extensions/gl-ARB.reds ;(Extensions officially approved by the OpenGL Architecture Review Board)
 ;to use these functions, you must manually load them.. see bellow in code.
 
-either 1 = glfwInit [
-	print-line "GLFW library initialized"
-][  print-line "Failed to initialize GLFW library!" quit -1]
-
-major: 0
-minor: 0
-rev:   0
-glfwGetVersion :major :minor :rev
-
-print-line ["GLFW version: " major #"." minor #"." rev]
+GL-init
 
 glfwWindowHint GLFW_SAMPLES 4 ;4x antialiasing
 glfwWindowHint GLFW_CONTEXT_VERSION_MAJOR 3 ;We want OpenGL 3.3
@@ -34,19 +25,11 @@ glfwWindowHint GLFW_CONTEXT_VERSION_MINOR 3 ;
 glfwWindowHint GLFW_OPENGL_FORWARD_COMPAT GL_TRUE ;To make MacOS happy; should not be needed
 glfwWindowHint GLFW_OPENGL_PROFILE GLFW_OPENGL_CORE_PROFILE ;We don't want the old OpenGL 
 
-window: glfwCreateWindow 1024 768 "Tutorial 01" NULL NULL
-
-print-line ["Window: " window]
-if NULL = window [
-	print-line "Failed to open GLFW window. If you have an Intel GPU, they may not be 3.3 compatible."
-	glfwTerminate
-	quit -1
-]
+GL-window "GL3 triangle" 800 600
 
 glfwMakeContextCurrent window ; Initialize GLEW
 
 glewExperimental: true
-
 
 ;@@ must manually load used GL extension functions here as Red compiler is not able to do it automatically yet!
 glGenVertexArrays:          as glGenVertexArrays!          glfwGetProcAddress "glGenVertexArrays"
@@ -57,20 +40,7 @@ glBufferData:               as glBufferData!               glfwGetProcAddress "g
 glEnableVertexAttribArray:  as glEnableVertexAttribArray!  glfwGetProcAddress "glEnableVertexAttribArray"
 glVertexAttribPointer:      as glVertexAttribPointer!      glfwGetProcAddress "glVertexAttribPointer"
 glDisableVertexAttribArray: as glDisableVertexAttribArray! glfwGetProcAddress "glDisableVertexAttribArray"
-glGetStringi:               as glGetStringi!               glfwGetProcAddress "glGetStringi"
 
-
-num-extensions: 0
-glGetIntegerv GL_NUM_EXTENSIONS :num-extensions
-print-line ["Supported extensions: " num-extensions]
-i: 0 while [i < num-extensions][
-	i: i + 1
-	print-line [#" " i ":^-" as c-string! glGetStringi GL_EXTENSIONS i - 1]
-]
-
-
-
-glfwSetInputMode window GLFW_STICKY_KEYS GL_TRUE
 glClearColor as float32! 1.0  as float32! 0.0 as float32! 0.1 as float32! 0.0
 
 VertexArrayID: 0
@@ -106,16 +76,12 @@ forever [
 	;Draw the triangle!
 	glDrawArrays GL_TRIANGLES 0 3 ;Starting from vertex 0; 3 vertices total -> 1 triangle
 	glDisableVertexAttribArray 0
+
     ;Swap buffers
     glfwSwapBuffers window
     glfwPollEvents
 
-    if any [
-    	0 <> glfwWindowShouldClose window
-    	GLFW_PRESS = glfwGetKey window GLFW_KEY_ESCAPE
-    ][
-    	break
-    ]
+	GL-exit-test
 ]
 
-glfwTerminate
+GL-close
