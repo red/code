@@ -36,9 +36,18 @@ Red/System [
 ]
 
 #switch OS [
-	Windows   [ #define GLFW3_LIBRARY "glfw3.dll" ]
-	macOS     [ #define GLFW3_LIBRARY "glfw3.dylib" ] ;@@ not tested!
-	#default  [ #define GLFW3_LIBRARY "glfw3.so" ] ;@@ not tested!
+	Windows   [
+		#define GLFW3_LIBRARY "glfw3.dll"
+		#define GLFW3_CALLING stdcall
+	]
+	macOS     [;@@ not tested!
+		#define GLFW3_LIBRARY "glfw3.dylib"
+		#define GLFW3_CALLING cdecl
+	] 
+	#default  [;@@ not tested!
+		#define GLFW3_LIBRARY "glfw3.so"
+		#define GLFW3_CALLING cdecl
+	]
 ]
 
 string-ref!:  alias struct! [value [c-string!]]
@@ -792,7 +801,7 @@ GLFWimage!: alias struct! [
 
 
 
-#import [ GLFW3_LIBRARY cdecl [
+#import [ GLFW3_LIBRARY GLFW3_CALLING [
 	;@@ int glfwInit(void)
 	glfwInit: "glfwInit"[
 	  ;-  Initializes the GLFW library.
@@ -885,6 +894,38 @@ GLFWimage!: alias struct! [
 		major	[ int-ptr! ]
 		minor	[ int-ptr! ]
 		rev	[ int-ptr! ]
+	]
+	;@@ char* glfwGetVersionString(void)
+	glfwGetVersionString: "glfwGetVersionString"[
+	  ;-  Returns a string describing the compile-time configuration.
+	  ; This function returns the compile-time generated
+	  ; [version string](@ref intro_version_string) of the GLFW library binary.  It
+	  ; describes the version, platform, compiler and any platform-specific
+	  ; compile-time options.
+	  ; 
+	  ; __Do not use the version string__ to parse the GLFW library version.  The
+	  ; @ref glfwGetVersion function already provides the version of the running
+	  ; library binary.
+	  ; 
+	  ; This function always succeeds.
+	  ; 
+	  ; @return The GLFW version string.
+	  ; 
+	  ; @remarks This function may be called before @ref glfwInit.
+	  ; 
+	  ; @par Pointer Lifetime
+	  ; The returned string is static and compile-time generated.
+	  ; 
+	  ; @par Thread Safety
+	  ; This function may be called from any thread.
+	  ; 
+	  ; @sa @ref intro_version
+	  ; @sa glfwGetVersion
+	  ; 
+	  ; @since Added in GLFW 3.0.
+	  ; 
+	  ; @ingroup init
+		return: [ c-string! ]
 	]
 	;@@ GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun cbfun)
 	glfwSetErrorCallback: "glfwSetErrorCallback"[
@@ -1033,6 +1074,33 @@ GLFWimage!: alias struct! [
 		widthMM	[ int-ptr! ]
 		heightMM	[ int-ptr! ]
 	]
+	;@@ char* glfwGetMonitorName(GLFWmonitor* monitor)
+	glfwGetMonitorName: "glfwGetMonitorName"[
+	  ;-  Returns the name of the specified monitor.
+	  ; This function returns a human-readable name, encoded as UTF-8, of the
+	  ; specified monitor.  The name typically reflects the make and model of the
+	  ; monitor and is not guaranteed to be unique among the connected monitors.
+	  ; 
+	  ; @param[in] monitor The monitor to query.
+	  ; @return The UTF-8 encoded name of the monitor, or `NULL` if an
+	  ; [error](@ref error_handling) occurred.
+	  ; 
+	  ; @par Pointer Lifetime
+	  ; The returned string is allocated and freed by GLFW.  You should not free it
+	  ; yourself.  It is valid until the specified monitor is disconnected or the
+	  ; library is terminated.
+	  ; 
+	  ; @par Thread Safety
+	  ; This function may only be called from the main thread.
+	  ; 
+	  ; @sa @ref monitor_properties
+	  ; 
+	  ; @since Added in GLFW 3.0.
+	  ; 
+	  ; @ingroup monitor
+		monitor	[ GLFWmonitor! ]
+		return: [ c-string! ]
+	]
 	;@@ GLFWmonitorfun glfwSetMonitorCallback(GLFWmonitorfun cbfun)
 	glfwSetMonitorCallback: "glfwSetMonitorCallback"[
 	  ;-  Sets the monitor configuration callback.
@@ -1059,6 +1127,69 @@ GLFWimage!: alias struct! [
 		cbfun	[ GLFWmonitorfun! ]
 		return: [ int-ptr! ]
 	]
+	;@@ GLFWvidmode* glfwGetVideoModes(GLFWmonitor* monitor, int* count)
+	glfwGetVideoModes: "glfwGetVideoModes"[
+	  ;-  Returns the available video modes for the specified monitor.
+	  ; This function returns an array of all video modes supported by the specified
+	  ; monitor.  The returned array is sorted in ascending order, first by color
+	  ; bit depth (the sum of all channel depths) and then by resolution area (the
+	  ; product of width and height).
+	  ; 
+	  ; @param[in] monitor The monitor to query.
+	  ; @param[out] count Where to store the number of video modes in the returned
+	  ; array.  This is set to zero if an error occurred.
+	  ; @return An array of video modes, or `NULL` if an
+	  ; [error](@ref error_handling) occurred.
+	  ; 
+	  ; @par Pointer Lifetime
+	  ; The returned array is allocated and freed by GLFW.  You should not free it
+	  ; yourself.  It is valid until the specified monitor is disconnected, this
+	  ; function is called again for that monitor or the library is terminated.
+	  ; 
+	  ; @par Thread Safety
+	  ; This function may only be called from the main thread.
+	  ; 
+	  ; @sa @ref monitor_modes
+	  ; @sa glfwGetVideoMode
+	  ; 
+	  ; @since Added in GLFW 1.0.
+	  ; 
+	  ; @par
+	  ; __GLFW 3:__ Changed to return an array of modes for a specific monitor.
+	  ; 
+	  ; @ingroup monitor
+		monitor	[ GLFWmonitor! ]
+		count	[ int-ptr! ]
+		return: [ GLFWvidmode! ]
+	]
+	;@@ GLFWvidmode* glfwGetVideoMode(GLFWmonitor* monitor)
+	glfwGetVideoMode: "glfwGetVideoMode"[
+	  ;-  Returns the current mode of the specified monitor.
+	  ; This function returns the current video mode of the specified monitor.  If
+	  ; you have created a full screen window for that monitor, the return value
+	  ; will depend on whether that window is iconified.
+	  ; 
+	  ; @param[in] monitor The monitor to query.
+	  ; @return The current mode of the monitor, or `NULL` if an
+	  ; [error](@ref error_handling) occurred.
+	  ; 
+	  ; @par Pointer Lifetime
+	  ; The returned array is allocated and freed by GLFW.  You should not free it
+	  ; yourself.  It is valid until the specified monitor is disconnected or the
+	  ; library is terminated.
+	  ; 
+	  ; @par Thread Safety
+	  ; This function may only be called from the main thread.
+	  ; 
+	  ; @sa @ref monitor_modes
+	  ; @sa glfwGetVideoModes
+	  ; 
+	  ; @since Added in GLFW 3.0.  Replaces `glfwGetDesktopMode`.
+	  ; 
+	  ; @ingroup monitor
+		monitor	[ GLFWmonitor! ]
+		return: [ GLFWvidmode! ]
+	]
 	;@@ void glfwSetGamma(GLFWmonitor* monitor, float gamma)
 	glfwSetGamma: "glfwSetGamma"[
 	  ;-  Generates a gamma ramp and sets it for the specified monitor.
@@ -1079,6 +1210,32 @@ GLFWimage!: alias struct! [
 	  ; @ingroup monitor
 		monitor	[ GLFWmonitor! ]
 		gamma	[ float32! ]
+	]
+	;@@ GLFWgammaramp* glfwGetGammaRamp(GLFWmonitor* monitor)
+	glfwGetGammaRamp: "glfwGetGammaRamp"[
+	  ;-  Returns the current gamma ramp for the specified monitor.
+	  ; This function returns the current gamma ramp of the specified monitor.
+	  ; 
+	  ; @param[in] monitor The monitor to query.
+	  ; @return The current gamma ramp, or `NULL` if an
+	  ; [error](@ref error_handling) occurred.
+	  ; 
+	  ; @par Pointer Lifetime
+	  ; The returned structure and its arrays are allocated and freed by GLFW.  You
+	  ; should not free them yourself.  They are valid until the specified monitor
+	  ; is disconnected, this function is called again for that monitor or the
+	  ; library is terminated.
+	  ; 
+	  ; @par Thread Safety
+	  ; This function may only be called from the main thread.
+	  ; 
+	  ; @sa @ref monitor_gamma
+	  ; 
+	  ; @since Added in GLFW 3.0.
+	  ; 
+	  ; @ingroup monitor
+		monitor	[ GLFWmonitor! ]
+		return: [ GLFWgammaramp! ]
 	]
 	;@@ void glfwSetGammaRamp(GLFWmonitor* monitor, const GLFWgammaramp* ramp)
 	glfwSetGammaRamp: "glfwSetGammaRamp"[
@@ -2652,6 +2809,61 @@ GLFWimage!: alias struct! [
 		joy	[ integer! ]
 		return: [ integer! ]
 	]
+	;@@ float* glfwGetJoystickAxes(int joy, int* count)
+	glfwGetJoystickAxes: "glfwGetJoystickAxes"[
+	  ;-  Returns the values of all axes of the specified joystick.
+	  ; This function returns the values of all axes of the specified joystick.
+	  ; Each element in the array is a value between -1.0 and 1.0.
+	  ; 
+	  ; @param[in] joy The [joystick](@ref joysticks) to query.
+	  ; @param[out] count Where to store the number of axis values in the returned
+	  ; array.  This is set to zero if an error occurred.
+	  ; @return An array of axis values, or `NULL` if the joystick is not present.
+	  ; 
+	  ; @par Pointer Lifetime
+	  ; The returned array is allocated and freed by GLFW.  You should not free it
+	  ; yourself.  It is valid until the specified joystick is disconnected, this
+	  ; function is called again for that joystick or the library is terminated.
+	  ; 
+	  ; @par Thread Safety
+	  ; This function may only be called from the main thread.
+	  ; 
+	  ; @sa @ref joystick_axis
+	  ; 
+	  ; @since Added in GLFW 3.0.  Replaces `glfwGetJoystickPos`.
+	  ; 
+	  ; @ingroup input
+		joy	[ integer! ]
+		count	[ int-ptr! ]
+		return: [ pointer! [float32!] ]
+	]
+	;@@ char* glfwGetJoystickName(int joy)
+	glfwGetJoystickName: "glfwGetJoystickName"[
+	  ;-  Returns the name of the specified joystick.
+	  ; This function returns the name, encoded as UTF-8, of the specified joystick.
+	  ; The returned string is allocated and freed by GLFW.  You should not free it
+	  ; yourself.
+	  ; 
+	  ; @param[in] joy The [joystick](@ref joysticks) to query.
+	  ; @return The UTF-8 encoded name of the joystick, or `NULL` if the joystick
+	  ; is not present.
+	  ; 
+	  ; @par Pointer Lifetime
+	  ; The returned string is allocated and freed by GLFW.  You should not free it
+	  ; yourself.  It is valid until the specified joystick is disconnected, this
+	  ; function is called again for that joystick or the library is terminated.
+	  ; 
+	  ; @par Thread Safety
+	  ; This function may only be called from the main thread.
+	  ; 
+	  ; @sa @ref joystick_name
+	  ; 
+	  ; @since Added in GLFW 3.0.
+	  ; 
+	  ; @ingroup input
+		joy	[ integer! ]
+		return: [ c-string! ]
+	]
 	;@@ void glfwSetClipboardString(GLFWwindow* window, const char* string)
 	glfwSetClipboardString: "glfwSetClipboardString"[
 	  ;-  Sets the clipboard to the specified string.
@@ -2675,6 +2887,36 @@ GLFWimage!: alias struct! [
 	  ; @ingroup input
 		window	[ GLFWwindow! ]
 		string	[ c-string! ]
+	]
+	;@@ char* glfwGetClipboardString(GLFWwindow* window)
+	glfwGetClipboardString: "glfwGetClipboardString"[
+	  ;-  Returns the contents of the clipboard as a string.
+	  ; This function returns the contents of the system clipboard, if it contains
+	  ; or is convertible to a UTF-8 encoded string.  If the clipboard is empty or
+	  ; if its contents cannot be converted, `NULL` is returned and a @ref
+	  ; GLFW_FORMAT_UNAVAILABLE error is generated.
+	  ; 
+	  ; @param[in] window The window that will request the clipboard contents.
+	  ; @return The contents of the clipboard as a UTF-8 encoded string, or `NULL`
+	  ; if an [error](@ref error_handling) occurred.
+	  ; 
+	  ; @par Pointer Lifetime
+	  ; The returned string is allocated and freed by GLFW.  You should not free it
+	  ; yourself.  It is valid until the next call to @ref
+	  ; glfwGetClipboardString or @ref glfwSetClipboardString, or until the library
+	  ; is terminated.
+	  ; 
+	  ; @par Thread Safety
+	  ; This function may only be called from the main thread.
+	  ; 
+	  ; @sa @ref clipboard
+	  ; @sa glfwSetClipboardString
+	  ; 
+	  ; @since Added in GLFW 3.0.
+	  ; 
+	  ; @ingroup input
+		window	[ GLFWwindow! ]
+		return: [ c-string! ]
 	]
 	;@@ double glfwGetTime(void)
 	glfwGetTime: "glfwGetTime"[
@@ -2904,6 +3146,3 @@ GLFWimage!: alias struct! [
 		return: [ int-ptr! ]
 	]
 ]]
-
-
-
