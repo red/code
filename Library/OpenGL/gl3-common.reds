@@ -30,13 +30,16 @@ glDeleteShader:             as glDeleteShader!             glfwGetProcAddress "g
 glUseProgram:               as glUseProgram!               glfwGetProcAddress "glUseProgram"
 
 GL-compile-shader: func [
-	source [string-ref!]
+	source [c-string!]
 	type   [integer!]
 	return: [GLuint!]
-	/local shader-id result info-length message
+	/local shader-id result info-length message source-ref
 ][
+	source-ref: declare string-ref!
+	source-ref/value: source
+
 	shader-id: glCreateShader type
-	glShaderSource  shader-id 1 source NULL
+	glShaderSource  shader-id 1 source-ref NULL
 	glCompileShader shader-id
 
 	;check result:
@@ -49,14 +52,14 @@ GL-compile-shader: func [
 		message: as c-string! allocate (info-length + 1)
 		glGetShaderInfoLog shader-id info-length NULL message
 		print-line message
-		print-line source/value
+		print-line source
 		free as byte-ptr! message
 	]
 	shader-id
 ]
 GL-compile-program: func[
-	vertex   [string-ref!]
-	fragment [string-ref!]
+	vertex   [c-string!]
+	fragment [c-string!]
 	return: [GLuint!]
 	/local
 		VertexShaderID FragmentShaderID ProgramID

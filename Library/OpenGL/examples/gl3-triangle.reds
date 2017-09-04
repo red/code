@@ -31,8 +31,7 @@ glfwMakeContextCurrent window ; Initialize GLEW
 
 #include %../gl3-common.reds ;imports common GL3 functions
 
-vertex-source: declare string-ref!
-vertex-source/value: {#version 330 core
+vertex-source: {#version 330 core
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec3 vertexPosition_modelspace;
 void main(){
@@ -40,8 +39,7 @@ void main(){
     gl_Position.w = 1.0;
 }}
 
-fragment-source: declare string-ref!
-fragment-source/value: {#version 330 core
+fragment-source: {#version 330 core
 // Ouput data
 out vec3 color;
 void main()
