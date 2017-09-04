@@ -29,19 +29,31 @@ GL-window "GL3 triangle" 800 600
 
 glfwMakeContextCurrent window ; Initialize GLEW
 
-glewExperimental: true
+#include %../gl3-common.reds ;imports common GL3 functions
 
-;@@ must manually load used GL extension functions here as Red compiler is not able to do it automatically yet!
-glGenVertexArrays:          as glGenVertexArrays!          glfwGetProcAddress "glGenVertexArrays"
-glBindVertexArray:          as glBindVertexArray!          glfwGetProcAddress "glBindVertexArray"
-glGenBuffers:               as glGenBuffers!               glfwGetProcAddress "glGenBuffers"
-glBindBuffer:               as glBindBuffer!               glfwGetProcAddress "glBindBuffer"
-glBufferData:               as glBufferData!               glfwGetProcAddress "glBufferData"
-glEnableVertexAttribArray:  as glEnableVertexAttribArray!  glfwGetProcAddress "glEnableVertexAttribArray"
-glVertexAttribPointer:      as glVertexAttribPointer!      glfwGetProcAddress "glVertexAttribPointer"
-glDisableVertexAttribArray: as glDisableVertexAttribArray! glfwGetProcAddress "glDisableVertexAttribArray"
+vertex-source: declare string-ref!
+vertex-source/value: {#version 330 core
+// Input vertex data, different for all executions of this shader.
+layout(location = 0) in vec3 vertexPosition_modelspace;
+void main(){
+    gl_Position.xyz = vertexPosition_modelspace;
+    gl_Position.w = 1.0;
+}}
 
-glClearColor as float32! 1.0  as float32! 0.0 as float32! 0.1 as float32! 0.0
+fragment-source: declare string-ref!
+fragment-source/value: {#version 330 core
+// Ouput data
+out vec3 color;
+void main()
+{
+	// Output color = red 
+	color = vec3(1,0,0);
+}}
+
+programID: GL-compile-program vertex-source fragment-source
+
+;background color:
+glClearColor as float32! 0.0  as float32! 0.0 as float32! 0.6 as float32! 0.0
 
 VertexArrayID: 0
 glGenVertexArrays 1 :VertexArrayID
@@ -68,6 +80,8 @@ glBufferData GL_ARRAY_BUFFER (size? float!) * size? g_vertex_buffer_data as byte
 
 forever [
 	glClear GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
+
+	glUseProgram programID
 
 	glEnableVertexAttribArray 0
 	glBindBuffer GL_ARRAY_BUFFER vertexbuffer
