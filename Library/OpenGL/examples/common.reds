@@ -6,7 +6,7 @@ Red/System [
 	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
 ]
 
-#include %../glfw3.reds
+#include %../../GLFW/glfw3.reds
 #include %../gl.reds
 
 window: declare GLFWwindow!

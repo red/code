@@ -1,5 +1,5 @@
 Red/System [
-	Title:   "Red/System glfw3 binding - A library for OpenGL, window and input"
+	Title:   "Red/System glfw3 binding - A library for OpenGL/Vulkan, window and input"
 	Author:  "Oldes"
 	File: 	 %glfw3.reds
 	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
