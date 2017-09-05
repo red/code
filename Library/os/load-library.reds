@@ -20,7 +20,7 @@ Red/System [
 				file-name [c-string!]
 				return: [pointer! [integer!]]
 			]
-			load-procedure: "GetProcAddress" [
+			GetProcAddress: "GetProcAddress" [
 				hmod      [pointer! [integer!]]
 				procname  [c-string!]
 				return:   [pointer! [integer!]]
@@ -53,7 +53,7 @@ Red/System [
 				hmod      [pointer! [integer!]]
 				return:   [integer!]
 			]
-			load-procedure: "dlsym" [
+			dlsym: "dlsym" [
 				hmod      [pointer! [integer!]]
 				procname  [c-string!]
 				return:   [pointer! [integer!]]
@@ -74,3 +74,16 @@ load-library: func[
 	][	dlopen file-name RTLD_LAZY ]
 ]
 
+load-procedure: func[
+	hmod      [pointer! [integer!]]
+	procname  [c-string!]
+	return: [pointer! [integer!]]
+][
+	if null = hmod [
+		print-line "ERROR: Attempt to load procedure from NULL library."
+		return null
+	]
+	#either OS = 'Windows [
+		GetProcAddress hmod procname
+	][	dlsym hmod procname ]
+]
