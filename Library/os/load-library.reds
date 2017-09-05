@@ -10,7 +10,7 @@ Red/System [
 		FreeLibraryProc!: alias function! [hmod [pointer! [integer!]] return: [integer!]] 
 		my-free-library: as FreeLibraryProc! load-procedure my-lib "FreeLibrary"
 		either null = :my-free-library [
-			print-line "Sorry, but you function was not loaded, try something else!"
+			print-line "Sorry, but your function was not loaded, try something else!"
 		][
 			print "Freeing the library using the loaded function... "
 			print-line 1 = my-free-library my-lib
