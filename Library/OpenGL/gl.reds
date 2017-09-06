@@ -1108,7 +1108,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		params      [ binary-ref! ]
 	]
 	glGetPolygonStipple: "glGetPolygonStipple" [ mask [pointer! [GLubyte!]] ]
-	glGetString: "glGetString" [ name [GLenum!] return: [pointer! [GLubyte!]] ]
+	glGetString: "glGetString" [ name [GLenum!] return: [c-string!] ]
 	glGetTexEnvfv: "glGetTexEnvfv"[
 		target      [ GLenum! ]
 		pname       [ GLenum! ]
@@ -3747,7 +3747,7 @@ glGetFragDataLocation!: alias function! [
 glGetStringi!: alias function! [
 	name        [ GLenum! ]
 	index       [ GLuint! ]
-	return: [ pointer! [GLubyte!] ]
+	return: [ c-string! ]
 
 ]
 ;@@ void ( GLenum target, GLenum pname, GLint* params );

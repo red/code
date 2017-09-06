@@ -22,6 +22,7 @@ glfwGetVersion :major :minor :rev
 
 print-line ["GLFW version: " major #"." minor #"." rev " reported: " glfwGetVersionString]
 
+glfwWindowHint GLFW_SAMPLES 256 ;trying to set very hight antialising to detect maximum value
 glfwWindowHint GLFW_VISIBLE GLFW_FALSE ;we have nothing to show in the window in this example
 
 GL-window "GL info" 800 600 ;but we still need windows for getting the context
@@ -32,7 +33,7 @@ glfwMakeContextCurrent window
 glGetStringi:               as glGetStringi!               glfwGetProcAddress "glGetStringi"
 glGetIntegeri_v:            as glGetIntegeri_v!            glfwGetProcAddress "glGetIntegeri_v"
 
-print-line ["GL version: " as c-string! glGetString GL_VERSION]
+print-line ["GL version: " glGetString GL_VERSION]
 
 max-texture-size: 0
 max-texture-units: 0
@@ -69,7 +70,7 @@ i: 0
 iSize: 0
 while [i < num-extensions][
 	i: i + 1
-	print-line [#" " i ":^-" as c-string! glGetStringi GL_EXTENSIONS i - 1]
+	print-line [#" " i ":^-" glGetStringi GL_EXTENSIONS i - 1]
 ]
 
 monitor-info: func[
@@ -118,6 +119,13 @@ while [i < n][
 	print-line ["Monitor " i #":" ]
 	monitor-info as GLFWmonitor! monitors/i
 ]
+
+glGetIntegerv GL_SAMPLES_ARB :n
+print-line ["FSAA is available with " n " samples"]
+print-line ["Renderer: " glGetString GL_RENDERER]
+print-line ["Vendor:   " glGetString GL_VENDOR]
+print-line ["Shading:  " glGetString GL_SHADING_LANGUAGE_VERSION]
+
 
 ;no main loop in this example
 
