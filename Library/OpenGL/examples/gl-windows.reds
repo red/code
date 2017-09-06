@@ -16,12 +16,8 @@ Red/System [
 
 GL-init
 
-c1: 0.0
-c2: 0.0
-c3: 0.0
-
-titles:  ["Foo" "Bar" "Baz" "Quux"] ; An array for 4 windows title    
-windows: [0 0 0 0]                  ; An array to 4 windows
+titles:  ["Foo" "Bar" "Baz" "Quux"] ; An array with 4 windows title    
+windows: [0 0 0 0]                  ; An array to 4 window pointers
 
 i: 0
 while [i < 4] [
@@ -29,10 +25,11 @@ while [i < 4] [
 	windows/i: as integer! glfwCreateWindow 200 200 as c-string! titles/i NULL NULL
 	window:    as int-ptr! windows/i
 	glfwMakeContextCurrent window
-	c1: as float! ((i - 1) and 1)
-	c2: as float! ((i - 1) >> 1)
-	either i - 1 = 0 [c3: 1.0 ] [c3: 0.0]
-	glClearColor as float32! c1 as float32! c2  as float32! c3 1.0
+	glClearColor
+	  as float32! ((i - 1) and 1)
+	  as float32! ((i - 1) >> 1)
+	  as float32! either i = 1 [1.0][0.0]
+	  as float32! 1.0
 	glfwSetWindowPos window 100 + ((i - 1 AND 1) * 300) 100 + ((i - 1 >> 1) * 300)
 	glfwShowWindow window
 ]
@@ -47,7 +44,7 @@ while [running][
 		glfwMakeContextCurrent window
 		glClear GL_COLOR_BUFFER_BIT
 		glfwSwapBuffers window
-		if (glfwWindowShouldClose window) = GL_TRUE  [running: false] ; Closing any window quits app    
+		if GL_TRUE = glfwWindowShouldClose window [running: false] ; Closing any window quits app    
 	]
 	glfwPollEvents
 ]
