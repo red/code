@@ -103,9 +103,7 @@ This source was made from glew.h file, which contains these copyrights:
 	] 
 ]
 
-int64!: alias struct! [lo [integer!] hi [integer!]]
-#define uint64! int64!
-
+#include %../os/definitions.reds ;common aliases and defines
 
 #define GLenum!       integer!
 #define GLboolean!    integer!
@@ -144,8 +142,6 @@ int64!: alias struct! [lo [integer!] hi [integer!]]
 
 #define GLeglClientBufferEXT! [pointer! [integer!]]
 
-
-binary-ref!:  alias struct! [value [pointer! [byte!]]]
 
 GLboolean-ref!: alias struct! [value [GLboolean!]]
 GLstring-ref!:  alias struct! [value [GLstring!]]
