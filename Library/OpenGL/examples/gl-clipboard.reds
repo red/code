@@ -43,7 +43,7 @@ on-key: func [
 				print-line ["Setting clipboard to " string]
 			]
 		]
-		default [print "."] ;do nothing
+		default [0] ;do nothing
 	]
 ]
 
