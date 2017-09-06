@@ -40,7 +40,7 @@ GL-window: func[
 ]
 
 GL-close: func[][
-	glfwDestroyWindow window   
+	if null <> window [glfwDestroyWindow window]  
 	glfwTerminate
 ]
 
