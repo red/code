@@ -40,7 +40,7 @@ Red/System [
 #switch OS [
 	Windows   [
 		#define GLFW3_LIBRARY "glfw3.dll"
-		#define GLFW3_CALLING stdcall
+		#define GLFW3_CALLING cdecl
 	]
 	macOS     [;@@ not tested!
 		#define GLFW3_LIBRARY "glfw3.dylib"
