@@ -9,7 +9,7 @@ Red/System [
 	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
 	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
 	Note:    {Based on François Jouen's:
-				https://github.com/ldci/glfw-red/blob/master/Samples/redS/windows.reds}
+				https://github.com/ldci/glfw-red/blob/master/Samples/redS/clipboard.reds}
 ]
 
 #include %common.reds
