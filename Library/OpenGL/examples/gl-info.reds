@@ -30,10 +30,7 @@ glfwWindowHint GLFW_OPENGL_PROFILE GLFW_OPENGL_CORE_PROFILE ;We don't want the o
 
 GL-window "GL info" 800 600
 
-glfwMakeContextCurrent window ; Initialize GLEW
-
-glewExperimental: true
-
+glfwMakeContextCurrent window
 
 ;@@ must manually load used GL extension functions here as Red compiler is not able to do it automatically yet!
 glGetStringi:               as glGetStringi!               glfwGetProcAddress "glGetStringi"
