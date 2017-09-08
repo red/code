@@ -1,14 +1,10 @@
 Red/System [
-	Title:   "Red/System OpenGL basic triangle example using new OpenGL"
+	Title:   "Red/System OpenGL moving triangle example"
 	Author:  "Oldes"
-	File:    %gl3-triangle.reds
+	File:    %gl3-triangle-2.reds
 	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
 	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
-	Note: {
-		This code is Red/System port of tutorial from:
-		http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
-		http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
-	}
+	Note:    {This code is enhanced version of gl3-triangle.reds}
 ]
 
 #include %common.reds
@@ -26,7 +22,7 @@ glfwWindowHint GLFW_CONTEXT_VERSION_MINOR 3 ;
 glfwWindowHint GLFW_OPENGL_FORWARD_COMPAT GL_TRUE ;To make MacOS happy; should not be needed
 glfwWindowHint GLFW_OPENGL_PROFILE GLFW_OPENGL_CORE_PROFILE ;We don't want the old OpenGL 
 
-GL-window "GL3 triangle" 800 600
+GL-window "GL3 triangle 2 - moving" 800 600
 
 GL-context
 
@@ -41,9 +37,13 @@ glBindVertexArray VertexArrayID
 
 
 vertexData: make-f32-buffer [
-	-1.0 -1.0  0.0
-	 1.0 -1.0  0.0
-	 0.0  1.0  0.0
+	-0.5 -0.5  0.0  1.0
+	 0.5 -0.5  0.0  1.0
+	 0.0  0.5  0.0  1.0
+
+	 1.0  0.0  0.0  1.0
+	 0.0  1.0  0.0  1.0
+	 0.0  0.0  1.0  1.0
 ]
 
 ;This will identify our vertex buffer
@@ -55,33 +55,51 @@ glBindBuffer GL_ARRAY_BUFFER vertexbuffer
 ;Give our vertices to OpenGL.
 glBufferData GL_ARRAY_BUFFER (size? float32!) * vertexData/size vertexData/head GL_STATIC_DRAW
 
+
 vertex-source: {#version 330 core
-// Input vertex data, different for all executions of this shader.
-layout(location = 0) in vec3 vertexPosition_modelspace;
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec4 color;
+uniform    vec2 offset;
+smooth out vec4 theColor;
 void main() {
-	gl_Position.xyz = vertexPosition_modelspace;
-	gl_Position.w = 1.0;
+	theColor         = color;
+	vec4 totalOffset = vec4(offset.x, offset.y, 0.0, 0.0);
+	gl_Position      = position + totalOffset;
+	
 }}
 
 fragment-source: {#version 330 core
-// Ouput data
-out vec3 color;
+smooth in vec4 theColor;
+out vec4 outputColor;
 void main() {
-	// Output color = red 
-	color = vec3(1,0,0);
+	outputColor = theColor;
 }}
 
 programID: GL-compile-program vertex-source fragment-source
 
+offsetLocation: glGetUniformLocation programID "offset"
 
-render-scene: does [
+#define LOOP_DURATION 5.0
+#define LOOP_SCALE    1.256637061435917 ;2PI / FLOOP_DURATION
+
+print-line ["offsetLocation: " offsetLocation]
+
+render-scene: func[
+	/local alfa
+][
 	glClear GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
 
 	glUseProgram programID
 
+	alfa: LOOP_SCALE * fmod glfwGetTime LOOP_DURATION
+
+	glUniform2f offsetLocation as float32! (0.5 * cos alfa) as float32! (0.5 * sin alfa)
+
 	glEnableVertexAttribArray 0
+	glEnableVertexAttribArray 1
 	glBindBuffer GL_ARRAY_BUFFER vertexbuffer
-	glVertexAttribPointer 0 3 GL_FLOAT GL_FALSE 0 NULL
+	glVertexAttribPointer 0 4 GL_FLOAT GL_FALSE 0 NULL
+	glVertexAttribPointer 1 4 GL_FLOAT GL_FALSE 0 48
 
 	;Draw the triangle!
 	glDrawArrays GL_TRIANGLES 0 3 ;Starting from vertex 0; 3 vertices total -> 1 triangle
