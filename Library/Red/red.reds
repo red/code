@@ -137,7 +137,7 @@ Red/System [
 	redRoutine: "redRoutine" [
 		name     [red_word!]
 		spec     [c-string!]
-		func_ptr [pointer! [integer!]]
+		func_ptr [integer!]
 		return:  [red_value!]
 	]
 

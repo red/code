@@ -52,9 +52,7 @@ redPrint redString "This is test of error in redDo:"
 value: redDo "$%$"
 if RED_TYPE_ERROR = redTypeOf value [ redProbe value ]
 
-;@@ it is not posible to cast function to int-ptr!... but this seems to be accepted:
-ff: as integer! :my-add
-redRoutine redWord "my-add" "[a [integer!] b [integer!]]" as int-ptr! ff
+redRoutine redWord "my-add" "[a [integer!] b [integer!]]" as integer! :my-add
 err: redHasError
 either null <> err [
 	redPrint err
