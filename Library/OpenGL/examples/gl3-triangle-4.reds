@@ -1,10 +1,10 @@
 Red/System [
 	Title:   "Red/System OpenGL moving triangle example"
 	Author:  "Oldes"
-	File:    %gl3-triangle-3.reds
+	File:    %gl3-triangle-4.reds
 	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
 	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
-	Note:    {This code is enhanced version of gl3-triangle-2.reds -> the position is computed on GPU}
+	Note:    {This code is enhanced version of gl3-triangle-3.reds -> color is changing now}
 ]
 
 #include %common.reds
@@ -78,10 +78,23 @@ void main() {
 }}
 
 fragment-source: {#version 330 core
+uniform float fragLoopDuration;
+uniform float time;
+
+const vec4 firstColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+const vec4 secondColor = vec4(0.5f, 1.0f, 0.0f, 1.0f);
+
 smooth in vec4 theColor;
+
 out vec4 outputColor;
 void main() {
-	outputColor = theColor;
+	float currTime = mod(time, fragLoopDuration);
+    float currLerp = currTime / fragLoopDuration;
+    if(currLerp > 0.5f) {
+    	currLerp = 1.0f - currLerp;
+    }
+
+	outputColor = mix(firstColor, secondColor, currLerp) * theColor;
 }}
 
 programID: GL-compile-program vertex-source fragment-source
@@ -89,8 +102,10 @@ glUseProgram programID
 
 elapsedTimeUniform: glGetUniformLocation programID "time"
 loopDurationUnf:    glGetUniformLocation programID "loopDuration"
+fragLoopDurUnf:     glGetUniformLocation programID "fragLoopDuration"
 
 glUniform1f loopDurationUnf as float32! 5.0
+glUniform1f fragLoopDurUnf  as float32! 2.5
 
 glUseProgram 0
 
