@@ -10,7 +10,22 @@ Red/System [
 
 print-line "libred test started"
 
-my-add: func[a [integer!] b [integer!] return: [integer!]][ a + b ]
+my-add: func[
+	[cdecl]
+	"Test libRed routine"
+	a [red_integer!]
+	b [red_integer!]
+	return: [red_integer!]
+	/local ca cb
+][
+	ca: redCInt32 a
+	cb: redCInt32 b
+	redPrint redString "my-add called"
+	redPrint a ;@@ prints: integer   ?!
+	redPrint b ;@@ prints: false     ?!
+	printf ["add called! %ld %ld^/" ca cb] ;@@ this is not visible either:/
+	return redInteger (ca + cb)
+]
 
 redOpen
 
@@ -33,15 +48,19 @@ redPrint redGet a
 redProbe redCall [redWord "what-dir" 0]
 redCall [redWord "print" redDo "system/version" 0]
 
+redPrint redString "This is test of error in redDo:"
 value: redDo "$%$"
 if RED_TYPE_ERROR = redTypeOf value [ redProbe value ]
 
-;@@ This does not work :-( -> Compilation Error: type casting from function! to pointer! is not allowed 
-; redRoutine redWord "c-add" "[a [integer!] b [integer!]]" as int-ptr! :my-add
-; err: redHasError
-; either null <> err [
-; 	redPrint err
-; ][ redDo "probe my-add 2 3 probe :my-add" ]
+;@@ it is not posible to cast function to int-ptr!... but this seems to be accepted:
+ff: as integer! :my-add
+redRoutine redWord "my-add" "[a [integer!] b [integer!]]" as int-ptr! ff
+err: redHasError
+either null <> err [
+	redPrint err
+][
+	redDo "probe my-add 2 3 probe :my-add"
+]
 
 
 rb: redBinary "hello" 5
