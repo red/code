@@ -11,8 +11,23 @@ Red/System [
 
 window: declare GLFWwindow!
 
-on-gl-error: func [error [integer!] description [c-string!]] [
+on-gl-error: func [
+	[GLFW3_CALLING]
+	error       [integer!]
+	description [c-string!]
+][
     print-line [ "!!! OpenGL error[" error "] - " description]
+]
+
+on-resize: func [
+	[GLFW3_CALLING]
+	window [GLFWwindow!]
+	width  [integer!]
+	height [integer!]
+][
+	print-line ["resize: " width #"x" height]
+	glViewport 0 0 width height
+	render-scene ;redraw the scene
 ]
 
 GL-init: func[][
@@ -37,6 +52,12 @@ GL-window: func[
 	glfwSetInputMode window GLFW_STICKY_KEYS GL_TRUE
 
 	window
+]
+
+GL-context: does [
+	glfwMakeContextCurrent window
+	glfwSetFramebufferSizeCallback window :on-resize
+	glfwSwapInterval 1
 ]
 
 GL-close: func[][

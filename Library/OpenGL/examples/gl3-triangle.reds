@@ -27,7 +27,7 @@ glfwWindowHint GLFW_OPENGL_PROFILE GLFW_OPENGL_CORE_PROFILE ;We don't want the o
 
 GL-window "GL3 triangle" 800 600
 
-glfwMakeContextCurrent window ; Initialize GLEW
+GL-context
 
 #include %../gl3-common.reds ;imports common GL3 functions
 
@@ -76,7 +76,8 @@ glBindBuffer GL_ARRAY_BUFFER vertexbuffer
 ;Give our vertices to OpenGL.
 glBufferData GL_ARRAY_BUFFER (size? float!) * size? g_vertex_buffer_data as byte-ptr! g_vertex_buffer_data GL_STATIC_DRAW
 
-forever [
+
+render-scene: does [
 	glClear GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
 
 	glUseProgram programID
@@ -88,9 +89,12 @@ forever [
 	;Draw the triangle!
 	glDrawArrays GL_TRIANGLES 0 3 ;Starting from vertex 0; 3 vertices total -> 1 triangle
 	glDisableVertexAttribArray 0
-
-    ;Swap buffers
+	;Swap buffers
     glfwSwapBuffers window
+]
+
+forever [
+	render-scene
     glfwPollEvents
 
 	GL-exit-test

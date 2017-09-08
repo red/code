@@ -126,7 +126,7 @@ print-line ["Renderer: " glGetString GL_RENDERER]
 print-line ["Vendor:   " glGetString GL_VENDOR]
 print-line ["Shading:  " glGetString GL_SHADING_LANGUAGE_VERSION]
 
-
 ;no main loop in this example
+render-scene: does[] ;so compiler does not complain - this function is used in common
 
 GL-close
