@@ -22,14 +22,14 @@ glfwWindowHint GLFW_CONTEXT_VERSION_MINOR 3 ;
 glfwWindowHint GLFW_OPENGL_FORWARD_COMPAT GL_TRUE ;To make MacOS happy; should not be needed
 glfwWindowHint GLFW_OPENGL_PROFILE GLFW_OPENGL_CORE_PROFILE ;We don't want the old OpenGL 
 
-GL-window "GL3 triangle 2 - moving" 800 600
+GL-window "GL3 triangle 4 - moving" 800 600
 
 GL-context
 
 #include %../gl3-common.reds ;imports common GL3 functions
 
 ;background color:
-glClearColor as float32! 0.0  as float32! 0.0 as float32! 0.6 as float32! 0.0
+glClearColor 0.0 0.0 0.6 0.0
 
 VertexArrayID: 0
 glGenVertexArrays 1 :VertexArrayID
@@ -104,8 +104,8 @@ elapsedTimeUniform: glGetUniformLocation programID "time"
 loopDurationUnf:    glGetUniformLocation programID "loopDuration"
 fragLoopDurUnf:     glGetUniformLocation programID "fragLoopDuration"
 
-glUniform1f loopDurationUnf as float32! 5.0
-glUniform1f fragLoopDurUnf  as float32! 2.5
+glUniform1f loopDurationUnf 5.0
+glUniform1f fragLoopDurUnf  2.5
 
 glUseProgram 0
 

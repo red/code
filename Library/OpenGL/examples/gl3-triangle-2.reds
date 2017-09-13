@@ -29,7 +29,7 @@ GL-context
 #include %../gl3-common.reds ;imports common GL3 functions
 
 ;background color:
-glClearColor as float32! 0.0  as float32! 0.0 as float32! 0.6 as float32! 0.0
+glClearColor 0.0 0.0 0.6 0.0
 
 VertexArrayID: 0
 glGenVertexArrays 1 :VertexArrayID
