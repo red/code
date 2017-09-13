@@ -3475,7 +3475,7 @@ glVertexAttribPointer!: alias function! [
 	type        [ GLenum! ]
 	normalized  [ GLboolean! ]
 	stride      [ GLsizei! ]
-	pointer     [ pointer! [byte!] ]
+	pointer     [ integer! ] ;-- some legacy API cruft required this to be pointer, but we can avoid it - it is just an offset
 ]
 
 

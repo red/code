@@ -28,6 +28,10 @@ glGetProgramInfoLog:        as glGetProgramInfoLog!        glfwGetProcAddress "g
 glDetachShader:             as glDetachShader!             glfwGetProcAddress "glDetachShader"
 glDeleteShader:             as glDeleteShader!             glfwGetProcAddress "glDeleteShader"
 glUseProgram:               as glUseProgram!               glfwGetProcAddress "glUseProgram"
+glGetUniformLocation:       as glGetUniformLocation!       glfwGetProcAddress "glGetUniformLocation"
+glUniform1f:                as glUniform1f!                glfwGetProcAddress "glUniform1f"
+glUniform2f:                as glUniform2f!                glfwGetProcAddress "glUniform2f"
+glUniform2d:                as glUniform2d!                glfwGetProcAddress "glUniform2d"
 
 GL-compile-shader: func [
 	source [c-string!]
