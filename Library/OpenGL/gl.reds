@@ -103,9 +103,7 @@ This source was made from glew.h file, which contains these copyrights:
 	] 
 ]
 
-int64!: alias struct! [lo [integer!] hi [integer!]]
-#define uint64! int64!
-
+#include %../os/definitions.reds ;common aliases and defines
 
 #define GLenum!       integer!
 #define GLboolean!    integer!
@@ -144,8 +142,6 @@ int64!: alias struct! [lo [integer!] hi [integer!]]
 
 #define GLeglClientBufferEXT! [pointer! [integer!]]
 
-
-binary-ref!:  alias struct! [value [pointer! [byte!]]]
 
 GLboolean-ref!: alias struct! [value [GLboolean!]]
 GLstring-ref!:  alias struct! [value [GLstring!]]
@@ -1112,7 +1108,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		params      [ binary-ref! ]
 	]
 	glGetPolygonStipple: "glGetPolygonStipple" [ mask [pointer! [GLubyte!]] ]
-	glGetString: "glGetString" [ name [GLenum!] return: [pointer! [GLubyte!]] ]
+	glGetString: "glGetString" [ name [GLenum!] return: [c-string!] ]
 	glGetTexEnvfv: "glGetTexEnvfv"[
 		target      [ GLenum! ]
 		pname       [ GLenum! ]
@@ -3479,7 +3475,7 @@ glVertexAttribPointer!: alias function! [
 	type        [ GLenum! ]
 	normalized  [ GLboolean! ]
 	stride      [ GLsizei! ]
-	pointer     [ pointer! [byte!] ]
+	pointer     [ integer! ] ;-- some legacy API cruft required this to be pointer, but we can avoid it - it is just an offset
 ]
 
 
@@ -3751,7 +3747,7 @@ glGetFragDataLocation!: alias function! [
 glGetStringi!: alias function! [
 	name        [ GLenum! ]
 	index       [ GLuint! ]
-	return: [ pointer! [GLubyte!] ]
+	return: [ c-string! ]
 
 ]
 ;@@ void ( GLenum target, GLenum pname, GLint* params );

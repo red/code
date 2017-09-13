@@ -22,24 +22,18 @@ glfwGetVersion :major :minor :rev
 
 print-line ["GLFW version: " major #"." minor #"." rev " reported: " glfwGetVersionString]
 
-glfwWindowHint GLFW_SAMPLES 4 ;4x antialiasing
-glfwWindowHint GLFW_CONTEXT_VERSION_MAJOR 3 ;We want OpenGL 3.3
-glfwWindowHint GLFW_CONTEXT_VERSION_MINOR 3 ;
-glfwWindowHint GLFW_OPENGL_FORWARD_COMPAT GL_TRUE ;To make MacOS happy; should not be needed
-glfwWindowHint GLFW_OPENGL_PROFILE GLFW_OPENGL_CORE_PROFILE ;We don't want the old OpenGL 
+glfwWindowHint GLFW_SAMPLES 256 ;trying to set very hight antialising to detect maximum value
+glfwWindowHint GLFW_VISIBLE GLFW_FALSE ;we have nothing to show in the window in this example
 
-GL-window "GL info" 800 600
+GL-window "GL info" 800 600 ;but we still need windows for getting the context
 
-glfwMakeContextCurrent window ; Initialize GLEW
-
-glewExperimental: true
-
+glfwMakeContextCurrent window
 
 ;@@ must manually load used GL extension functions here as Red compiler is not able to do it automatically yet!
 glGetStringi:               as glGetStringi!               glfwGetProcAddress "glGetStringi"
 glGetIntegeri_v:            as glGetIntegeri_v!            glfwGetProcAddress "glGetIntegeri_v"
 
-print-line ["GL version: " as c-string! glGetString GL_VERSION]
+print-line ["GL version: " glGetString GL_VERSION]
 
 max-texture-size: 0
 max-texture-units: 0
@@ -76,7 +70,7 @@ i: 0
 iSize: 0
 while [i < num-extensions][
 	i: i + 1
-	print-line [#" " i ":^-" as c-string! glGetStringi GL_EXTENSIONS i - 1]
+	print-line [#" " i ":^-" glGetStringi GL_EXTENSIONS i - 1]
 ]
 
 monitor-info: func[
@@ -126,6 +120,13 @@ while [i < n][
 	monitor-info as GLFWmonitor! monitors/i
 ]
 
+glGetIntegerv GL_SAMPLES_ARB :n
+print-line ["FSAA is available with " n " samples"]
+print-line ["Renderer: " glGetString GL_RENDERER]
+print-line ["Vendor:   " glGetString GL_VENDOR]
+print-line ["Shading:  " glGetString GL_SHADING_LANGUAGE_VERSION]
+
 ;no main loop in this example
+render-scene: does[] ;so compiler does not complain - this function is used in common
 
 GL-close

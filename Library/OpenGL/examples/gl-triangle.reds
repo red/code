@@ -13,10 +13,9 @@ Red/System [
 
 GL-init
 GL-window "GL triangle" 800 600
+GL-context
 
-glfwMakeContextCurrent window ; Initialize GLEW
-
-forever [
+render-scene: does [
 	glClear GL_COLOR_BUFFER_BIT
 
 	glBegin GL_TRIANGLES
@@ -27,8 +26,11 @@ forever [
 	glFlush
 
 	glfwSwapBuffers window
-	glfwPollEvents
+]
 
+forever [
+	render-scene
+	glfwPollEvents
 	GL-exit-test
 ]
 
