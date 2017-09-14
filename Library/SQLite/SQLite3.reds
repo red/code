@@ -193,7 +193,7 @@ sqlite3-changegroup-ref!:    alias struct! [value [sqlite3-changegroup!]]
 #define SQLITE_OPEN_SHAREDCACHE      00020000h  ;Ok for sqlite3_open_v2() 
 #define SQLITE_OPEN_PRIVATECACHE     00040000h  ;Ok for sqlite3_open_v2() 
 #define SQLITE_OPEN_WAL              00080000h  ;VFS only  
-; Reserved:                         0x00F00000 
+; Reserved:                          00F00000h 
 
 
 ;- Device Characteristics
@@ -1324,7 +1324,7 @@ sqlite3-changegroup-ref!:    alias struct! [value [sqlite3-changegroup!]]
 ;  </dl>
 
 
-#define SQLITE_PREPARE_PERSISTENT              0x01
+#define SQLITE_PREPARE_PERSISTENT              01h
 
 ;- Fundamental Datatypes
 ;  KEYWORDS: SQLITE_TEXT
