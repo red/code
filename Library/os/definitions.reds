@@ -19,12 +19,35 @@ int64!: alias struct! [lo [integer!] hi [integer!]]
 #define uint64!     int64!
 #define uint64-ref! uint64!
 
+#define int64-value! [int64! value]
+#define int64-ptr!   int64!
+
 int16!:  alias struct! [lo [byte!] hi [byte!]]       ;@@ must be changed once we will get real integer16! type
 #define uint16! int16! ;@@ this is probably not safe! Check Steam binding where it was originaly used!
+
+#define int16-value! [int16! value]
+#define int16-ptr!   int16!
 
 binary-ref!:      alias struct! [value [pointer! [byte!]]]
 string-ref!:      alias struct! [value [c-string!]]
 string-ref-ref!:  alias struct! [value [string-ref!]]
 handle-ref!:      alias struct! [value [pointer! [integer!]]]
 logic-ref!:       alias struct! [value [logic!]]
-int64-ref!:       alias struct! [value [int64! value]]
+int64-ref!:       alias struct! [value [int64-value!]]
+
+#if OS = 'Windows  [
+	#define HDC!                      handle!
+	#define HGLRC!                    handle!
+	#define HGPUNV!                   handle!
+	#define HPBUFFERARB!              handle!
+	#define HPBUFFEREXT!              handle!
+	#define HPVIDEODEV!               handle!
+	#define HVIDEOINPUTDEVICENV!      handle!
+	#define HVIDEOOUTPUTDEVICENV!     handle!
+	#define PGPU_DEVICE!              handle!
+
+	#define HGPUNV-ref!               handle-ref!
+	#define HPVIDEODEV-ref!           handle-ref!
+	#define HVIDEOINPUTDEVICENV-ref!  handle-ref!
+	#define HVIDEOOUTPUTDEVICENV-ref! handle-ref!
+]

@@ -128,56 +128,56 @@ glGetImageHandleNV!: alias function! [
 	layered     [ GLboolean! ]
 	layer       [ GLint! ]
 	format      [ GLenum! ]
-	return: [ GLuint64! value ]
+	return: [ GLuint64! ]
 
 ]
 ;@@ GLuint64 ( GLuint texture );
 glGetTextureHandleNV!: alias function! [
 	texture     [ GLuint! ]
-	return: [ GLuint64! value ]
+	return: [ GLuint64! ]
 
 ]
 ;@@ GLuint64 ( GLuint texture, GLuint sampler );
 glGetTextureSamplerHandleNV!: alias function! [
 	texture     [ GLuint! ]
 	sampler     [ GLuint! ]
-	return: [ GLuint64! value ]
+	return: [ GLuint64! ]
 
 ]
 ;@@ GLboolean ( GLuint64 handle );
 glIsImageHandleResidentNV!: alias function! [
-	handle      [ GLuint64! value ]
+	handle      [ GLuint64! ]
 	return: [ GLboolean! ]
 
 ]
 ;@@ GLboolean ( GLuint64 handle );
 glIsTextureHandleResidentNV!: alias function! [
-	handle      [ GLuint64! value ]
+	handle      [ GLuint64! ]
 	return: [ GLboolean! ]
 
 ]
 ;@@ void ( GLuint64 handle );
 glMakeImageHandleNonResidentNV!: alias function! [
-	handle      [ GLuint64! value ]
+	handle      [ GLuint64! ]
 ]
 ;@@ void ( GLuint64 handle, GLenum access );
 glMakeImageHandleResidentNV!: alias function! [
-	handle      [ GLuint64! value ]
+	handle      [ GLuint64! ]
 	access      [ GLenum! ]
 ]
 ;@@ void ( GLuint64 handle );
 glMakeTextureHandleNonResidentNV!: alias function! [
-	handle      [ GLuint64! value ]
+	handle      [ GLuint64! ]
 ]
 ;@@ void ( GLuint64 handle );
 glMakeTextureHandleResidentNV!: alias function! [
-	handle      [ GLuint64! value ]
+	handle      [ GLuint64! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLuint64 value );
 glProgramUniformHandleui64NV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	value       [ GLuint64! value ]
+	value       [ GLuint64! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLuint64* values );
 glProgramUniformHandleui64vNV!: alias function! [
@@ -189,7 +189,7 @@ glProgramUniformHandleui64vNV!: alias function! [
 ;@@ void ( GLint location, GLuint64 value );
 glUniformHandleui64NV!: alias function! [
 	location    [ GLint! ]
-	value       [ GLuint64! value ]
+	value       [ GLuint64! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLuint64* value );
 glUniformHandleui64vNV!: alias function! [
@@ -708,7 +708,7 @@ glDrawTextureNV!: alias function! [
 #define  GL_NV_draw_vulkan_image                      1
 ;@@ void ( GLuint64 vkImage, GLuint sampler, GLfloat x0, GLfloat y0, GLfloat x1, GLfloat y1, GLfloat z, GLfloat s0, GLfloat t0, GLfloat s1, GLfloat t1 );
 glDrawVkImageNV!: alias function! [
-	vkImage     [ GLuint64! value ]
+	vkImage     [ GLuint64! ]
 	sampler     [ GLuint! ]
 	x0          [ GLfloat! ]
 	y0          [ GLfloat! ]
@@ -728,15 +728,15 @@ glGetVkProcAddrNV!: alias function! [
 ]
 ;@@ void ( GLuint64 vkFence );
 glSignalVkFenceNV!: alias function! [
-	vkFence     [ GLuint64! value ]
+	vkFence     [ GLuint64! ]
 ]
 ;@@ void ( GLuint64 vkSemaphore );
 glSignalVkSemaphoreNV!: alias function! [
-	vkSemaphore [ GLuint64! value ]
+	vkSemaphore [ GLuint64! ]
 ]
 ;@@ void ( GLuint64 vkSemaphore );
 glWaitVkSemaphoreNV!: alias function! [
-	vkSemaphore [ GLuint64! value ]
+	vkSemaphore [ GLuint64! ]
 ]
 
 
@@ -1499,7 +1499,7 @@ glGetUniformi64vNV!: alias function! [
 glGetUniformui64vNV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	params      [ GLuint64EXT! ]
+	params      [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLint64EXT x );
 glProgramUniform1i64NV!: alias function! [
@@ -1518,14 +1518,14 @@ glProgramUniform1i64vNV!: alias function! [
 glProgramUniform1ui64NV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	x           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLuint64EXT* value );
 glProgramUniform1ui64vNV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLint64EXT x, GLint64EXT y );
 glProgramUniform2i64NV!: alias function! [
@@ -1545,15 +1545,15 @@ glProgramUniform2i64vNV!: alias function! [
 glProgramUniform2ui64NV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	x           [ GLuint64EXT! value ]
-	y           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
+	y           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLuint64EXT* value );
 glProgramUniform2ui64vNV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLint64EXT x, GLint64EXT y, GLint64EXT z );
 glProgramUniform3i64NV!: alias function! [
@@ -1574,16 +1574,16 @@ glProgramUniform3i64vNV!: alias function! [
 glProgramUniform3ui64NV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	x           [ GLuint64EXT! value ]
-	y           [ GLuint64EXT! value ]
-	z           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
+	y           [ GLuint64EXT! ]
+	z           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLuint64EXT* value );
 glProgramUniform3ui64vNV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLint64EXT x, GLint64EXT y, GLint64EXT z, GLint64EXT w );
 glProgramUniform4i64NV!: alias function! [
@@ -1605,17 +1605,17 @@ glProgramUniform4i64vNV!: alias function! [
 glProgramUniform4ui64NV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	x           [ GLuint64EXT! value ]
-	y           [ GLuint64EXT! value ]
-	z           [ GLuint64EXT! value ]
-	w           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
+	y           [ GLuint64EXT! ]
+	z           [ GLuint64EXT! ]
+	w           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLuint64EXT* value );
 glProgramUniform4ui64vNV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLint location, GLint64EXT x );
 glUniform1i64NV!: alias function! [
@@ -1631,13 +1631,13 @@ glUniform1i64vNV!: alias function! [
 ;@@ void ( GLint location, GLuint64EXT x );
 glUniform1ui64NV!: alias function! [
 	location    [ GLint! ]
-	x           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLuint64EXT* value );
 glUniform1ui64vNV!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLint location, GLint64EXT x, GLint64EXT y );
 glUniform2i64NV!: alias function! [
@@ -1654,14 +1654,14 @@ glUniform2i64vNV!: alias function! [
 ;@@ void ( GLint location, GLuint64EXT x, GLuint64EXT y );
 glUniform2ui64NV!: alias function! [
 	location    [ GLint! ]
-	x           [ GLuint64EXT! value ]
-	y           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
+	y           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLuint64EXT* value );
 glUniform2ui64vNV!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLint location, GLint64EXT x, GLint64EXT y, GLint64EXT z );
 glUniform3i64NV!: alias function! [
@@ -1679,15 +1679,15 @@ glUniform3i64vNV!: alias function! [
 ;@@ void ( GLint location, GLuint64EXT x, GLuint64EXT y, GLuint64EXT z );
 glUniform3ui64NV!: alias function! [
 	location    [ GLint! ]
-	x           [ GLuint64EXT! value ]
-	y           [ GLuint64EXT! value ]
-	z           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
+	y           [ GLuint64EXT! ]
+	z           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLuint64EXT* value );
 glUniform3ui64vNV!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLint location, GLint64EXT x, GLint64EXT y, GLint64EXT z, GLint64EXT w );
 glUniform4i64NV!: alias function! [
@@ -1706,16 +1706,16 @@ glUniform4i64vNV!: alias function! [
 ;@@ void ( GLint location, GLuint64EXT x, GLuint64EXT y, GLuint64EXT z, GLuint64EXT w );
 glUniform4ui64NV!: alias function! [
 	location    [ GLint! ]
-	x           [ GLuint64EXT! value ]
-	y           [ GLuint64EXT! value ]
-	z           [ GLuint64EXT! value ]
-	w           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
+	y           [ GLuint64EXT! ]
+	z           [ GLuint64EXT! ]
+	w           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLuint64EXT* value );
 glUniform4ui64vNV!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 
 
@@ -2966,7 +2966,7 @@ glGetVideoivNV!: alias function! [
 glGetVideoui64vNV!: alias function! [
 	video_slot  [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64EXT! ]
+	params      [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint video_slot, GLenum pname, GLuint* params );
 glGetVideouivNV!: alias function! [
@@ -2977,7 +2977,7 @@ glGetVideouivNV!: alias function! [
 ;@@ void ( GLuint video_slot, GLuint64EXT minPresentTime, GLuint beginPresentTimeId, GLuint presentDurationId, GLenum type, GLenum target0, GLuint fill0, GLenum target1, GLuint fill1, GLenum target2, GLuint fill2, GLenum target3, GLuint fill3 );
 glPresentFrameDualFillNV!: alias function! [
 	video_slot  [ GLuint! ]
-	minPresentTime [ GLuint64EXT! value ]
+	minPresentTime [ GLuint64EXT! ]
 	beginPresentTimeId [ GLuint! ]
 	presentDurationId [ GLuint! ]
 	type        [ GLenum! ]
@@ -2993,7 +2993,7 @@ glPresentFrameDualFillNV!: alias function! [
 ;@@ void ( GLuint video_slot, GLuint64EXT minPresentTime, GLuint beginPresentTimeId, GLuint presentDurationId, GLenum type, GLenum target0, GLuint fill0, GLuint key0, GLenum target1, GLuint fill1, GLuint key1 );
 glPresentFrameKeyedNV!: alias function! [
 	video_slot  [ GLuint! ]
-	minPresentTime [ GLuint64EXT! value ]
+	minPresentTime [ GLuint64EXT! ]
 	beginPresentTimeId [ GLuint! ]
 	presentDurationId [ GLuint! ]
 	type        [ GLenum! ]
@@ -3321,18 +3321,18 @@ glNamedFramebufferSampleLocationsfvNV!: alias function! [
 glGetBufferParameterui64vNV!: alias function! [
 	target      [ GLenum! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64EXT! ]
+	params      [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLenum value, GLuint64EXT* result );
 glGetIntegerui64vNV!: alias function! [
 	value       [ GLenum! ]
-	result      [ GLuint64EXT! ]
+	result      [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint buffer, GLenum pname, GLuint64EXT* params );
 glGetNamedBufferParameterui64vNV!: alias function! [
 	buffer      [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64EXT! ]
+	params      [ GLuint64EXT-ptr! ]
 ]
 ;@@ GLboolean ( GLenum target );
 glIsBufferResidentNV!: alias function! [
@@ -3368,25 +3368,25 @@ glMakeNamedBufferResidentNV!: alias function! [
 glProgramUniformui64NV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	value       [ GLuint64EXT! value ]
+	value       [ GLuint64EXT! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLuint64EXT* value );
 glProgramUniformui64vNV!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLint location, GLuint64EXT value );
 glUniformui64NV!: alias function! [
 	location    [ GLint! ]
-	value       [ GLuint64EXT! value ]
+	value       [ GLuint64EXT! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLuint64EXT* value );
 glUniformui64vNV!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64EXT! ]
+	value       [ GLuint64EXT-ptr! ]
 ]
 
 
@@ -4142,7 +4142,7 @@ glGetVertexAttribLi64vNV!: alias function! [
 glGetVertexAttribLui64vNV!: alias function! [
 	index       [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64EXT! ]
+	params      [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint index, GLint64EXT x );
 glVertexAttribL1i64NV!: alias function! [
@@ -4157,12 +4157,12 @@ glVertexAttribL1i64vNV!: alias function! [
 ;@@ void ( GLuint index, GLuint64EXT x );
 glVertexAttribL1ui64NV!: alias function! [
 	index       [ GLuint! ]
-	x           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLuint index, const GLuint64EXT* v );
 glVertexAttribL1ui64vNV!: alias function! [
 	index       [ GLuint! ]
-	v           [ GLuint64EXT! ]
+	v           [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint index, GLint64EXT x, GLint64EXT y );
 glVertexAttribL2i64NV!: alias function! [
@@ -4178,13 +4178,13 @@ glVertexAttribL2i64vNV!: alias function! [
 ;@@ void ( GLuint index, GLuint64EXT x, GLuint64EXT y );
 glVertexAttribL2ui64NV!: alias function! [
 	index       [ GLuint! ]
-	x           [ GLuint64EXT! value ]
-	y           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
+	y           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLuint index, const GLuint64EXT* v );
 glVertexAttribL2ui64vNV!: alias function! [
 	index       [ GLuint! ]
-	v           [ GLuint64EXT! ]
+	v           [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint index, GLint64EXT x, GLint64EXT y, GLint64EXT z );
 glVertexAttribL3i64NV!: alias function! [
@@ -4201,14 +4201,14 @@ glVertexAttribL3i64vNV!: alias function! [
 ;@@ void ( GLuint index, GLuint64EXT x, GLuint64EXT y, GLuint64EXT z );
 glVertexAttribL3ui64NV!: alias function! [
 	index       [ GLuint! ]
-	x           [ GLuint64EXT! value ]
-	y           [ GLuint64EXT! value ]
-	z           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
+	y           [ GLuint64EXT! ]
+	z           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLuint index, const GLuint64EXT* v );
 glVertexAttribL3ui64vNV!: alias function! [
 	index       [ GLuint! ]
-	v           [ GLuint64EXT! ]
+	v           [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint index, GLint64EXT x, GLint64EXT y, GLint64EXT z, GLint64EXT w );
 glVertexAttribL4i64NV!: alias function! [
@@ -4226,15 +4226,15 @@ glVertexAttribL4i64vNV!: alias function! [
 ;@@ void ( GLuint index, GLuint64EXT x, GLuint64EXT y, GLuint64EXT z, GLuint64EXT w );
 glVertexAttribL4ui64NV!: alias function! [
 	index       [ GLuint! ]
-	x           [ GLuint64EXT! value ]
-	y           [ GLuint64EXT! value ]
-	z           [ GLuint64EXT! value ]
-	w           [ GLuint64EXT! value ]
+	x           [ GLuint64EXT! ]
+	y           [ GLuint64EXT! ]
+	z           [ GLuint64EXT! ]
+	w           [ GLuint64EXT! ]
 ]
 ;@@ void ( GLuint index, const GLuint64EXT* v );
 glVertexAttribL4ui64vNV!: alias function! [
 	index       [ GLuint! ]
-	v           [ GLuint64EXT! ]
+	v           [ GLuint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint index, GLint size, GLenum type, GLsizei stride );
 glVertexAttribLFormatNV!: alias function! [
@@ -4279,7 +4279,7 @@ glVertexAttribLFormatNV!: alias function! [
 glBufferAddressRangeNV!: alias function! [
 	pname       [ GLenum! ]
 	index       [ GLuint! ]
-	address     [ GLuint64EXT! value ]
+	address     [ GLuint64EXT! ]
 	length      [ GLsizeiptr! ]
 ]
 ;@@ void ( GLint size, GLenum type, GLsizei stride );
@@ -4301,7 +4301,7 @@ glFogCoordFormatNV!: alias function! [
 glGetIntegerui64i_vNV!: alias function! [
 	value       [ GLenum! ]
 	index       [ GLuint! ]
-	result      [ GLuint64EXT! value ]
+	result      [ pointer! [GLuint64EXT!] ] ;@@[]
 ]
 ;@@ void ( GLenum type, GLsizei stride );
 glIndexFormatNV!: alias function! [
@@ -4619,7 +4619,7 @@ glVertexAttrib1sNV!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v );
 glVertexAttrib1svNV!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLdouble x, GLdouble y );
 glVertexAttrib2dNV!: alias function! [
@@ -4652,7 +4652,7 @@ glVertexAttrib2sNV!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v );
 glVertexAttrib2svNV!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLdouble x, GLdouble y, GLdouble z );
 glVertexAttrib3dNV!: alias function! [
@@ -4688,7 +4688,7 @@ glVertexAttrib3sNV!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v );
 glVertexAttrib3svNV!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w );
 glVertexAttrib4dNV!: alias function! [
@@ -4727,7 +4727,7 @@ glVertexAttrib4sNV!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v );
 glVertexAttrib4svNV!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w );
 glVertexAttrib4ubNV!: alias function! [
@@ -4766,7 +4766,7 @@ glVertexAttribs1fvNV!: alias function! [
 glVertexAttribs1svNV!: alias function! [
 	index       [ GLuint! ]
 	n           [ GLsizei! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLsizei n, const GLdouble* v );
 glVertexAttribs2dvNV!: alias function! [
@@ -4784,7 +4784,7 @@ glVertexAttribs2fvNV!: alias function! [
 glVertexAttribs2svNV!: alias function! [
 	index       [ GLuint! ]
 	n           [ GLsizei! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLsizei n, const GLdouble* v );
 glVertexAttribs3dvNV!: alias function! [
@@ -4802,7 +4802,7 @@ glVertexAttribs3fvNV!: alias function! [
 glVertexAttribs3svNV!: alias function! [
 	index       [ GLuint! ]
 	n           [ GLsizei! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLsizei n, const GLdouble* v );
 glVertexAttribs4dvNV!: alias function! [
@@ -4820,7 +4820,7 @@ glVertexAttribs4fvNV!: alias function! [
 glVertexAttribs4svNV!: alias function! [
 	index       [ GLuint! ]
 	n           [ GLsizei! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLsizei n, const GLubyte* v );
 glVertexAttribs4ubvNV!: alias function! [
@@ -4957,7 +4957,7 @@ glGetVideoCaptureivNV!: alias function! [
 glVideoCaptureNV!: alias function! [
 	video_capture_slot [ GLuint! ]
 	sequence_num [ pointer! [GLuint!] ]
-	capture_time [ GLuint64EXT! ]
+	capture_time [ GLuint64EXT-ptr! ]
 	return: [ GLenum! ]
 
 ]

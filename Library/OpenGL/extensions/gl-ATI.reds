@@ -615,7 +615,7 @@ glNormalStream3sATI!: alias function! [
 ;@@ void ( GLenum stream, const GLshort *coords );
 glNormalStream3svATI!: alias function! [
 	stream      [ GLenum! ]
-	coords      [ pointer! [GLshort!] ]
+	coords      [ GLshort-ptr! ]
 ]
 ;@@ void ( GLenum pname, GLfloat param );
 glVertexBlendEnvfATI!: alias function! [
@@ -665,7 +665,7 @@ glVertexStream1sATI!: alias function! [
 ;@@ void ( GLenum stream, const GLshort *coords );
 glVertexStream1svATI!: alias function! [
 	stream      [ GLenum! ]
-	coords      [ pointer! [GLshort!] ]
+	coords      [ GLshort-ptr! ]
 ]
 ;@@ void ( GLenum stream, GLdouble x, GLdouble y );
 glVertexStream2dATI!: alias function! [
@@ -709,7 +709,7 @@ glVertexStream2sATI!: alias function! [
 ;@@ void ( GLenum stream, const GLshort *coords );
 glVertexStream2svATI!: alias function! [
 	stream      [ GLenum! ]
-	coords      [ pointer! [GLshort!] ]
+	coords      [ GLshort-ptr! ]
 ]
 ;@@ void ( GLenum stream, GLdouble x, GLdouble y, GLdouble z );
 glVertexStream3dATI!: alias function! [
@@ -757,7 +757,7 @@ glVertexStream3sATI!: alias function! [
 ;@@ void ( GLenum stream, const GLshort *coords );
 glVertexStream3svATI!: alias function! [
 	stream      [ GLenum! ]
-	coords      [ pointer! [GLshort!] ]
+	coords      [ GLshort-ptr! ]
 ]
 ;@@ void ( GLenum stream, GLdouble x, GLdouble y, GLdouble z, GLdouble w );
 glVertexStream4dATI!: alias function! [
@@ -809,5 +809,5 @@ glVertexStream4sATI!: alias function! [
 ;@@ void ( GLenum stream, const GLshort *coords );
 glVertexStream4svATI!: alias function! [
 	stream      [ GLenum! ]
-	coords      [ pointer! [GLshort!] ]
+	coords      [ GLshort-ptr! ]
 ]

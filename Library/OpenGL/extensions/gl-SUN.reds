@@ -145,7 +145,7 @@ glReplacementCodeusSUN!: alias function! [
 ]
 ;@@ void ( const GLushort* code );
 glReplacementCodeusvSUN!: alias function! [
-	code        [ pointer! [integer!] ]
+	code        [ GLushort-ptr! ]
 ]
 
 

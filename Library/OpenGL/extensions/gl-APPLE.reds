@@ -325,7 +325,7 @@ glObjectUnpurgeableAPPLE!: alias function! [
 glClientWaitSyncAPPLE!: alias function! [
 	GLsync      [ GLsync! ]
 	flags       [ GLbitfield! ]
-	timeout     [ GLuint64! value ]
+	timeout     [ GLuint64! ]
 	return: [ GLenum! ]
 
 ]
@@ -363,7 +363,7 @@ glIsSyncAPPLE!: alias function! [
 glWaitSyncAPPLE!: alias function! [
 	GLsync      [ GLsync! ]
 	flags       [ GLbitfield! ]
-	timeout     [ GLuint64! value ]
+	timeout     [ GLuint64! ]
 ]
 
 
