@@ -22,11 +22,14 @@ int64!: alias struct! [lo [integer!] hi [integer!]]
 #define int64-value! [int64! value]
 #define int64-ptr!   int64!
 
-int16!:  alias struct! [lo [byte!] hi [byte!]]       ;@@ must be changed once we will get real integer16! type
-#define uint16! int16! ;@@ this is probably not safe! Check Steam binding where it was originaly used!
+;@@ !!! it is not possible to use int16! as compiler refuses it.
+integer16!:  alias struct! [lo [byte!] hi [byte!]]       ;@@ must be changed once we will get real integer16! type
+#define uint16! integer16! ;@@ this is probably not safe! Check Steam binding where it was originaly used!
 
-#define int16-value! [int16! value]
-#define int16-ptr!   int16!
+#define int16-value!  [integer16! value]
+#define uint16-value! [integer16! value]
+#define int16-ptr!     integer16!
+#define uint16-ptr!    integer16!
 
 binary-ref!:      alias struct! [value [pointer! [byte!]]]
 string-ref!:      alias struct! [value [c-string!]]

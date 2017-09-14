@@ -113,7 +113,7 @@ This source was made from glew.h file, which contains these copyrights:
 #define GLint!        integer!
 #define GLsizei!      integer!
 #define GLubyte!      integer!
-#define GLshort!      uint16-value! ;@@ change me once proper int16! will be available
+#define GLushort!     uint16-value! ;@@ change me once proper int16! will be available
 #define GLuint!       integer!
 #define GLfloat!      float32! ; 32-bit float
 #define GLclampf!     float32!
@@ -135,7 +135,8 @@ This source was made from glew.h file, which contains these copyrights:
 #define GLuint64-ptr!    int64-ptr! ;@@ change me once proper int64! will be available
 #define GLuint64EXT-ptr! int64-ptr! ;@@ change me once proper int64! will be available
 
-#define GLshort-ptr!  int16-ptr!
+#define GLshort-ptr!   int16-ptr!
+#define GLushort-ptr!  uint16-ptr!
 
 #define GLintptr!     integer!
 #define GLintptrARB!  integer! ;maybe integer64! in 64bit version
