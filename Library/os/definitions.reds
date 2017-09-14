@@ -19,8 +19,10 @@ int64!: alias struct! [lo [integer!] hi [integer!]]
 #define uint64!     int64!
 #define uint64-ref! uint64!
 
-#define int64-value! [int64! value]
-#define int64-ptr!   int64!
+#define int64-value!  [int64! value]
+#define uint64-value! [int64! value]
+#define int64-ptr!    int64!
+#define uint64-ptr!   int64!
 
 ;@@ !!! it is not possible to use int16! as compiler refuses it.
 integer16!:  alias struct! [lo [byte!] hi [byte!]]       ;@@ must be changed once we will get real integer16! type
