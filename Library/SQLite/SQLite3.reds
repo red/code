@@ -32,14 +32,14 @@ Red/System [
 #define sqlite3-vfs!                [pointer! [integer!]]
 #define sqlite3-changegroup!        [pointer! [integer!]]
 
-sqlite3-ref!:                alias struct! [value [sqlite3!]]
-sqlite3-blob-ref!:           alias struct! [value [sqlite3-blob!]]
-sqlite3-changeset-iter-ref!: alias struct! [value [sqlite3-changeset-iter!]]
-sqlite3-session-ref!:        alias struct! [value [sqlite3-session!]]
-sqlite3-snapshot-ref!:       alias struct! [value [sqlite3-snapshot!]]
-sqlite3-stmt-ref!:           alias struct! [value [sqlite3-stmt!]]
-sqlite3-value-ref!:          alias struct! [value [sqlite3-value!]]
-sqlite3-changegroup-ref!:    alias struct! [value [sqlite3-changegroup!]]
+sqlite3-ptr!:                alias struct! [value [sqlite3!]]
+sqlite3-blob-ptr!:           alias struct! [value [sqlite3-blob!]]
+sqlite3-changeset-iter-ptr!: alias struct! [value [sqlite3-changeset-iter!]]
+sqlite3-session-ptr!:        alias struct! [value [sqlite3-session!]]
+sqlite3-snapshot-ptr!:       alias struct! [value [sqlite3-snapshot!]]
+sqlite3-stmt-ptr!:           alias struct! [value [sqlite3-stmt!]]
+sqlite3-value-ptr!:          alias struct! [value [sqlite3-value!]]
+sqlite3-changegroup-ptr!:    alias struct! [value [sqlite3-changegroup!]]
 
 
 ;- Binding based on version:
@@ -2228,12 +2228,12 @@ sqlite3_exec: "sqlite3_exec" [
 	callback [function! [
 		arg1    [int-ptr!] 
 		arg2    [integer!] 
-		arg3    [string-ref!] 
-		arg4    [string-ref!] 
+		arg3    [string-ptr!] 
+		arg4    [string-ptr!] 
 		return: [integer!]
 	]]
 	arg4     [int-ptr!]                ; 1st argument to callback 
-	errmsg   [string-ref!]             ; Error msg written here 
+	errmsg   [string-ptr!]             ; Error msg written here 
 	return: [integer!]
 ]
 
@@ -2457,7 +2457,7 @@ sqlite3_extended_result_codes: "sqlite3_extended_result_codes" [
 
 sqlite3_last_insert_rowid: "sqlite3_last_insert_rowid" [
 	arg1    [sqlite3!]                 ;sqlite3*
-	return: [int64! value]
+	return: [int64-value!]
 ]
 
 ;- Set the Last Insert Rowid value.
@@ -2470,7 +2470,7 @@ sqlite3_last_insert_rowid: "sqlite3_last_insert_rowid" [
 
 sqlite3_set_last_insert_rowid: "sqlite3_set_last_insert_rowid" [
 	arg1    [sqlite3!]                 ;sqlite3*
-	arg2    [int64! value]             ;sqlite3_int64
+	arg2    [int64-value!]             ;sqlite3_int64
 ]
 
 ;- Count The Number Of Rows Modified
@@ -2633,7 +2633,7 @@ sqlite3_complete: "sqlite3_complete" [
 	return: [integer!]
 ]
 sqlite3_complete16: "sqlite3_complete16" [
-	sql     [byte-ptr!]                ;const void *
+	sql     [int-ptr!]                 ;const void *
 	return: [integer!]
 ]
 
@@ -2810,14 +2810,14 @@ sqlite3_busy_timeout: "sqlite3_busy_timeout" [
 sqlite3_get_table: "sqlite3_get_table" [
 	db        [sqlite3!]               ; An open database 
 	zSql      [c-string!]              ; SQL to be evaluated 
-	pazResult [string-ref-ref!]        ; Results of the query 
+	pazResult [string-ptr-ptr!]        ; Results of the query 
 	pnRow     [int-ptr!]               ; Number of result rows written here 
 	pnColumn  [int-ptr!]               ; Number of result columns written here 
-	pzErrmsg  [string-ref!]            ; Error msg written here 
+	pzErrmsg  [string-ptr!]            ; Error msg written here 
 	return: [integer!]
 ]
 sqlite3_free_table: "sqlite3_free_table" [
-	result  [string-ref!]              ;char **
+	result  [string-ptr!]              ;char **
 ]
 
 ;- Formatted String Printing Functions
@@ -3024,7 +3024,7 @@ sqlite3_malloc: "sqlite3_malloc" [
 	return: [int-ptr!]
 ]
 sqlite3_malloc64: "sqlite3_malloc64" [
-	arg1    [uint64! value]            ;sqlite3_uint64
+	arg1    [uint64-value!]            ;sqlite3_uint64
 	return: [int-ptr!]
 ]
 sqlite3_realloc: "sqlite3_realloc" [
@@ -3034,7 +3034,7 @@ sqlite3_realloc: "sqlite3_realloc" [
 ]
 sqlite3_realloc64: "sqlite3_realloc64" [
 	arg1    [int-ptr!]                 ;void*
-	arg2    [uint64! value]            ;sqlite3_uint64
+	arg2    [uint64-value!]            ;sqlite3_uint64
 	return: [int-ptr!]
 ]
 sqlite3_free: "sqlite3_free" [
@@ -3042,7 +3042,7 @@ sqlite3_free: "sqlite3_free" [
 ]
 sqlite3_msize: "sqlite3_msize" [
 	arg1    [int-ptr!]                 ;void*
-	return: [uint64! value]
+	return: [uint64-value!]
 ]
 
 ;- Memory Allocator Statistics
@@ -3069,11 +3069,11 @@ sqlite3_msize: "sqlite3_msize" [
 
 
 sqlite3_memory_used: "sqlite3_memory_used" [
-	return: [int64! value]
+	return: [int64-value!]
 ]
 sqlite3_memory_highwater: "sqlite3_memory_highwater" [
 	resetFlag [integer!]               ;int
-	return: [int64! value]
+	return: [int64-value!]
 ]
 
 ;- Pseudo-Random Number Generator
@@ -3252,7 +3252,7 @@ sqlite3_profile: "sqlite3_profile" [
 	xProfile [function! [
 		arg1    [int-ptr!] 
 		arg2    [c-string!] 
-		arg3    [uint64! value] 
+		arg3    [uint64-value!] 
 	]]
 	arg3     [int-ptr!]                ;void*
 	return: [int-ptr!]
@@ -3572,17 +3572,17 @@ sqlite3_progress_handler: "sqlite3_progress_handler" [
 
 sqlite3_open: "sqlite3_open" [
 	filename [c-string!]               ; Database filename (UTF-8) 
-	ppDb     [sqlite3-ref!]            ; OUT: SQLite db handle 
+	ppDb     [sqlite3-ptr!]            ; OUT: SQLite db handle 
 	return: [integer!]
 ]
 sqlite3_open16: "sqlite3_open16" [
-	filename [byte-ptr!]               ; Database filename (UTF-16) 
-	ppDb     [sqlite3-ref!]            ; OUT: SQLite db handle 
+	filename [int-ptr!]                ; Database filename (UTF-16) 
+	ppDb     [sqlite3-ptr!]            ; OUT: SQLite db handle 
 	return: [integer!]
 ]
 sqlite3_open_v2: "sqlite3_open_v2" [
 	filename [c-string!]               ; Database filename (UTF-8) 
-	ppDb     [sqlite3-ref!]            ; OUT: SQLite db handle 
+	ppDb     [sqlite3-ptr!]            ; OUT: SQLite db handle 
 	flags    [integer!]                ; Flags 
 	zVfs     [c-string!]               ; Name of VFS module to use 
 	return: [integer!]
@@ -3641,8 +3641,8 @@ sqlite3_uri_boolean: "sqlite3_uri_boolean" [
 sqlite3_uri_int64: "sqlite3_uri_int64" [
 	arg1    [c-string!]                ;const char*
 	arg2    [c-string!]                ;const char*
-	arg3    [int64! value]             ;sqlite3_int64
-	return: [int64! value]
+	arg3    [int64-value!]             ;sqlite3_int64
+	return: [int64-value!]
 ]
 
 ;- Error Codes And Messages
@@ -3700,7 +3700,7 @@ sqlite3_errmsg: "sqlite3_errmsg" [
 ]
 sqlite3_errmsg16: "sqlite3_errmsg16" [
 	arg1    [sqlite3!]                 ;sqlite3*
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 sqlite3_errstr: "sqlite3_errstr" [
 	arg1    [integer!]                 ;int
@@ -3858,16 +3858,16 @@ sqlite3_prepare: "sqlite3_prepare" [
 	db      [sqlite3!]                 ; Database handle 
 	zSql    [c-string!]                ; SQL statement, UTF-8 encoded 
 	nByte   [integer!]                 ; Maximum length of zSql in bytes. 
-	ppStmt  [sqlite3-stmt-ref!]        ; OUT: Statement handle 
-	pzTail  [string-ref!]              ; OUT: Pointer to unused portion of zSql 
+	ppStmt  [sqlite3-stmt-ptr!]        ; OUT: Statement handle 
+	pzTail  [string-ptr!]              ; OUT: Pointer to unused portion of zSql 
 	return: [integer!]
 ]
 sqlite3_prepare_v2: "sqlite3_prepare_v2" [
 	db      [sqlite3!]                 ; Database handle 
 	zSql    [c-string!]                ; SQL statement, UTF-8 encoded 
 	nByte   [integer!]                 ; Maximum length of zSql in bytes. 
-	ppStmt  [sqlite3-stmt-ref!]        ; OUT: Statement handle 
-	pzTail  [string-ref!]              ; OUT: Pointer to unused portion of zSql 
+	ppStmt  [sqlite3-stmt-ptr!]        ; OUT: Statement handle 
+	pzTail  [string-ptr!]              ; OUT: Pointer to unused portion of zSql 
 	return: [integer!]
 ]
 sqlite3_prepare_v3: "sqlite3_prepare_v3" [
@@ -3875,33 +3875,33 @@ sqlite3_prepare_v3: "sqlite3_prepare_v3" [
 	zSql      [c-string!]              ; SQL statement, UTF-8 encoded 
 	nByte     [integer!]               ; Maximum length of zSql in bytes. 
 	prepFlags [integer!]               ; Zero or more SQLITE_PREPARE_ flags 
-	ppStmt    [sqlite3-stmt-ref!]      ; OUT: Statement handle 
-	pzTail    [string-ref!]            ; OUT: Pointer to unused portion of zSql 
+	ppStmt    [sqlite3-stmt-ptr!]      ; OUT: Statement handle 
+	pzTail    [string-ptr!]            ; OUT: Pointer to unused portion of zSql 
 	return: [integer!]
 ]
 sqlite3_prepare16: "sqlite3_prepare16" [
 	db      [sqlite3!]                 ; Database handle 
-	zSql    [byte-ptr!]                ; SQL statement, UTF-16 encoded 
+	zSql    [int-ptr!]                 ; SQL statement, UTF-16 encoded 
 	nByte   [integer!]                 ; Maximum length of zSql in bytes. 
-	ppStmt  [sqlite3-stmt-ref!]        ; OUT: Statement handle 
-	pzTail  [binary-ref!]              ; OUT: Pointer to unused portion of zSql 
+	ppStmt  [sqlite3-stmt-ptr!]        ; OUT: Statement handle 
+	pzTail  [int-ptr!]                 ; OUT: Pointer to unused portion of zSql 
 	return: [integer!]
 ]
 sqlite3_prepare16_v2: "sqlite3_prepare16_v2" [
 	db      [sqlite3!]                 ; Database handle 
-	zSql    [byte-ptr!]                ; SQL statement, UTF-16 encoded 
+	zSql    [int-ptr!]                 ; SQL statement, UTF-16 encoded 
 	nByte   [integer!]                 ; Maximum length of zSql in bytes. 
-	ppStmt  [sqlite3-stmt-ref!]        ; OUT: Statement handle 
-	pzTail  [binary-ref!]              ; OUT: Pointer to unused portion of zSql 
+	ppStmt  [sqlite3-stmt-ptr!]        ; OUT: Statement handle 
+	pzTail  [int-ptr!]                 ; OUT: Pointer to unused portion of zSql 
 	return: [integer!]
 ]
 sqlite3_prepare16_v3: "sqlite3_prepare16_v3" [
 	db        [sqlite3!]               ; Database handle 
-	zSql      [byte-ptr!]              ; SQL statement, UTF-16 encoded 
+	zSql      [int-ptr!]               ; SQL statement, UTF-16 encoded 
 	nByte     [integer!]               ; Maximum length of zSql in bytes. 
 	prepFlags [integer!]               ; Zero or more SQLITE_PREPARE_ flags 
-	ppStmt    [sqlite3-stmt-ref!]      ; OUT: Statement handle 
-	pzTail    [binary-ref!]            ; OUT: Pointer to unused portion of zSql 
+	ppStmt    [sqlite3-stmt-ptr!]      ; OUT: Statement handle 
+	pzTail    [int-ptr!]               ; OUT: Pointer to unused portion of zSql 
 	return: [integer!]
 ]
 
@@ -4128,15 +4128,15 @@ sqlite3_stmt_busy: "sqlite3_stmt_busy" [
 sqlite3_bind_blob: "sqlite3_bind_blob" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	arg2    [integer!]                 ;int
-	arg3    [byte-ptr!]                ;const void*
+	arg3    [int-ptr!]                 ;const void*
 	n       [integer!]                 ;int
 	return: [integer!]
 ]
 sqlite3_bind_blob64: "sqlite3_bind_blob64" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	arg2    [integer!]                 ;int
-	arg3    [byte-ptr!]                ;const void*
-	arg4    [uint64! value]            ;sqlite3_uint64
+	arg3    [int-ptr!]                 ;const void*
+	arg4    [uint64-value!]            ;sqlite3_uint64
 	return: [integer!]
 ]
 sqlite3_bind_double: "sqlite3_bind_double" [
@@ -4154,7 +4154,7 @@ sqlite3_bind_int: "sqlite3_bind_int" [
 sqlite3_bind_int64: "sqlite3_bind_int64" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	arg2    [integer!]                 ;int
-	arg3    [int64! value]             ;sqlite3_int64
+	arg3    [int64-value!]             ;sqlite3_int64
 	return: [integer!]
 ]
 sqlite3_bind_null: "sqlite3_bind_null" [
@@ -4172,7 +4172,7 @@ sqlite3_bind_text: "sqlite3_bind_text" [
 sqlite3_bind_text16: "sqlite3_bind_text16" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	arg2    [integer!]                 ;int
-	arg3    [byte-ptr!]                ;const void*
+	arg3    [int-ptr!]                 ;const void*
 	arg4    [integer!]                 ;int
 	return: [integer!]
 ]
@@ -4180,7 +4180,7 @@ sqlite3_bind_text64: "sqlite3_bind_text64" [
 	arg1     [sqlite3-stmt!]           ;sqlite3_stmt*
 	arg2     [integer!]                ;int
 	arg3     [c-string!]               ;const char*
-	arg4     [uint64! value]           ;sqlite3_uint64
+	arg4     [uint64-value!]           ;sqlite3_uint64
 	arg5     [function! [
 		arg1    [int-ptr!] 
 	]]
@@ -4209,7 +4209,7 @@ sqlite3_bind_zeroblob: "sqlite3_bind_zeroblob" [
 sqlite3_bind_zeroblob64: "sqlite3_bind_zeroblob64" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	arg2    [integer!]                 ;int
-	arg3    [uint64! value]            ;sqlite3_uint64
+	arg3    [uint64-value!]            ;sqlite3_uint64
 	return: [integer!]
 ]
 
@@ -4358,7 +4358,7 @@ sqlite3_column_name: "sqlite3_column_name" [
 sqlite3_column_name16: "sqlite3_column_name16" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	N       [integer!]                 ;int
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 
 ;- Source Of Data In A Query Result
@@ -4415,7 +4415,7 @@ sqlite3_column_database_name: "sqlite3_column_database_name" [
 sqlite3_column_database_name16: "sqlite3_column_database_name16" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	arg2    [integer!]                 ;int
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 sqlite3_column_table_name: "sqlite3_column_table_name" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
@@ -4425,7 +4425,7 @@ sqlite3_column_table_name: "sqlite3_column_table_name" [
 sqlite3_column_table_name16: "sqlite3_column_table_name16" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	arg2    [integer!]                 ;int
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 sqlite3_column_origin_name: "sqlite3_column_origin_name" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
@@ -4435,7 +4435,7 @@ sqlite3_column_origin_name: "sqlite3_column_origin_name" [
 sqlite3_column_origin_name16: "sqlite3_column_origin_name16" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	arg2    [integer!]                 ;int
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 
 ;- Declared Datatype Of A Query Result
@@ -4476,7 +4476,7 @@ sqlite3_column_decltype: "sqlite3_column_decltype" [
 sqlite3_column_decltype16: "sqlite3_column_decltype16" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	arg2    [integer!]                 ;int
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 
 ;- Evaluate An SQL Statement
@@ -4788,7 +4788,7 @@ sqlite3_data_count: "sqlite3_data_count" [
 sqlite3_column_blob: "sqlite3_column_blob" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	iCol    [integer!]                 ;int
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 sqlite3_column_double: "sqlite3_column_double" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
@@ -4803,7 +4803,7 @@ sqlite3_column_int: "sqlite3_column_int" [
 sqlite3_column_int64: "sqlite3_column_int64" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	iCol    [integer!]                 ;int
-	return: [int64! value]
+	return: [int64-value!]
 ]
 sqlite3_column_text: "sqlite3_column_text" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
@@ -4813,7 +4813,7 @@ sqlite3_column_text: "sqlite3_column_text" [
 sqlite3_column_text16: "sqlite3_column_text16" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
 	iCol    [integer!]                 ;int
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 sqlite3_column_value: "sqlite3_column_value" [
 	arg1    [sqlite3-stmt!]            ;sqlite3_stmt*
@@ -5004,12 +5004,12 @@ sqlite3_create_function: "sqlite3_create_function" [
 	xFunc         [function! [
 		arg1         [sqlite3-context!] 
 		arg2         [integer!] 
-		arg3         [sqlite3-value-ref!] 
+		arg3         [sqlite3-value-ptr!] 
 	]]
 	xStep         [function! [
 		arg1         [sqlite3-context!] 
 		arg2         [integer!] 
-		arg3         [sqlite3-value-ref!] 
+		arg3         [sqlite3-value-ptr!] 
 	]]
 	xFinal        [function! [
 		arg1         [sqlite3-context!] 
@@ -5018,19 +5018,19 @@ sqlite3_create_function: "sqlite3_create_function" [
 ]
 sqlite3_create_function16: "sqlite3_create_function16" [
 	db            [sqlite3!]           ;sqlite3 *
-	zFunctionName [byte-ptr!]          ;const void *
+	zFunctionName [int-ptr!]           ;const void *
 	nArg          [integer!]           ;int
 	eTextRep      [integer!]           ;int
 	pApp          [int-ptr!]           ;void *
 	xFunc         [function! [
 		arg1         [sqlite3-context!] 
 		arg2         [integer!] 
-		arg3         [sqlite3-value-ref!] 
+		arg3         [sqlite3-value-ptr!] 
 	]]
 	xStep         [function! [
 		arg1         [sqlite3-context!] 
 		arg2         [integer!] 
-		arg3         [sqlite3-value-ref!] 
+		arg3         [sqlite3-value-ptr!] 
 	]]
 	xFinal        [function! [
 		arg1         [sqlite3-context!] 
@@ -5046,12 +5046,12 @@ sqlite3_create_function_v2: "sqlite3_create_function_v2" [
 	xFunc         [function! [
 		arg1         [sqlite3-context!] 
 		arg2         [integer!] 
-		arg3         [sqlite3-value-ref!] 
+		arg3         [sqlite3-value-ptr!] 
 	]]
 	xStep         [function! [
 		arg1         [sqlite3-context!] 
 		arg2         [integer!] 
-		arg3         [sqlite3-value-ref!] 
+		arg3         [sqlite3-value-ptr!] 
 	]]
 	xFinal        [function! [
 		arg1         [sqlite3-context!] 
@@ -5093,11 +5093,11 @@ sqlite3_thread_cleanup: "sqlite3_thread_cleanup" [
 sqlite3_memory_alarm: "sqlite3_memory_alarm" [
 	arg1    [function! [
 		arg1   [int-ptr!] 
-		arg2   [int64! value] 
+		arg2   [int64-value!] 
 		arg3   [integer!] 
 	]]
 	arg2    [int-ptr!]                 ;void*
-	arg3    [int64! value]             ;sqlite3_int64
+	arg3    [int64-value!]             ;sqlite3_int64
 	return: [integer!]
 ]
 
@@ -5186,7 +5186,7 @@ sqlite3_memory_alarm: "sqlite3_memory_alarm" [
 
 sqlite3_value_blob: "sqlite3_value_blob" [
 	arg1    [sqlite3-value!]           ;sqlite3_value*
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 sqlite3_value_double: "sqlite3_value_double" [
 	arg1    [sqlite3-value!]           ;sqlite3_value*
@@ -5198,7 +5198,7 @@ sqlite3_value_int: "sqlite3_value_int" [
 ]
 sqlite3_value_int64: "sqlite3_value_int64" [
 	arg1    [sqlite3-value!]           ;sqlite3_value*
-	return: [int64! value]
+	return: [int64-value!]
 ]
 sqlite3_value_pointer: "sqlite3_value_pointer" [
 	arg1    [sqlite3-value!]           ;sqlite3_value*
@@ -5211,15 +5211,15 @@ sqlite3_value_text: "sqlite3_value_text" [
 ]
 sqlite3_value_text16: "sqlite3_value_text16" [
 	arg1    [sqlite3-value!]           ;sqlite3_value*
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 sqlite3_value_text16le: "sqlite3_value_text16le" [
 	arg1    [sqlite3-value!]           ;sqlite3_value*
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 sqlite3_value_text16be: "sqlite3_value_text16be" [
 	arg1    [sqlite3-value!]           ;sqlite3_value*
-	return: [byte-ptr!]
+	return: [int-ptr!]
 ]
 sqlite3_value_bytes: "sqlite3_value_bytes" [
 	arg1    [sqlite3-value!]           ;sqlite3_value*
@@ -5553,13 +5553,13 @@ sqlite3_set_auxdata: "sqlite3_set_auxdata" [
 
 sqlite3_result_blob: "sqlite3_result_blob" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
-	arg2    [byte-ptr!]                ;const void*
+	arg2    [int-ptr!]                 ;const void*
 	arg3    [integer!]                 ;int
 ]
 sqlite3_result_blob64: "sqlite3_result_blob64" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
-	arg2    [byte-ptr!]                ;const void*
-	arg3    [uint64! value]            ;sqlite3_uint64
+	arg2    [int-ptr!]                 ;const void*
+	arg3    [uint64-value!]            ;sqlite3_uint64
 ]
 sqlite3_result_double: "sqlite3_result_double" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
@@ -5572,7 +5572,7 @@ sqlite3_result_error: "sqlite3_result_error" [
 ]
 sqlite3_result_error16: "sqlite3_result_error16" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
-	arg2    [byte-ptr!]                ;const void*
+	arg2    [int-ptr!]                 ;const void*
 	arg3    [integer!]                 ;int
 ]
 sqlite3_result_error_toobig: "sqlite3_result_error_toobig" [
@@ -5591,7 +5591,7 @@ sqlite3_result_int: "sqlite3_result_int" [
 ]
 sqlite3_result_int64: "sqlite3_result_int64" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
-	arg2    [int64! value]             ;sqlite3_int64
+	arg2    [int64-value!]             ;sqlite3_int64
 ]
 sqlite3_result_null: "sqlite3_result_null" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
@@ -5604,7 +5604,7 @@ sqlite3_result_text: "sqlite3_result_text" [
 sqlite3_result_text64: "sqlite3_result_text64" [
 	arg1     [sqlite3-context!]        ;sqlite3_context*
 	arg2     [c-string!]               ;const char*
-	arg3     [uint64! value]           ;sqlite3_uint64
+	arg3     [uint64-value!]           ;sqlite3_uint64
 	arg4     [function! [
 		arg1    [int-ptr!] 
 	]]
@@ -5612,17 +5612,17 @@ sqlite3_result_text64: "sqlite3_result_text64" [
 ]
 sqlite3_result_text16: "sqlite3_result_text16" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
-	arg2    [byte-ptr!]                ;const void*
+	arg2    [int-ptr!]                 ;const void*
 	arg3    [integer!]                 ;int
 ]
 sqlite3_result_text16le: "sqlite3_result_text16le" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
-	arg2    [byte-ptr!]                ;const void*
+	arg2    [int-ptr!]                 ;const void*
 	arg3    [integer!]                 ;int
 ]
 sqlite3_result_text16be: "sqlite3_result_text16be" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
-	arg2    [byte-ptr!]                ;const void*
+	arg2    [int-ptr!]                 ;const void*
 	arg3    [integer!]                 ;int
 ]
 sqlite3_result_value: "sqlite3_result_value" [
@@ -5640,7 +5640,7 @@ sqlite3_result_zeroblob: "sqlite3_result_zeroblob" [
 ]
 sqlite3_result_zeroblob64: "sqlite3_result_zeroblob64" [
 	arg1    [sqlite3-context!]         ;sqlite3_context*
-	n       [uint64! value]            ;sqlite3_uint64
+	n       [uint64-value!]            ;sqlite3_uint64
 	return: [integer!]
 ]
 
@@ -5749,9 +5749,9 @@ sqlite3_create_collation: "sqlite3_create_collation" [
 	xCompare [function! [
 		arg1    [int-ptr!] 
 		arg2    [integer!] 
-		arg3    [byte-ptr!] 
+		arg3    [int-ptr!] 
 		arg4    [integer!] 
-		arg5    [byte-ptr!] 
+		arg5    [int-ptr!] 
 		return: [integer!]
 	]]
 	return: [integer!]
@@ -5764,9 +5764,9 @@ sqlite3_create_collation_v2: "sqlite3_create_collation_v2" [
 	xCompare [function! [
 		arg1    [int-ptr!] 
 		arg2    [integer!] 
-		arg3    [byte-ptr!] 
+		arg3    [int-ptr!] 
 		arg4    [integer!] 
-		arg5    [byte-ptr!] 
+		arg5    [int-ptr!] 
 		return: [integer!]
 	]]
 	xDestroy [function! [
@@ -5776,15 +5776,15 @@ sqlite3_create_collation_v2: "sqlite3_create_collation_v2" [
 ]
 sqlite3_create_collation16: "sqlite3_create_collation16" [
 	arg1     [sqlite3!]                ;sqlite3*
-	zName    [byte-ptr!]               ;const void *
+	zName    [int-ptr!]                ;const void *
 	eTextRep [integer!]                ;int
 	pArg     [int-ptr!]                ;void *
 	xCompare [function! [
 		arg1    [int-ptr!] 
 		arg2    [integer!] 
-		arg3    [byte-ptr!] 
+		arg3    [int-ptr!] 
 		arg4    [integer!] 
-		arg5    [byte-ptr!] 
+		arg5    [int-ptr!] 
 		return: [integer!]
 	]]
 	return: [integer!]
@@ -5835,33 +5835,33 @@ sqlite3_collation_needed16: "sqlite3_collation_needed16" [
 		arg1   [int-ptr!] 
 		arg2   [sqlite3!] 
 		eTextRep [integer!] 
-		arg4   [byte-ptr!] 
+		arg4   [int-ptr!] 
 	]]
 	return: [integer!]
 ]
 sqlite3_key: "sqlite3_key" [
 	db      [sqlite3!]                 ; Database to be rekeyed 
-	pKey    [byte-ptr!]                ;const void *
+	pKey    [int-ptr!]                 ;const void *
 	nKey    [integer!]                 ; The key 
 	return: [integer!]
 ]
 sqlite3_key_v2: "sqlite3_key_v2" [
 	db      [sqlite3!]                 ; Database to be rekeyed 
 	zDbName [c-string!]                ; Name of the database 
-	pKey    [byte-ptr!]                ;const void *
+	pKey    [int-ptr!]                 ;const void *
 	nKey    [integer!]                 ; The key 
 	return: [integer!]
 ]
 sqlite3_rekey: "sqlite3_rekey" [
 	db      [sqlite3!]                 ; Database to be rekeyed 
-	pKey    [byte-ptr!]                ;const void *
+	pKey    [int-ptr!]                 ;const void *
 	nKey    [integer!]                 ; The new key 
 	return: [integer!]
 ]
 sqlite3_rekey_v2: "sqlite3_rekey_v2" [
 	db      [sqlite3!]                 ; Database to be rekeyed 
 	zDbName [c-string!]                ; Name of the database 
-	pKey    [byte-ptr!]                ;const void *
+	pKey    [int-ptr!]                 ;const void *
 	nKey    [integer!]                 ; The new key 
 	return: [integer!]
 ]
@@ -6113,7 +6113,7 @@ sqlite3_update_hook: "sqlite3_update_hook" [
 		arg2   [integer!] 
 		arg3   [c-string!] 
 		arg4   [c-string!] 
-		arg5   [int64! value] 
+		arg5   [int64-value!] 
 	]]
 	arg3    [int-ptr!]                 ;void*
 	return: [int-ptr!]
@@ -6247,8 +6247,8 @@ sqlite3_db_release_memory: "sqlite3_db_release_memory" [
 
 
 sqlite3_soft_heap_limit64: "sqlite3_soft_heap_limit64" [
-	N       [int64! value]             ;sqlite3_int64
-	return: [int64! value]
+	N       [int64-value!]             ;sqlite3_int64
+	return: [int64-value!]
 ]
 
 ;- Deprecated Soft Heap Limit Interface
@@ -6338,8 +6338,8 @@ sqlite3_table_column_metadata: "sqlite3_table_column_metadata" [
 	zDbName     [c-string!]            ; Database name or NULL 
 	zTableName  [c-string!]            ; Table name 
 	zColumnName [c-string!]            ; Column name 
-	pzDataType  [string-ref!]          ; OUTPUT: Declared data type 
-	pzCollSeq   [string-ref!]          ; OUTPUT: Collation sequence name 
+	pzDataType  [string-ptr!]          ; OUTPUT: Declared data type 
+	pzCollSeq   [string-ptr!]          ; OUTPUT: Collation sequence name 
 	pNotNull    [int-ptr!]             ; OUTPUT: True if NOT NULL constraint exists 
 	pPrimaryKey [int-ptr!]             ; OUTPUT: True if column part of PK 
 	pAutoinc    [int-ptr!]             ; OUTPUT: True if column is auto-increment 
@@ -6394,7 +6394,7 @@ sqlite3_load_extension: "sqlite3_load_extension" [
 	db       [sqlite3!]                ; Load the extension into this database connection 
 	zFile    [c-string!]               ; Name of the shared library containing extension 
 	zProc    [c-string!]               ; Entry point.  Derived from zFile if 0 
-	pzErrMsg [string-ref!]             ; Put error message here if not 0 
+	pzErrMsg [string-ptr!]             ; Put error message here if not 0 
 	return: [integer!]
 ]
 
@@ -6662,9 +6662,9 @@ sqlite3_blob_open: "sqlite3_blob_open" [
 	zDb     [c-string!]                ;const char *
 	zTable  [c-string!]                ;const char *
 	zColumn [c-string!]                ;const char *
-	iRow    [int64! value]             ;sqlite3_int64
+	iRow    [int64-value!]             ;sqlite3_int64
 	flags   [integer!]                 ;int
-	ppBlob  [sqlite3-blob-ref!]        ;sqlite3_blob **
+	ppBlob  [sqlite3-blob-ptr!]        ;sqlite3_blob **
 	return: [integer!]
 ]
 
@@ -6693,7 +6693,7 @@ sqlite3_blob_open: "sqlite3_blob_open" [
 
 sqlite3_blob_reopen: "sqlite3_blob_reopen" [
 	arg1    [sqlite3-blob!]            ;sqlite3_blob *
-	arg2    [int64! value]             ;sqlite3_int64
+	arg2    [int64-value!]             ;sqlite3_int64
 	return: [integer!]
 ]
 
@@ -6819,7 +6819,7 @@ sqlite3_blob_read: "sqlite3_blob_read" [
 
 sqlite3_blob_write: "sqlite3_blob_write" [
 	arg1    [sqlite3-blob!]            ;sqlite3_blob *
-	z       [byte-ptr!]                ;const void *
+	z       [int-ptr!]                 ;const void *
 	n       [integer!]                 ;int
 	iOffset [integer!]                 ;int
 	return: [integer!]
@@ -7150,8 +7150,8 @@ sqlite3_status: "sqlite3_status" [
 ]
 sqlite3_status64: "sqlite3_status64" [
 	op         [integer!]              ;int
-	pCurrent   [int64!]                ;sqlite3_int64 *
-	pHighwater [int64!]                ;sqlite3_int64 *
+	pCurrent   [int64-ptr!]            ;sqlite3_int64 *
+	pHighwater [int64-ptr!]            ;sqlite3_int64 *
 	resetFlag  [integer!]              ;int
 	return: [integer!]
 ]
@@ -8067,8 +8067,8 @@ sqlite3_preupdate_hook: "sqlite3_preupdate_hook" [
 		op        [integer!]  ; SQLITE_UPDATE, DELETE or INSERT 
 		zDb       [c-string!]  ; Database name 
 		zName     [c-string!]  ; Table name 
-		iKey1     [int64! value]  ; Rowid of row about to be deleted/updated 
-		iKey2     [int64! value]  ; New rowid value (for a rowid UPDATE) 
+		iKey1     [int64-value!]  ; Rowid of row about to be deleted/updated 
+		iKey2     [int64-value!]  ; New rowid value (for a rowid UPDATE) 
 	]]
 	arg3       [int-ptr!]              ;void*
 	return: [int-ptr!]
@@ -8076,7 +8076,7 @@ sqlite3_preupdate_hook: "sqlite3_preupdate_hook" [
 sqlite3_preupdate_old: "sqlite3_preupdate_old" [
 	arg1    [sqlite3!]                 ;sqlite3 *
 	arg2    [integer!]                 ;int
-	arg3    [sqlite3-value-ref!]       ;sqlite3_value **
+	arg3    [sqlite3-value-ptr!]       ;sqlite3_value **
 	return: [integer!]
 ]
 sqlite3_preupdate_count: "sqlite3_preupdate_count" [
@@ -8090,7 +8090,7 @@ sqlite3_preupdate_depth: "sqlite3_preupdate_depth" [
 sqlite3_preupdate_new: "sqlite3_preupdate_new" [
 	arg1    [sqlite3!]                 ;sqlite3 *
 	arg2    [integer!]                 ;int
-	arg3    [sqlite3-value-ref!]       ;sqlite3_value **
+	arg3    [sqlite3-value-ptr!]       ;sqlite3_value **
 	return: [integer!]
 ]
 
@@ -8155,7 +8155,7 @@ sqlite3_system_errno: "sqlite3_system_errno" [
 sqlite3_snapshot_get: "sqlite3_snapshot_get" [
 	db         [sqlite3!]              ;sqlite3 *
 	zSchema    [c-string!]             ;const char *
-	ppSnapshot [sqlite3-snapshot-ref!] ;sqlite3_snapshot **
+	ppSnapshot [sqlite3-snapshot-ptr!] ;sqlite3_snapshot **
 	return: [integer!]
 ]
 
@@ -8328,7 +8328,7 @@ sqlite3_rtree_query_callback: "sqlite3_rtree_query_callback" [
 sqlite3session_create: "sqlite3session_create" [
 	db        [sqlite3!]               ; Database handle 
 	zDb       [c-string!]              ; Name of db (e.g. "main") 
-	ppSession [sqlite3-session-ref!]   ; OUT: New session object 
+	ppSession [sqlite3-session-ptr!]   ; OUT: New session object 
 	return: [integer!]
 ]
 
@@ -8628,7 +8628,7 @@ sqlite3session_diff: "sqlite3session_diff" [
 	pSession [sqlite3-session!]        ;sqlite3_session *
 	zFromDb  [c-string!]               ;const char *
 	zTbl     [c-string!]               ;const char *
-	pzErrMsg [string-ref!]             ;char **
+	pzErrMsg [string-ptr!]             ;char **
 	return: [integer!]
 ]
 
@@ -8721,7 +8721,7 @@ sqlite3session_isempty: "sqlite3session_isempty" [
 
 
 sqlite3changeset_start: "sqlite3changeset_start" [
-	pp         [sqlite3-changeset-iter-ref!]; OUT: New changeset iterator handle 
+	pp         [sqlite3-changeset-iter-ptr!]; OUT: New changeset iterator handle 
 	nChangeset [integer!]              ; Size of changeset blob in bytes 
 	pChangeset [int-ptr!]              ; Pointer to blob containing changeset 
 	return: [integer!]
@@ -8782,7 +8782,7 @@ sqlite3changeset_next: "sqlite3changeset_next" [
 
 sqlite3changeset_op: "sqlite3changeset_op" [
 	pIter      [sqlite3-changeset-iter!]; Iterator object 
-	pzTab      [string-ref!]           ; OUT: Pointer to table name 
+	pzTab      [string-ptr!]           ; OUT: Pointer to table name 
 	pnCol      [int-ptr!]              ; OUT: Number of columns in table 
 	pOp        [int-ptr!]              ; OUT: SQLITE_INSERT, DELETE or UPDATE 
 	pbIndirect [int-ptr!]              ; OUT: True for an 'indirect' change 
@@ -8816,7 +8816,7 @@ sqlite3changeset_op: "sqlite3changeset_op" [
 
 sqlite3changeset_pk: "sqlite3changeset_pk" [
 	pIter   [sqlite3-changeset-iter!]  ; Iterator object 
-	pabPK   [string-ref!]              ; OUT: Array of boolean - true for PK cols 
+	pabPK   [string-ptr!]              ; OUT: Array of boolean - true for PK cols 
 	pnCol   [int-ptr!]                 ; OUT: Number of entries in output array 
 	return: [integer!]
 ]
@@ -8848,7 +8848,7 @@ sqlite3changeset_pk: "sqlite3changeset_pk" [
 sqlite3changeset_old: "sqlite3changeset_old" [
 	pIter   [sqlite3-changeset-iter!]  ; Changeset iterator 
 	iVal    [integer!]                 ; Column number 
-	ppValue [sqlite3-value-ref!]       ; OUT: Old value (or NULL pointer) 
+	ppValue [sqlite3-value-ptr!]       ; OUT: Old value (or NULL pointer) 
 	return: [integer!]
 ]
 
@@ -8882,7 +8882,7 @@ sqlite3changeset_old: "sqlite3changeset_old" [
 sqlite3changeset_new: "sqlite3changeset_new" [
 	pIter   [sqlite3-changeset-iter!]  ; Changeset iterator 
 	iVal    [integer!]                 ; Column number 
-	ppValue [sqlite3-value-ref!]       ; OUT: New value (or NULL pointer) 
+	ppValue [sqlite3-value-ptr!]       ; OUT: New value (or NULL pointer) 
 	return: [integer!]
 ]
 
@@ -8910,7 +8910,7 @@ sqlite3changeset_new: "sqlite3changeset_new" [
 sqlite3changeset_conflict: "sqlite3changeset_conflict" [
 	pIter   [sqlite3-changeset-iter!]  ; Changeset iterator 
 	iVal    [integer!]                 ; Column number 
-	ppValue [sqlite3-value-ref!]       ; OUT: Value from conflicting row 
+	ppValue [sqlite3-value-ptr!]       ; OUT: Value from conflicting row 
 	return: [integer!]
 ]
 
@@ -8992,7 +8992,7 @@ sqlite3changeset_finalize: "sqlite3changeset_finalize" [
 
 sqlite3changeset_invert: "sqlite3changeset_invert" [
 	nIn     [integer!]                 ;int
-	pIn     [byte-ptr!]                ; Input changeset 
+	pIn     [int-ptr!]                 ; Input changeset 
 	pnOut   [int-ptr!]                 ;int *
 	ppOut   [int-ptr!]                 ; OUT: Inverse of input 
 	return: [integer!]
@@ -9068,7 +9068,7 @@ sqlite3changeset_concat: "sqlite3changeset_concat" [
 
 
 sqlite3changegroup_new: "sqlite3changegroup_new" [
-	pp      [sqlite3-changegroup-ref!] ;sqlite3_changegroup **
+	pp      [sqlite3-changegroup-ptr!] ;sqlite3_changegroup **
 	return: [integer!]
 ]
 
@@ -9483,7 +9483,7 @@ sqlite3changeset_concat_strm: "sqlite3changeset_concat_strm" [
 	pInB    [int-ptr!]                 ;void *
 	xOutput [function! [
 		pOut   [int-ptr!] 
-		pData  [byte-ptr!] 
+		pData  [int-ptr!] 
 		nData  [integer!] 
 		return: [integer!]
 	]]
@@ -9500,7 +9500,7 @@ sqlite3changeset_invert_strm: "sqlite3changeset_invert_strm" [
 	pIn     [int-ptr!]                 ;void *
 	xOutput [function! [
 		pOut   [int-ptr!] 
-		pData  [byte-ptr!] 
+		pData  [int-ptr!] 
 		nData  [integer!] 
 		return: [integer!]
 	]]
@@ -9508,7 +9508,7 @@ sqlite3changeset_invert_strm: "sqlite3changeset_invert_strm" [
 	return: [integer!]
 ]
 sqlite3changeset_start_strm: "sqlite3changeset_start_strm" [
-	pp      [sqlite3-changeset-iter-ref!];sqlite3_changeset_iter **
+	pp      [sqlite3-changeset-iter-ptr!];sqlite3_changeset_iter **
 	xInput  [function! [
 		pIn    [int-ptr!] 
 		pData  [int-ptr!] 
@@ -9522,7 +9522,7 @@ sqlite3session_changeset_strm: "sqlite3session_changeset_strm" [
 	pSession [sqlite3-session!]        ;sqlite3_session *
 	xOutput  [function! [
 		pOut    [int-ptr!] 
-		pData   [byte-ptr!] 
+		pData   [int-ptr!] 
 		nData   [integer!] 
 		return: [integer!]
 	]]
@@ -9533,7 +9533,7 @@ sqlite3session_patchset_strm: "sqlite3session_patchset_strm" [
 	pSession [sqlite3-session!]        ;sqlite3_session *
 	xOutput  [function! [
 		pOut    [int-ptr!] 
-		pData   [byte-ptr!] 
+		pData   [int-ptr!] 
 		nData   [integer!] 
 		return: [integer!]
 	]]
@@ -9555,7 +9555,7 @@ sqlite3changegroup_output_strm: "sqlite3changegroup_output_strm" [
 	arg1    [sqlite3-changegroup!]     ;sqlite3_changegroup*
 	xOutput [function! [
 		pOut   [int-ptr!] 
-		pData  [byte-ptr!] 
+		pData  [int-ptr!] 
 		nData  [integer!] 
 		return: [integer!]
 	]]

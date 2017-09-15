@@ -17,8 +17,8 @@ Red [
 
 	sqlite: context [
 		db-current: declare sqlite3!
-		db-ref: declare sqlite3-ref!
-		errmsg: declare string-ref!
+		db-ref: declare sqlite3-ptr!
+		errmsg: declare string-ptr!
 		data:   declare int-ptr!
 		str:    declare c-string!
 
@@ -103,8 +103,8 @@ Red [
 			"Process a result row."
 			data		[int-ptr!]
 			columns		[integer!]
-			values		[string-ref!]
-			names		[string-ref!]
+			values		[string-ptr!]
+			names		[string-ptr!]
 			return:		[integer!]
 		][
 			
@@ -127,8 +127,8 @@ Red [
 			"Process a result row."
 			data		[int-ptr!]
 			columns		[integer!]
-			values		[string-ref!]
-			names		[string-ref!]
+			values		[string-ptr!]
+			names		[string-ptr!]
 			return:		[integer!]
 			/local
 				blk     [red-block!]
