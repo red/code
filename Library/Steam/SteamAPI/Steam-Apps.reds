@@ -61,7 +61,7 @@ ISteamApps: declare ISteamApps!
 			instancePtr       [ISteamApps!]    ;intptr_t
 			iDLC              [integer!]       ;int
 			pAppID            [int-ptr!]       ;AppId_t *
-			pbAvailable       [logic-ref!];bool *
+			pbAvailable       [logic-ptr!];bool *
 			pchName           [c-string!]      ;char *
 			cchNameBufferSize [integer!]       ;int
 			return: [logic!]
@@ -110,7 +110,7 @@ ISteamApps: declare ISteamApps!
 		]
 		SteamAPI_ISteamApps_GetAppOwner: "SteamAPI_ISteamApps_GetAppOwner" [
 			instancePtr [ISteamApps!]          ;intptr_t
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamApps_GetLaunchQueryParam: "SteamAPI_ISteamApps_GetLaunchQueryParam" [
 			instancePtr [ISteamApps!]          ;intptr_t
@@ -120,8 +120,8 @@ ISteamApps: declare ISteamApps!
 		SteamAPI_ISteamApps_GetDlcDownloadProgress: "SteamAPI_ISteamApps_GetDlcDownloadProgress" [
 			instancePtr        [ISteamApps!]   ;intptr_t
 			nAppID             [integer!]      ;AppId_t
-			punBytesDownloaded [uint64-ref!]   ;uint64 *
-			punBytesTotal      [uint64-ref!]   ;uint64 *
+			punBytesDownloaded [uint64-ptr!]   ;uint64 *
+			punBytesTotal      [uint64-ptr!]   ;uint64 *
 			return: [logic!]
 		]
 		SteamAPI_ISteamApps_GetAppBuildId: "SteamAPI_ISteamApps_GetAppBuildId" [
@@ -134,7 +134,7 @@ ISteamApps: declare ISteamApps!
 		SteamAPI_ISteamApps_GetFileDetails: "SteamAPI_ISteamApps_GetFileDetails" [
 			instancePtr [ISteamApps!]          ;intptr_t
 			pszFileName [c-string!]            ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 	]
 ]

@@ -101,7 +101,7 @@ ISteamHTTP: declare ISteamHTTP!
 		SteamAPI_ISteamHTTP_SetHTTPRequestContextValue: "SteamAPI_ISteamHTTP_SetHTTPRequestContextValue" [
 			instancePtr    [ISteamHTTP!]       ;intptr_t
 			hRequest       [integer!]          ;HTTPRequestHandle
-			ulContextValue [uint64! value]     ;uint64
+			ulContextValue [uint64-value!]     ;uint64
 			return: [logic!]
 		]
 		SteamAPI_ISteamHTTP_SetHTTPRequestNetworkActivityTimeout: {SteamAPI_ISteamHTTP_SetHTTPRequestNetworkActivityTimeout} [
@@ -127,13 +127,13 @@ ISteamHTTP: declare ISteamHTTP!
 		SteamAPI_ISteamHTTP_SendHTTPRequest: "SteamAPI_ISteamHTTP_SendHTTPRequest" [
 			instancePtr [ISteamHTTP!]          ;intptr_t
 			hRequest    [integer!]             ;HTTPRequestHandle
-			pCallHandle [uint64-ref!]          ;SteamAPICall_t *
+			pCallHandle [uint64-ptr!]          ;SteamAPICall_t *
 			return: [logic!]
 		]
 		SteamAPI_ISteamHTTP_SendHTTPRequestAndStreamResponse: {SteamAPI_ISteamHTTP_SendHTTPRequestAndStreamResponse} [
 			instancePtr [ISteamHTTP!]          ;intptr_t
 			hRequest    [integer!]             ;HTTPRequestHandle
-			pCallHandle [uint64-ref!]          ;SteamAPICall_t *
+			pCallHandle [uint64-ptr!]          ;SteamAPICall_t *
 			return: [logic!]
 		]
 		SteamAPI_ISteamHTTP_DeferHTTPRequest: "SteamAPI_ISteamHTTP_DeferHTTPRequest" [
@@ -246,7 +246,7 @@ ISteamHTTP: declare ISteamHTTP!
 		SteamAPI_ISteamHTTP_GetHTTPRequestWasTimedOut: "SteamAPI_ISteamHTTP_GetHTTPRequestWasTimedOut" [
 			instancePtr   [ISteamHTTP!]        ;intptr_t
 			hRequest      [integer!]           ;HTTPRequestHandle
-			pbWasTimedOut [logic-ref!]  ;bool *
+			pbWasTimedOut [logic-ptr!]  ;bool *
 			return: [logic!]
 		]
 	]

@@ -36,7 +36,7 @@ Red/System [
 			instancePtr  [ISteamHTMLSurface!]  ;intptr_t
 			pchUserAgent [c-string!]           ;const char *
 			pchUserCSS   [c-string!]           ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamHTMLSurface_RemoveBrowser: "SteamAPI_ISteamHTMLSurface_RemoveBrowser" [
 			instancePtr     [ISteamHTMLSurface!];intptr_t

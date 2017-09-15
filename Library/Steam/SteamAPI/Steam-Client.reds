@@ -52,7 +52,7 @@ ISteamClient: declare ISteamClient!
 		SteamAPI_ISteamClient_SetLocalIPBinding: "SteamAPI_ISteamClient_SetLocalIPBinding" [
 			instancePtr [ISteamClient!]        ;intptr_t
 			unIP        [integer!]             ;uint32
-			usPort      [uint16!]              ;uint16
+			usPort      [uint16-value!]              ;uint16
 		]
 		SteamAPI_ISteamClient_GetISteamFriends: "SteamAPI_ISteamClient_GetISteamFriends" [
 			instancePtr [ISteamClient!]        ;intptr_t

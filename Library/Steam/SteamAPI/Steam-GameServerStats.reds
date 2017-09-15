@@ -13,7 +13,7 @@ ISteamGameServerStats: declare ISteamGameServerStats!
 		SteamAPI_ISteamGameServerStats_RequestUserStats: "SteamAPI_ISteamGameServerStats_RequestUserStats" [
 			instancePtr [ISteamGameServerStats!];intptr_t
 			steamIDUser [CSteamID!]            ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamGameServerStats_GetUserStat: "SteamAPI_ISteamGameServerStats_GetUserStat" [
 			instancePtr [ISteamGameServerStats!];intptr_t
@@ -33,7 +33,7 @@ ISteamGameServerStats: declare ISteamGameServerStats!
 			instancePtr [ISteamGameServerStats!];intptr_t
 			steamIDUser [CSteamID!]            ;class CSteamID
 			pchName     [c-string!]            ;const char *
-			pbAchieved  [logic-ref!]    ;bool *
+			pbAchieved  [logic-ptr!]    ;bool *
 			return: [logic!]
 		]
 		SteamAPI_ISteamGameServerStats_SetUserStat: "SteamAPI_ISteamGameServerStats_SetUserStat" [
@@ -73,7 +73,7 @@ ISteamGameServerStats: declare ISteamGameServerStats!
 		SteamAPI_ISteamGameServerStats_StoreUserStats: "SteamAPI_ISteamGameServerStats_StoreUserStats" [
 			instancePtr [ISteamGameServerStats!];intptr_t
 			steamIDUser [CSteamID!]            ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 	]
 ]

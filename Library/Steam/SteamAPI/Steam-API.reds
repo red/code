@@ -14,6 +14,8 @@ Red/System [
 	#default  [ #define STEAM_LIBRARY "libsteam_api.so"    ]
 ]
 
+#include %../../os/definitions.reds ;common aliases and defines
+
 #define ISteamClient!             int-ptr!
 #define ISteamUser!               int-ptr!
 #define ISteamFriends!            int-ptr!
@@ -43,19 +45,9 @@ Red/System [
 #define ISteamGameServerStats!    int-ptr!
 #define ISteamGameServerItem!     int-ptr!
 
-int64!:  alias struct! [lo [integer!] hi [integer!]] ;@@ must be changed once we will get real integer64! type
-uin16!:  alias struct! [lo [byte!] hi [byte!]]       ;@@ must be changed once we will get real integer16! type
-
-#define uint64! int64!
-#define uint64-ref! uint64!
-int64-ref!:  alias struct! [value [int64!]]
-logic-ref!:  alias struct! [value [logic!]]
-string-ref!:  alias struct! [value [c-string!]]
-
-#define uint16! integer! ;@@ must be changed once we will get real integer16! type
 
 CGameID!: alias struct! [
-	m_ulGameID [uint64! value]
+	m_ulGameID [uint64-value!]
 	m_gameID   [struct! [
 		m_nAppID [integer!]
 		m_nType  [integer!]
@@ -63,8 +55,8 @@ CGameID!: alias struct! [
 	]]
 ]
 
-#define CSteamID! [uint64! value]
-#define CSteamID-ref! uint64-ref!
+#define CSteamID! [uint64-value!]
+#define CSteamID-ptr! uint64-ptr!
 
 FriendGameInfo!: alias struct! [
 	m_gameID       [CGameID!]
@@ -80,7 +72,7 @@ LeaderboardEntry!: alias struct! [
 	m_nGlobalRank [integer!]
 	m_nScore      [integer!]
 	m_cDetails    [integer!]
-	m_hUGC        [uint64!]
+	m_hUGC        [uint64-value!]
 ]
 
 #include %Steam-enums.reds

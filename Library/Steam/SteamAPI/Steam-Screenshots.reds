@@ -69,7 +69,7 @@ ISteamScreenshots: declare ISteamScreenshots!
 		SteamAPI_ISteamScreenshots_TagPublishedFile: "SteamAPI_ISteamScreenshots_TagPublishedFile" [
 			instancePtr       [ISteamScreenshots!];intptr_t
 			hScreenshot       [integer!]       ;ScreenshotHandle
-			unPublishedFileID [uint64! value]  ;PublishedFileId_t
+			unPublishedFileID [uint64-value!]  ;PublishedFileId_t
 			return: [logic!]
 		]
 		SteamAPI_ISteamScreenshots_IsScreenshotsHooked: "SteamAPI_ISteamScreenshots_IsScreenshotsHooked" [

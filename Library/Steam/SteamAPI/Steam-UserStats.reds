@@ -88,7 +88,7 @@ ISteamUserStats: declare ISteamUserStats!
 		SteamAPI_ISteamUserStats_GetAchievement: "SteamAPI_ISteamUserStats_GetAchievement" [
 			instancePtr [ISteamUserStats!]     ;intptr_t
 			pchName     [c-string!]            ;const char *
-			pbAchieved  [logic-ref!]    ;bool *
+			pbAchieved  [logic-ptr!]    ;bool *
 			return: [logic!]
 		]
 		SteamAPI_ISteamUserStats_SetAchievement: "SteamAPI_ISteamUserStats_SetAchievement" [
@@ -104,7 +104,7 @@ ISteamUserStats: declare ISteamUserStats!
 		SteamAPI_ISteamUserStats_GetAchievementAndUnlockTime: {SteamAPI_ISteamUserStats_GetAchievementAndUnlockTime} [
 			instancePtr   [ISteamUserStats!]   ;intptr_t
 			pchName       [c-string!]          ;const char *
-			pbAchieved    [logic-ref!]  ;bool *
+			pbAchieved    [logic-ptr!]  ;bool *
 			punUnlockTime [int-ptr!]           ;uint32 *
 			return: [logic!]
 		]
@@ -142,7 +142,7 @@ ISteamUserStats: declare ISteamUserStats!
 		SteamAPI_ISteamUserStats_RequestUserStats: "SteamAPI_ISteamUserStats_RequestUserStats" [
 			instancePtr [ISteamUserStats!]     ;intptr_t
 			steamIDUser [CSteamID!]            ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_GetUserStat: "SteamAPI_ISteamUserStats_GetUserStat" [
 			instancePtr [ISteamUserStats!]     ;intptr_t
@@ -162,14 +162,14 @@ ISteamUserStats: declare ISteamUserStats!
 			instancePtr [ISteamUserStats!]     ;intptr_t
 			steamIDUser [CSteamID!]            ;class CSteamID
 			pchName     [c-string!]            ;const char *
-			pbAchieved  [logic-ref!]    ;bool *
+			pbAchieved  [logic-ptr!]    ;bool *
 			return: [logic!]
 		]
 		SteamAPI_ISteamUserStats_GetUserAchievementAndUnlockTime: {SteamAPI_ISteamUserStats_GetUserAchievementAndUnlockTime} [
 			instancePtr   [ISteamUserStats!]   ;intptr_t
 			steamIDUser   [CSteamID!]          ;class CSteamID
 			pchName       [c-string!]          ;const char *
-			pbAchieved    [logic-ref!]  ;bool *
+			pbAchieved    [logic-ptr!]  ;bool *
 			punUnlockTime [int-ptr!]           ;uint32 *
 			return: [logic!]
 		]
@@ -183,51 +183,51 @@ ISteamUserStats: declare ISteamUserStats!
 			pchLeaderboardName  [c-string!]    ;const char *
 			eLeaderboardSortMethod[ELeaderboardSortMethod!];ELeaderboardSortMethod
 			eLeaderboardDisplayType[ELeaderboardDisplayType!];ELeaderboardDisplayType
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_FindLeaderboard: "SteamAPI_ISteamUserStats_FindLeaderboard" [
 			instancePtr        [ISteamUserStats!];intptr_t
 			pchLeaderboardName [c-string!]     ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_GetLeaderboardName: "SteamAPI_ISteamUserStats_GetLeaderboardName" [
 			instancePtr       [ISteamUserStats!];intptr_t
-			hSteamLeaderboard [uint64! value]  ;SteamLeaderboard_t
+			hSteamLeaderboard [uint64-value!]  ;SteamLeaderboard_t
 			return: [c-string!]
 		]
 		SteamAPI_ISteamUserStats_GetLeaderboardEntryCount: "SteamAPI_ISteamUserStats_GetLeaderboardEntryCount" [
 			instancePtr       [ISteamUserStats!];intptr_t
-			hSteamLeaderboard [uint64! value]  ;SteamLeaderboard_t
+			hSteamLeaderboard [uint64-value!]  ;SteamLeaderboard_t
 			return: [integer!]
 		]
 		SteamAPI_ISteamUserStats_GetLeaderboardSortMethod: "SteamAPI_ISteamUserStats_GetLeaderboardSortMethod" [
 			instancePtr       [ISteamUserStats!];intptr_t
-			hSteamLeaderboard [uint64! value]  ;SteamLeaderboard_t
+			hSteamLeaderboard [uint64-value!]  ;SteamLeaderboard_t
 			return: [ELeaderboardSortMethod!]
 		]
 		SteamAPI_ISteamUserStats_GetLeaderboardDisplayType: "SteamAPI_ISteamUserStats_GetLeaderboardDisplayType" [
 			instancePtr       [ISteamUserStats!];intptr_t
-			hSteamLeaderboard [uint64! value]  ;SteamLeaderboard_t
+			hSteamLeaderboard [uint64-value!]  ;SteamLeaderboard_t
 			return: [ELeaderboardDisplayType!]
 		]
 		SteamAPI_ISteamUserStats_DownloadLeaderboardEntries: {SteamAPI_ISteamUserStats_DownloadLeaderboardEntries} [
 			instancePtr         [ISteamUserStats!];intptr_t
-			hSteamLeaderboard   [uint64! value];SteamLeaderboard_t
+			hSteamLeaderboard   [uint64-value!];SteamLeaderboard_t
 			eLeaderboardDataRequest[ELeaderboardDataRequest!];ELeaderboardDataRequest
 			nRangeStart         [integer!]     ;int
 			nRangeEnd           [integer!]     ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_DownloadLeaderboardEntriesForUsers: {SteamAPI_ISteamUserStats_DownloadLeaderboardEntriesForUsers} [
 			instancePtr       [ISteamUserStats!];intptr_t
-			hSteamLeaderboard [uint64! value]  ;SteamLeaderboard_t
-			prgUsers          [CSteamID-ref!]  ;class CSteamID *
+			hSteamLeaderboard [uint64-value!]  ;SteamLeaderboard_t
+			prgUsers          [CSteamID-ptr!]  ;class CSteamID *
 			cUsers            [integer!]       ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_GetDownloadedLeaderboardEntry: {SteamAPI_ISteamUserStats_GetDownloadedLeaderboardEntry} [
 			instancePtr         [ISteamUserStats!];intptr_t
-			hSteamLeaderboardEntries[uint64! value];SteamLeaderboardEntries_t
+			hSteamLeaderboardEntries[uint64-value!];SteamLeaderboardEntries_t
 			index               [integer!]     ;int
 			pLeaderboardEntry   [LeaderboardEntry!];struct LeaderboardEntry_t *
 			pDetails            [int-ptr!]     ;int32 *
@@ -236,33 +236,33 @@ ISteamUserStats: declare ISteamUserStats!
 		]
 		SteamAPI_ISteamUserStats_UploadLeaderboardScore: "SteamAPI_ISteamUserStats_UploadLeaderboardScore" [
 			instancePtr         [ISteamUserStats!];intptr_t
-			hSteamLeaderboard   [uint64! value];SteamLeaderboard_t
+			hSteamLeaderboard   [uint64-value!];SteamLeaderboard_t
 			eLeaderboardUploadScoreMethod[ELeaderboardUploadScoreMethod!];ELeaderboardUploadScoreMethod
 			nScore              [integer!]     ;int32
 			pScoreDetails       [int-ptr!]     ;const int32 *
 			cScoreDetailsCount  [integer!]     ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_AttachLeaderboardUGC: "SteamAPI_ISteamUserStats_AttachLeaderboardUGC" [
 			instancePtr       [ISteamUserStats!];intptr_t
-			hSteamLeaderboard [uint64! value]  ;SteamLeaderboard_t
-			hUGC              [uint64! value]  ;UGCHandle_t
-			return: [uint64! value]
+			hSteamLeaderboard [uint64-value!]  ;SteamLeaderboard_t
+			hUGC              [uint64-value!]  ;UGCHandle_t
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_GetNumberOfCurrentPlayers: "SteamAPI_ISteamUserStats_GetNumberOfCurrentPlayers" [
 			instancePtr [ISteamUserStats!]     ;intptr_t
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_RequestGlobalAchievementPercentages: {SteamAPI_ISteamUserStats_RequestGlobalAchievementPercentages} [
 			instancePtr [ISteamUserStats!]     ;intptr_t
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_GetMostAchievedAchievementInfo: {SteamAPI_ISteamUserStats_GetMostAchievedAchievementInfo} [
 			instancePtr  [ISteamUserStats!]    ;intptr_t
 			pchName      [c-string!]           ;char *
 			unNameBufLen [integer!]            ;uint32
 			pflPercent   [pointer! [float32!]] ;float *
-			pbAchieved   [logic-ref!]   ;bool *
+			pbAchieved   [logic-ptr!]   ;bool *
 			return: [integer!]
 		]
 		SteamAPI_ISteamUserStats_GetNextMostAchievedAchievementInfo: {SteamAPI_ISteamUserStats_GetNextMostAchievedAchievementInfo} [
@@ -271,7 +271,7 @@ ISteamUserStats: declare ISteamUserStats!
 			pchName           [c-string!]      ;char *
 			unNameBufLen      [integer!]       ;uint32
 			pflPercent        [pointer! [float32!]];float *
-			pbAchieved        [logic-ref!];bool *
+			pbAchieved        [logic-ptr!];bool *
 			return: [integer!]
 		]
 		SteamAPI_ISteamUserStats_GetAchievementAchievedPercent: {SteamAPI_ISteamUserStats_GetAchievementAchievedPercent} [
@@ -283,12 +283,12 @@ ISteamUserStats: declare ISteamUserStats!
 		SteamAPI_ISteamUserStats_RequestGlobalStats: "SteamAPI_ISteamUserStats_RequestGlobalStats" [
 			instancePtr  [ISteamUserStats!]    ;intptr_t
 			nHistoryDays [integer!]            ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUserStats_GetGlobalStat: "SteamAPI_ISteamUserStats_GetGlobalStat" [
 			instancePtr [ISteamUserStats!]     ;intptr_t
 			pchStatName [c-string!]            ;const char *
-			pData       [int64-ref!]    ;int64 *
+			pData       [int64-ptr!]    ;int64 *
 			return: [logic!]
 		]
 		SteamAPI_ISteamUserStats_GetGlobalStat0: "SteamAPI_ISteamUserStats_GetGlobalStat0" [
@@ -300,7 +300,7 @@ ISteamUserStats: declare ISteamUserStats!
 		SteamAPI_ISteamUserStats_GetGlobalStatHistory: "SteamAPI_ISteamUserStats_GetGlobalStatHistory" [
 			instancePtr [ISteamUserStats!]     ;intptr_t
 			pchStatName [c-string!]            ;const char *
-			pData       [int64-ref!]    ;int64 *
+			pData       [int64-ptr!]    ;int64 *
 			cubData     [integer!]             ;uint32
 			return: [integer!]
 		]

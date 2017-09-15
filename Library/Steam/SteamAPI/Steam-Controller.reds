@@ -269,84 +269,84 @@ ISteamController: declare ISteamController!
 		]
 		SteamAPI_ISteamController_GetConnectedControllers: "SteamAPI_ISteamController_GetConnectedControllers" [
 			instancePtr [ISteamController!]    ;intptr_t
-			handlesOut  [uint64-ref!]          ;ControllerHandle_t *
+			handlesOut  [uint64-ptr!]          ;ControllerHandle_t *
 			return: [integer!]
 		]
 		SteamAPI_ISteamController_ShowBindingPanel: "SteamAPI_ISteamController_ShowBindingPanel" [
 			instancePtr      [ISteamController!];intptr_t
-			controllerHandle [uint64! value]   ;ControllerHandle_t
+			controllerHandle [uint64-value!]   ;ControllerHandle_t
 			return: [logic!]
 		]
 		SteamAPI_ISteamController_GetActionSetHandle: "SteamAPI_ISteamController_GetActionSetHandle" [
 			instancePtr      [ISteamController!];intptr_t
 			pszActionSetName [c-string!]       ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamController_ActivateActionSet: "SteamAPI_ISteamController_ActivateActionSet" [
 			instancePtr      [ISteamController!];intptr_t
-			controllerHandle [uint64! value]   ;ControllerHandle_t
-			actionSetHandle  [uint64! value]   ;ControllerActionSetHandle_t
+			controllerHandle [uint64-value!]   ;ControllerHandle_t
+			actionSetHandle  [uint64-value!]   ;ControllerActionSetHandle_t
 		]
 		SteamAPI_ISteamController_GetCurrentActionSet: "SteamAPI_ISteamController_GetCurrentActionSet" [
 			instancePtr      [ISteamController!];intptr_t
-			controllerHandle [uint64! value]   ;ControllerHandle_t
-			return: [uint64! value]
+			controllerHandle [uint64-value!]   ;ControllerHandle_t
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamController_GetDigitalActionHandle: "SteamAPI_ISteamController_GetDigitalActionHandle" [
 			instancePtr   [ISteamController!]  ;intptr_t
 			pszActionName [c-string!]          ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamController_GetDigitalActionOrigins: "SteamAPI_ISteamController_GetDigitalActionOrigins" [
 			instancePtr         [ISteamController!];intptr_t
-			controllerHandle    [uint64! value];ControllerHandle_t
-			actionSetHandle     [uint64! value];ControllerActionSetHandle_t
-			digitalActionHandle [uint64! value];ControllerDigitalActionHandle_t
+			controllerHandle    [uint64-value!];ControllerHandle_t
+			actionSetHandle     [uint64-value!];ControllerActionSetHandle_t
+			digitalActionHandle [uint64-value!];ControllerDigitalActionHandle_t
 			originsOut          [int-ptr!]     ;EControllerActionOrigin *
 			return: [integer!]
 		]
 		SteamAPI_ISteamController_GetAnalogActionHandle: "SteamAPI_ISteamController_GetAnalogActionHandle" [
 			instancePtr   [ISteamController!]  ;intptr_t
 			pszActionName [c-string!]          ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamController_GetAnalogActionOrigins: "SteamAPI_ISteamController_GetAnalogActionOrigins" [
 			instancePtr        [ISteamController!];intptr_t
-			controllerHandle   [uint64! value] ;ControllerHandle_t
-			actionSetHandle    [uint64! value] ;ControllerActionSetHandle_t
-			analogActionHandle [uint64! value] ;ControllerAnalogActionHandle_t
+			controllerHandle   [uint64-value!] ;ControllerHandle_t
+			actionSetHandle    [uint64-value!] ;ControllerActionSetHandle_t
+			analogActionHandle [uint64-value!] ;ControllerAnalogActionHandle_t
 			originsOut         [int-ptr!]      ;EControllerActionOrigin *
 			return: [integer!]
 		]
 		SteamAPI_ISteamController_StopAnalogActionMomentum: "SteamAPI_ISteamController_StopAnalogActionMomentum" [
 			instancePtr      [ISteamController!];intptr_t
-			controllerHandle [uint64! value]   ;ControllerHandle_t
-			eAction          [uint64! value]   ;ControllerAnalogActionHandle_t
+			controllerHandle [uint64-value!]   ;ControllerHandle_t
+			eAction          [uint64-value!]   ;ControllerAnalogActionHandle_t
 		]
 		SteamAPI_ISteamController_TriggerHapticPulse: "SteamAPI_ISteamController_TriggerHapticPulse" [
 			instancePtr        [ISteamController!];intptr_t
-			controllerHandle   [uint64! value] ;ControllerHandle_t
+			controllerHandle   [uint64-value!] ;ControllerHandle_t
 			eTargetPad         [ESteamControllerPad!];ESteamControllerPad
-			usDurationMicroSec [uin16! value]        ;unsigned short
+			usDurationMicroSec [uint16-value!]        ;unsigned short
 		]
 		SteamAPI_ISteamController_TriggerRepeatedHapticPulse: {SteamAPI_ISteamController_TriggerRepeatedHapticPulse} [
 			instancePtr        [ISteamController!];intptr_t
-			controllerHandle   [uint64! value] ;ControllerHandle_t
+			controllerHandle   [uint64-value!] ;ControllerHandle_t
 			eTargetPad         [ESteamControllerPad!];ESteamControllerPad
-			usDurationMicroSec [uin16! value]        ;unsigned short
-			usOffMicroSec      [uin16! value]        ;unsigned short
-			unRepeat           [uin16! value]        ;unsigned short
+			usDurationMicroSec [uint16-value!]        ;unsigned short
+			usOffMicroSec      [uint16-value!]        ;unsigned short
+			unRepeat           [uint16-value!]        ;unsigned short
 			nFlags             [integer!]      ;unsigned int
 		]
 		SteamAPI_ISteamController_TriggerVibration: "SteamAPI_ISteamController_TriggerVibration" [
 			instancePtr      [ISteamController!];intptr_t
-			controllerHandle [uint64! value]   ;ControllerHandle_t
-			usLeftSpeed      [uin16! value]          ;unsigned short
-			usRightSpeed     [uin16! value]          ;unsigned short
+			controllerHandle [uint64-value!]   ;ControllerHandle_t
+			usLeftSpeed      [uint16-value!]          ;unsigned short
+			usRightSpeed     [uint16-value!]          ;unsigned short
 		]
 		SteamAPI_ISteamController_SetLEDColor: "SteamAPI_ISteamController_SetLEDColor" [
 			instancePtr      [ISteamController!];intptr_t
-			controllerHandle [uint64! value]   ;ControllerHandle_t
+			controllerHandle [uint64-value!]   ;ControllerHandle_t
 			nColorR          [byte!]           ;uint8
 			nColorG          [byte!]           ;uint8
 			nColorB          [byte!]           ;uint8
@@ -354,18 +354,18 @@ ISteamController: declare ISteamController!
 		]
 		SteamAPI_ISteamController_GetGamepadIndexForController: {SteamAPI_ISteamController_GetGamepadIndexForController} [
 			instancePtr        [ISteamController!];intptr_t
-			ulControllerHandle [uint64! value] ;ControllerHandle_t
+			ulControllerHandle [uint64-value!] ;ControllerHandle_t
 			return: [integer!]
 		]
 		SteamAPI_ISteamController_GetControllerForGamepadIndex: {SteamAPI_ISteamController_GetControllerForGamepadIndex} [
 			instancePtr [ISteamController!]    ;intptr_t
 			nIndex      [integer!]             ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamController_ShowDigitalActionOrigins: "SteamAPI_ISteamController_ShowDigitalActionOrigins" [
 			instancePtr         [ISteamController!];intptr_t
-			controllerHandle    [uint64! value];ControllerHandle_t
-			digitalActionHandle [uint64! value];ControllerDigitalActionHandle_t
+			controllerHandle    [uint64-value!];ControllerHandle_t
+			digitalActionHandle [uint64-value!];ControllerDigitalActionHandle_t
 			flScale             [float32!]     ;float
 			flXPosition         [float32!]     ;float
 			flYPosition         [float32!]     ;float
@@ -373,8 +373,8 @@ ISteamController: declare ISteamController!
 		]
 		SteamAPI_ISteamController_ShowAnalogActionOrigins: "SteamAPI_ISteamController_ShowAnalogActionOrigins" [
 			instancePtr        [ISteamController!];intptr_t
-			controllerHandle   [uint64! value] ;ControllerHandle_t
-			analogActionHandle [uint64! value] ;ControllerAnalogActionHandle_t
+			controllerHandle   [uint64-value!] ;ControllerHandle_t
+			analogActionHandle [uint64-value!] ;ControllerAnalogActionHandle_t
 			flScale            [float32!]      ;float
 			flXPosition        [float32!]      ;float
 			flYPosition        [float32!]      ;float

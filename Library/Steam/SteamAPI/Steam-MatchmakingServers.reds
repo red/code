@@ -92,21 +92,21 @@ ISteamMatchmakingServers: declare ISteamMatchmakingServers!
 		SteamAPI_ISteamMatchmakingServers_PingServer: "SteamAPI_ISteamMatchmakingServers_PingServer" [
 			instancePtr         [ISteamMatchmakingServers!];intptr_t
 			unIP                [integer!]     ;uint32
-			usPort              [uint16!]      ;uint16
+			usPort              [uint16-value!]      ;uint16
 			pRequestServersResponse[int-ptr!]  ;class ISteamMatchmakingPingResponse *
 			return: [integer!]
 		]
 		SteamAPI_ISteamMatchmakingServers_PlayerDetails: "SteamAPI_ISteamMatchmakingServers_PlayerDetails" [
 			instancePtr         [ISteamMatchmakingServers!];intptr_t
 			unIP                [integer!]     ;uint32
-			usPort              [uint16!]      ;uint16
+			usPort              [uint16-value!]      ;uint16
 			pRequestServersResponse[int-ptr!]  ;class ISteamMatchmakingPlayersResponse *
 			return: [integer!]
 		]
 		SteamAPI_ISteamMatchmakingServers_ServerRules: "SteamAPI_ISteamMatchmakingServers_ServerRules" [
 			instancePtr         [ISteamMatchmakingServers!];intptr_t
 			unIP                [integer!]     ;uint32
-			usPort              [uint16!]      ;uint16
+			usPort              [uint16-value!]      ;uint16
 			pRequestServersResponse[int-ptr!]  ;class ISteamMatchmakingRulesResponse *
 			return: [integer!]
 		]
