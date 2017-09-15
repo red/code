@@ -109,14 +109,14 @@ This source was made from glxew.h file, which contains these copyrights:
 #define Status!                      handle!
 #define Window!                      handle!
 
-#define Display-ptr!                 handle-ref!
-#define GLXFBConfig-ptr!             handle-ref!
-#define GLXFBConfigSGIX-ptr!         handle-ref!
-#define GLXHyperpipeConfigSGIX-ptr!  handle-ref!
-#define GLXHyperpipeNetworkSGIX-ptr! handle-ref!
-#define GLXVideoCaptureDeviceNV-ptr! handle-ref!
-#define GLXVideoDeviceNV-ptr!        handle-ref!
-#define XVisualInfo-ptr!             handle-ref!
+#define Display-ptr!                 handle-ptr!
+#define GLXFBConfig-ptr!             handle-ptr!
+#define GLXFBConfigSGIX-ptr!         handle-ptr!
+#define GLXHyperpipeConfigSGIX-ptr!  handle-ptr!
+#define GLXHyperpipeNetworkSGIX-ptr! handle-ptr!
+#define GLXVideoCaptureDeviceNV-ptr! handle-ptr!
+#define GLXVideoDeviceNV-ptr!        handle-ptr!
+#define XVisualInfo-ptr!             handle-ptr!
 
 
 

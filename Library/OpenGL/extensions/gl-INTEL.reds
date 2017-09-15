@@ -78,24 +78,24 @@ glUnmapTexture2DINTEL!: alias function! [
 glColorPointervINTEL!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLenum type, const void** pointer );
 glNormalPointervINTEL!: alias function! [
 	type        [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLint size, GLenum type, const void** pointer );
 glTexCoordPointervINTEL!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLint size, GLenum type, const void** pointer );
 glVertexPointervINTEL!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 
 

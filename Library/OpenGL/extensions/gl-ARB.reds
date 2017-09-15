@@ -924,7 +924,7 @@ glGetNamedBufferParameteriv!: alias function! [
 glGetNamedBufferPointerv!: alias function! [
 	buffer      [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLuint buffer, GLintptr offset, GLsizeiptr size, void *data );
 glGetNamedBufferSubData!: alias function! [
@@ -1487,7 +1487,7 @@ glMultiDrawElementsBaseVertex!: alias function! [
 	mode        [ GLenum! ]
 	count       [ pointer! [GLsizei!] ]
 	type        [ GLenum! ]
-	indices     [ binary-ref! ]
+	indices     [ binary-ptr! ]
 	primcount   [ GLsizei! ]
 	basevertex  [ pointer! [GLint!] ]
 ]
@@ -4022,7 +4022,7 @@ glBindProgramPipeline!: alias function! [
 glCreateShaderProgramv!: alias function! [
 	type        [ GLenum! ]
 	count       [ GLsizei! ]
-	strings     [ GLstring-ref! ]
+	strings     [ GLstring-ptr! ]
 	return: [ GLuint! ]
 
 ]
@@ -4764,7 +4764,7 @@ glLinkProgramARB!: alias function! [
 glShaderSourceARB!: alias function! [
 	shaderObj   [ GLhandleARB! ]
 	count       [ GLsizei! ]
-	string      [ GLcharARB-ref! ]
+	string      [ GLcharARB-ptr! ]
 	length      [ pointer! [GLint!] ]
 ]
 ;@@ void ( GLint location, GLfloat v0 );
@@ -5066,7 +5066,7 @@ glUniformSubroutinesuiv!: alias function! [
 glCompileShaderIncludeARB!: alias function! [
 	shader      [ GLuint! ]
 	count       [ GLsizei! ]
-	path        [ GLstring-ref! ]
+	path        [ GLstring-ptr! ]
 	length      [ pointer! [GLint!] ]
 ]
 ;@@ void ( GLint namelen, const GLchar* name );
@@ -6176,7 +6176,7 @@ glGetUniformBlockIndex!: alias function! [
 glGetUniformIndices!: alias function! [
 	program     [ GLuint! ]
 	uniformCount [ GLsizei! ]
-	uniformNames [ GLstring-ref! ]
+	uniformNames [ GLstring-ptr! ]
 	uniformIndices [ pointer! [GLuint!] ]
 ]
 ;@@ void ( GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding );
@@ -6564,7 +6564,7 @@ glGetBufferParameterivARB!: alias function! [
 glGetBufferPointervARB!: alias function! [
 	target      [ GLenum! ]
 	pname       [ GLenum! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLenum target, GLintptrARB offset, GLsizeiptrARB size, void *data );
 glGetBufferSubDataARB!: alias function! [
@@ -6741,7 +6741,7 @@ glGetProgramivARB!: alias function! [
 glGetVertexAttribPointervARB!: alias function! [
 	index       [ GLuint! ]
 	pname       [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLuint index, GLenum pname, GLdouble* params );
 glGetVertexAttribdvARB!: alias function! [

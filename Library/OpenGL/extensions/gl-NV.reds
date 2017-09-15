@@ -421,7 +421,7 @@ glIsStateNV!: alias function! [
 glListDrawCommandsStatesClientNV!: alias function! [
 	list        [ GLuint! ]
 	segment     [ GLuint! ]
-	indirects   [ binary-ref! ]
+	indirects   [ binary-ptr! ]
 	sizes       [ pointer! [GLsizei!] ]
 	states      [ pointer! [GLuint!] ]
 	fbos        [ pointer! [GLuint!] ]
@@ -4502,7 +4502,7 @@ glGetTrackMatrixivNV!: alias function! [
 glGetVertexAttribPointervNV!: alias function! [
 	index       [ GLuint! ]
 	pname       [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLuint index, GLenum pname, GLdouble* params );
 glGetVertexAttribdvNV!: alias function! [

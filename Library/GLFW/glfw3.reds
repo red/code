@@ -822,7 +822,7 @@ Red/System [
 ;   @ingroup input
 	arg1	[ GLFWwindow! ]
 	arg2	[ integer! ]
-	arg3	[ string-ref! ]
+	arg3	[ string-ptr! ]
 ]]
 #define GLFWmonitorfun! [ function! [
 ;-  The function signature for monitor configuration callbacks.
@@ -3876,7 +3876,7 @@ GLFWimage!: alias struct! [
 	  ; 
 	  ; @ingroup vulkan
 		count	[ pointer! [integer!] ]
-		return: [ string-ref! ]
+		return: [ string-ptr! ]
 	]
 	;@@ GLFWvkproc glfwGetInstanceProcAddress(VkInstance instance, const char* procname)
 	glfwGetInstanceProcAddress: "glfwGetInstanceProcAddress"[

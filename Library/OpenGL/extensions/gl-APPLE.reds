@@ -417,7 +417,7 @@ glWaitSyncAPPLE!: alias function! [
 glGetTexParameterPointervAPPLE!: alias function! [
 	target      [ GLenum! ]
 	pname       [ GLenum! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLenum target, GLsizei length, void *pointer );
 glTextureRangeAPPLE!: alias function! [

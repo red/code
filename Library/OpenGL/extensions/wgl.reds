@@ -901,7 +901,7 @@ wglGetGenlockSourceI3D!: alias function! [
 ]
 wglIsEnabledGenlockI3D!: alias function! [
 	hDC     [ HDC! ]
-	pFlag   [ logic-ref! ]
+	pFlag   [ logic-ptr! ]
 	return: [ logic! ]
 ]
 wglQueryGenlockMaxSourceDelayI3D!: alias function! [
@@ -921,7 +921,7 @@ wglQueryGenlockMaxSourceDelayI3D!: alias function! [
 #define  WGL_IMAGE_BUFFER_LOCK_I3D                    00000002h
 wglAssociateImageBufferEventsI3D!: alias function! [
 	hdc      [ HDC! ]
-	pEvent   [ handle-ref! ]
+	pEvent   [ handle-ptr! ]
 	pAddress [ pointer! [integer!] ]
 	pSize    [ pointer! [integer!] ]
 	count    [ integer! ]
@@ -958,11 +958,11 @@ wglEnableFrameLockI3D!: alias function! [
 	return: [ logic! ]
 ]
 wglIsEnabledFrameLockI3D!: alias function! [
-	pFlag   [ logic-ref! ]
+	pFlag   [ logic-ptr! ]
 	return: [ logic! ]
 ]
 wglQueryFrameLockMasterI3D!: alias function! [
-	pFlag   [ logic-ref! ]
+	pFlag   [ logic-ptr! ]
 	return: [ logic! ]
 ]
 
@@ -1005,7 +1005,7 @@ wglDXCloseDeviceNV!: alias function! [
 wglDXLockObjectsNV!: alias function! [
 	hDevice  [ handle! ]
 	count    [ GLint! ]
-	hObjects [ handle-ref! ]
+	hObjects [ handle-ptr! ]
 	return: [ logic! ]
 ]
 wglDXObjectAccessNV!: alias function! [
@@ -1033,7 +1033,7 @@ wglDXSetResourceShareHandleNV!: alias function! [
 wglDXUnlockObjectsNV!: alias function! [
 	hDevice  [ handle! ]
 	count    [ GLint! ]
-	hObjects [ handle-ref! ]
+	hObjects [ handle-ptr! ]
 	return: [ logic! ]
 ]
 wglDXUnregisterObjectNV!: alias function! [
@@ -1113,7 +1113,7 @@ wglDelayBeforeSwapNV!: alias function! [
 #define  WGL_ERROR_INCOMPATIBLE_AFFINITY_MASKS_NV     20D0h
 #define  WGL_ERROR_MISSING_AFFINITY_MASK_NV           20D1h
 wglCreateAffinityDCNV!: alias function! [
-	phGpuList [ HGPUNV-ref! ]
+	phGpuList [ HGPUNV-ptr! ]
 	return: [ HDC! ]
 ]
 wglDeleteDCNV!: alias function! [
@@ -1129,12 +1129,12 @@ wglEnumGpuDevicesNV!: alias function! [
 wglEnumGpusFromAffinityDCNV!: alias function! [
 	hAffinityDC [ HDC! ]
 	iGpuIndex   [ integer! ]
-	hGpu        [ HGPUNV-ref! ]
+	hGpu        [ HGPUNV-ptr! ]
 	return: [ logic! ]
 ]
 wglEnumGpusNV!: alias function! [
 	iGpuIndex [ integer! ]
-	phGpu     [ HGPUNV-ref! ]
+	phGpu     [ HGPUNV-ptr! ]
 	return: [ logic! ]
 ]
 
@@ -1163,7 +1163,7 @@ wglBindVideoDeviceNV!: alias function! [
 ]
 wglEnumerateVideoDevicesNV!: alias function! [
 	hDc          [ HDC! ]
-	phDeviceList [ HVIDEOOUTPUTDEVICENV-ref! ]
+	phDeviceList [ HVIDEOOUTPUTDEVICENV-ptr! ]
 	return: [ integer! ]
 ]
 wglQueryCurrentContextNV!: alias function! [
@@ -1265,7 +1265,7 @@ wglBindVideoCaptureDeviceNV!: alias function! [
 ]
 wglEnumerateVideoCaptureDevicesNV!: alias function! [
 	hDc          [ HDC! ]
-	phDeviceList [ HVIDEOINPUTDEVICENV-ref! ]
+	phDeviceList [ HVIDEOINPUTDEVICENV-ptr! ]
 	return: [ integer! ]
 ]
 wglLockVideoCaptureDeviceNV!: alias function! [
@@ -1314,7 +1314,7 @@ wglBindVideoImageNV!: alias function! [
 wglGetVideoDeviceNV!: alias function! [
 	hDC          [ HDC! ]
 	numDevices   [ integer! ]
-	hVideoDevice [ HPVIDEODEV-ref! ]
+	hVideoDevice [ HPVIDEODEV-ptr! ]
 	return: [ logic! ]
 ]
 wglGetVideoInfoNV!: alias function! [

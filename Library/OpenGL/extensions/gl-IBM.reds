@@ -38,7 +38,7 @@ glMultiModeDrawElementsIBM!: alias function! [
 	mode        [ pointer! [GLenum!] ]
 	count       [ pointer! [GLsizei!] ]
 	type        [ GLenum! ]
-	indices     [ binary-ref! ]
+	indices     [ binary-ptr! ]
 	primcount   [ GLsizei! ]
 	modestride  [ GLint! ]
 ]
@@ -95,34 +95,34 @@ glColorPointerListIBM!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
 	stride      [ GLint! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 	ptrstride   [ GLint! ]
 ]
 ;@@ void ( GLint stride, const GLboolean ** pointer, GLint ptrstride );
 glEdgeFlagPointerListIBM!: alias function! [
 	stride      [ GLint! ]
-	pointer     [ GLboolean-ref! ]
+	pointer     [ GLboolean-ptr! ]
 	ptrstride   [ GLint! ]
 ]
 ;@@ void ( GLenum type, GLint stride, const void** pointer, GLint ptrstride );
 glFogCoordPointerListIBM!: alias function! [
 	type        [ GLenum! ]
 	stride      [ GLint! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 	ptrstride   [ GLint! ]
 ]
 ;@@ void ( GLenum type, GLint stride, const void** pointer, GLint ptrstride );
 glIndexPointerListIBM!: alias function! [
 	type        [ GLenum! ]
 	stride      [ GLint! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 	ptrstride   [ GLint! ]
 ]
 ;@@ void ( GLenum type, GLint stride, const void** pointer, GLint ptrstride );
 glNormalPointerListIBM!: alias function! [
 	type        [ GLenum! ]
 	stride      [ GLint! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 	ptrstride   [ GLint! ]
 ]
 ;@@ void ( GLint size, GLenum type, GLint stride, const void** pointer, GLint ptrstride );
@@ -130,7 +130,7 @@ glSecondaryColorPointerListIBM!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
 	stride      [ GLint! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 	ptrstride   [ GLint! ]
 ]
 ;@@ void ( GLint size, GLenum type, GLint stride, const void** pointer, GLint ptrstride );
@@ -138,7 +138,7 @@ glTexCoordPointerListIBM!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
 	stride      [ GLint! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 	ptrstride   [ GLint! ]
 ]
 ;@@ void ( GLint size, GLenum type, GLint stride, const void** pointer, GLint ptrstride );
@@ -146,6 +146,6 @@ glVertexPointerListIBM!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
 	stride      [ GLint! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 	ptrstride   [ GLint! ]
 ]

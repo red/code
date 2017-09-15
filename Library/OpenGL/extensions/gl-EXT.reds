@@ -1251,7 +1251,7 @@ glGetNamedBufferParameterivEXT!: alias function! [
 glGetNamedBufferPointervEXT!: alias function! [
 	buffer      [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLuint buffer, GLintptr offset, GLsizeiptr size, void *data );
 glGetNamedBufferSubDataEXT!: alias function! [
@@ -1319,13 +1319,13 @@ glGetNamedRenderbufferParameterivEXT!: alias function! [
 glGetPointerIndexedvEXT!: alias function! [
 	target      [ GLenum! ]
 	index       [ GLuint! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLenum pname, GLuint index, void** params );
 glGetPointeri_vEXT!: alias function! [
 	pname       [ GLenum! ]
 	index       [ GLuint! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, void *pixels );
 glGetTextureImageEXT!: alias function! [
@@ -1398,13 +1398,13 @@ glGetVertexArrayPointeri_vEXT!: alias function! [
 	vaobj       [ GLuint! ]
 	index       [ GLuint! ]
 	pname       [ GLenum! ]
-	param       [ binary-ref! ]
+	param       [ binary-ptr! ]
 ]
 ;@@ void ( GLuint vaobj, GLenum pname, void** param );
 glGetVertexArrayPointervEXT!: alias function! [
 	vaobj       [ GLuint! ]
 	pname       [ GLenum! ]
-	param       [ binary-ref! ]
+	param       [ binary-ptr! ]
 ]
 ;@@ void * ( GLuint buffer, GLenum access );
 glMapNamedBufferEXT!: alias function! [
@@ -2645,7 +2645,7 @@ glMultiDrawElementsBaseVertexEXT!: alias function! [
 	mode        [ GLenum! ]
 	count       [ pointer! [GLsizei!] ]
 	type        [ GLenum! ]
-	indices     [ binary-ref! ]
+	indices     [ binary-ptr! ]
 	primcount   [ GLsizei! ]
 	basevertex  [ pointer! [GLint!] ]
 ]
@@ -3944,7 +3944,7 @@ glMultiDrawElementsEXT!: alias function! [
 	mode        [ GLenum! ]
 	count       [ pointer! [GLsizei!] ]
 	type        [ GLenum! ]
-	indices     [ binary-ref! ]
+	indices     [ binary-ptr! ]
 	primcount   [ GLsizei! ]
 ]
 
@@ -5780,7 +5780,7 @@ glGetTransformFeedbackVaryingEXT!: alias function! [
 glTransformFeedbackVaryingsEXT!: alias function! [
 	program     [ GLuint! ]
 	count       [ GLsizei! ]
-	varyings    [ GLstring-ref! ]
+	varyings    [ GLstring-ptr! ]
 	bufferMode  [ GLenum! ]
 ]
 
@@ -6258,7 +6258,7 @@ glGetVariantIntegervEXT!: alias function! [
 glGetVariantPointervEXT!: alias function! [
 	id          [ GLuint! ]
 	value       [ GLenum! ]
-	data        [ binary-ref! ]
+	data        [ binary-ptr! ]
 ]
 ;@@ void ( GLuint res, GLuint src, GLuint num );
 glInsertComponentEXT!: alias function! [

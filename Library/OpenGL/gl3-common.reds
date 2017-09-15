@@ -32,6 +32,7 @@ glGetUniformLocation:       as glGetUniformLocation!       glfwGetProcAddress "g
 glUniform1f:                as glUniform1f!                glfwGetProcAddress "glUniform1f"
 glUniform2f:                as glUniform2f!                glfwGetProcAddress "glUniform2f"
 glUniform2d:                as glUniform2d!                glfwGetProcAddress "glUniform2d"
+glUniformMatrix4fv:         as glUniformMatrix4fv!         glfwGetProcAddress "glUniformMatrix4fv"
 
 GL-compile-shader: func [
 	source [c-string!]
@@ -39,7 +40,7 @@ GL-compile-shader: func [
 	return: [GLuint!]
 	/local shader-id result info-length message source-ref
 ][
-	source-ref: declare string-ref!
+	source-ref: declare string-ptr!
 	source-ref/value: source
 
 	shader-id: glCreateShader type

@@ -86,7 +86,7 @@ glGetDriverControlsQCOM!: alias function! [
 ;@@ void ( GLenum target, void** params );
 glExtGetBufferPointervQCOM!: alias function! [
 	target      [ GLenum! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLuint* buffers, GLint maxBuffers, GLint* numBuffers );
 glExtGetBuffersQCOM!: alias function! [

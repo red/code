@@ -93,38 +93,38 @@ This source was made from eglew.h file, which contains these copyrights:
 #if OS = 'Android  [
 
 #define EGLAttrib!                      handle!
-#define EGLAttrib-ref!                  handle-ref!
-#define EGLAttribKHR-ref!               handle-ref!
+#define EGLAttrib-ptr!                  handle-ptr!
+#define EGLAttribKHR-ptr!               handle-ptr!
 #define EGLBoolean!                     logic!
-#define EGLBoolean-ref!                 logic-ref!
+#define EGLBoolean-ptr!                 logic-ptr!
 #define EGLClientBuffer!                handle!
 #define EGLConfig!                      handle!
-#define EGLConfig-ref!                  handle-ref!
+#define EGLConfig-ptr!                  handle-ptr!
 #define EGLContext!                     handle!
 #define EGLDEBUGPROCKHR!                handle!
 #define EGLDeviceEXT!                   handle!
-#define EGLDeviceEXT-ref!               handle-ref!
+#define EGLDeviceEXT-ptr!               handle-ptr!
 #define EGLDisplay!                     handle!
 #define EGLenum!                        integer!
 #define EGLGetBlobFuncANDROID!          handle!
 #define EGLImage!                       handle!
 #define EGLImageKHR!                    handle!
 #define EGLint!                         integer!
-#define EGLint-ref!                     int-ptr!
+#define EGLint-ptr!                     int-ptr!
 #define EGLLabelKHR!                    handle!
 #define EGLNativeDisplayType!           handle!
-#define EGLNativeDisplayType-ref!       handle-ref!
+#define EGLNativeDisplayType-ptr!       handle-ptr!
 #define EGLNativeFileDescriptorKHR!     handle!
 #define EGLNativePixmapType!            handle!
-#define EGLNativePixmapType-ref!        handle-ref!
+#define EGLNativePixmapType-ptr!        handle-ptr!
 #define EGLNativeWindowType!            handle!
-#define EGLNativeWindowType-ref!        handle-ref!
+#define EGLNativeWindowType-ptr!        handle-ptr!
 #define EGLnsecsANDROID!                handle!
 #define EGLObjectKHR!                   handle!
 #define EGLOutputLayerEXT!              handle!
-#define EGLOutputLayerEXT-ref!          handle-ref!
+#define EGLOutputLayerEXT-ptr!          handle-ptr!
 #define EGLOutputPortEXT!               handle!
-#define EGLOutputPortEXT-ref!           handle-ref!
+#define EGLOutputPortEXT-ptr!           handle-ptr!
 #define EGLSetBlobFuncANDROID!          handle!
 #define EGLStreamKHR!                   handle!
 #define EGLSurface!                     handle!
@@ -133,9 +133,9 @@ This source was made from eglew.h file, which contains these copyrights:
 #define EGLSyncNV!                      handle!
 #define EGLTime!                        uint64-value!
 #define EGLTimeKHR!                     uint64-value!
-#define EGLTimeKHR-ref!                 uint64-ptr!
+#define EGLTimeKHR-ptr!                 uint64-ptr!
 #define EGLTimeNV!                      uint64-value!
-#define EGLuint64KHR-ref!               uint64-ptr!
+#define EGLuint64KHR-ptr!               uint64-ptr!
 #define EGLuint64NV!                    uint64-value!
 
 EGLClientPixmapHI!: alias struct! [
@@ -218,10 +218,10 @@ EGLClientPixmapHI!: alias struct! [
 #define  EGL_CORE_NATIVE_ENGINE                       305Bh
 eglChooseConfig!: alias function! [
 	dpy         [ EGLDisplay! ]
-	attrib_list [ EGLint-ref! ]
-	configs     [ EGLConfig-ref! ]
+	attrib_list [ EGLint-ptr! ]
+	configs     [ EGLConfig-ptr! ]
 	config_size [ EGLint! ]
-	num_config  [ EGLint-ref! ]
+	num_config  [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglCopyBuffers!: alias function! [
@@ -234,27 +234,27 @@ eglCreateContext!: alias function! [
 	dpy           [ EGLDisplay! ]
 	config        [ EGLConfig! ]
 	share_context [ EGLContext! ]
-	attrib_list   [ EGLint-ref! ]
+	attrib_list   [ EGLint-ptr! ]
 	return: [ EGLContext! ]
 ]
 eglCreatePbufferSurface!: alias function! [
 	dpy         [ EGLDisplay! ]
 	config      [ EGLConfig! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLSurface! ]
 ]
 eglCreatePixmapSurface!: alias function! [
 	dpy         [ EGLDisplay! ]
 	config      [ EGLConfig! ]
 	pixmap      [ EGLNativePixmapType! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLSurface! ]
 ]
 eglCreateWindowSurface!: alias function! [
 	dpy         [ EGLDisplay! ]
 	config      [ EGLConfig! ]
 	win         [ EGLNativeWindowType! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLSurface! ]
 ]
 eglDestroyContext!: alias function! [
@@ -271,14 +271,14 @@ eglGetConfigAttrib!: alias function! [
 	dpy       [ EGLDisplay! ]
 	config    [ EGLConfig! ]
 	attribute [ EGLint! ]
-	value     [ EGLint-ref! ]
+	value     [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglGetConfigs!: alias function! [
 	dpy         [ EGLDisplay! ]
-	configs     [ EGLConfig-ref! ]
+	configs     [ EGLConfig-ptr! ]
 	config_size [ EGLint! ]
-	num_config  [ EGLint-ref! ]
+	num_config  [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglGetCurrentDisplay!: alias function! [
@@ -297,8 +297,8 @@ eglGetError!: alias function! [
 ]
 eglInitialize!: alias function! [
 	dpy     [ EGLDisplay! ]
-	major   [ EGLint-ref! ]
-	minor   [ EGLint-ref! ]
+	major   [ EGLint-ptr! ]
+	minor   [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglMakeCurrent!: alias function! [
@@ -312,7 +312,7 @@ eglQueryContext!: alias function! [
 	dpy       [ EGLDisplay! ]
 	ctx       [ EGLContext! ]
 	attribute [ EGLint! ]
-	value     [ EGLint-ref! ]
+	value     [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglQueryString!: alias function! [
@@ -324,7 +324,7 @@ eglQuerySurface!: alias function! [
 	dpy       [ EGLDisplay! ]
 	surface   [ EGLSurface! ]
 	attribute [ EGLint! ]
-	value     [ EGLint-ref! ]
+	value     [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglSwapBuffers!: alias function! [
@@ -431,7 +431,7 @@ eglCreatePbufferFromClientBuffer!: alias function! [
 	buftype     [ EGLenum! ]
 	buffer      [ EGLClientBuffer! ]
 	config      [ EGLConfig! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLSurface! ]
 ]
 eglQueryAPI!: alias function! [
@@ -538,27 +538,27 @@ eglCreateImage!: alias function! [
 	ctx         [ EGLContext! ]
 	target      [ EGLenum! ]
 	buffer      [ EGLClientBuffer! ]
-	attrib_list [ EGLAttrib-ref! ]
+	attrib_list [ EGLAttrib-ptr! ]
 	return: [ EGLImage! ]
 ]
 eglCreatePlatformPixmapSurface!: alias function! [
 	dpy           [ EGLDisplay! ]
 	config        [ EGLConfig! ]
 	native_pixmap [ pointer! [byte!] ]
-	attrib_list   [ EGLAttrib-ref! ]
+	attrib_list   [ EGLAttrib-ptr! ]
 	return: [ EGLSurface! ]
 ]
 eglCreatePlatformWindowSurface!: alias function! [
 	dpy           [ EGLDisplay! ]
 	config        [ EGLConfig! ]
 	native_window [ pointer! [byte!] ]
-	attrib_list   [ EGLAttrib-ref! ]
+	attrib_list   [ EGLAttrib-ptr! ]
 	return: [ EGLSurface! ]
 ]
 eglCreateSync!: alias function! [
 	dpy         [ EGLDisplay! ]
 	type        [ EGLenum! ]
-	attrib_list [ EGLAttrib-ref! ]
+	attrib_list [ EGLAttrib-ptr! ]
 	return: [ EGLSync! ]
 ]
 eglDestroyImage!: alias function! [
@@ -574,14 +574,14 @@ eglDestroySync!: alias function! [
 eglGetPlatformDisplay!: alias function! [
 	platform       [ EGLenum! ]
 	native_display [ pointer! [byte!] ]
-	attrib_list    [ EGLAttrib-ref! ]
+	attrib_list    [ EGLAttrib-ptr! ]
 	return: [ EGLDisplay! ]
 ]
 eglGetSyncAttrib!: alias function! [
 	dpy       [ EGLDisplay! ]
 	sync      [ EGLSync! ]
 	attribute [ EGLint! ]
-	value     [ EGLAttrib-ref! ]
+	value     [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglWaitSync!: alias function! [
@@ -614,7 +614,7 @@ eglSetBlobCacheFuncsANDROID!: alias function! [
 #define  EGL_NATIVE_BUFFER_USAGE_TEXTURE_BIT_ANDROID  00000004h
 #define  EGL_NATIVE_BUFFER_USAGE_ANDROID              3143h
 eglCreateNativeClientBufferANDROID!: alias function! [
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLClientBuffer! ]
 ]
 
@@ -705,7 +705,7 @@ eglQuerySurfacePointerANGLE!: alias function! [
 	dpy       [ EGLDisplay! ]
 	surface   [ EGLSurface! ]
 	attribute [ EGLint! ]
-	value     [ binary-ref! ]
+	value     [ binary-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -792,8 +792,8 @@ eglQuerySurfacePointerANGLE!: alias function! [
 #define  EGL_EXT_device_enumeration                   1
 eglQueryDevicesEXT!: alias function! [
 	max_devices [ EGLint! ]
-	devices     [ EGLDeviceEXT-ref! ]
-	num_devices [ EGLint-ref! ]
+	devices     [ EGLDeviceEXT-ptr! ]
+	num_devices [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -816,7 +816,7 @@ eglQueryDevicesEXT!: alias function! [
 eglQueryDeviceAttribEXT!: alias function! [
 	device    [ EGLDeviceEXT! ]
 	attribute [ EGLint! ]
-	value     [ EGLAttrib-ref! ]
+	value     [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglQueryDeviceStringEXT!: alias function! [
@@ -827,7 +827,7 @@ eglQueryDeviceStringEXT!: alias function! [
 eglQueryDisplayAttribEXT!: alias function! [
 	dpy       [ EGLDisplay! ]
 	attribute [ EGLint! ]
-	value     [ EGLAttrib-ref! ]
+	value     [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -904,17 +904,17 @@ eglQueryDisplayAttribEXT!: alias function! [
 eglQueryDmaBufFormatsEXT!: alias function! [
 	dpy         [ EGLDisplay! ]
 	max_formats [ EGLint! ]
-	formats     [ EGLint-ref! ]
-	num_formats [ EGLint-ref! ]
+	formats     [ EGLint-ptr! ]
+	num_formats [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglQueryDmaBufModifiersEXT!: alias function! [
 	dpy           [ EGLDisplay! ]
 	format        [ EGLint! ]
 	max_modifiers [ EGLint! ]
-	modifiers     [ EGLuint64KHR-ref! ]
-	external_only [ EGLBoolean-ref! ]
-	num_modifiers [ EGLint-ref! ]
+	modifiers     [ EGLuint64KHR-ptr! ]
+	external_only [ EGLBoolean-ptr! ]
+	num_modifiers [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -937,18 +937,18 @@ eglQueryDmaBufModifiersEXT!: alias function! [
 #define  EGL_SWAP_INTERVAL_EXT                        322Fh
 eglGetOutputLayersEXT!: alias function! [
 	dpy         [ EGLDisplay! ]
-	attrib_list [ EGLAttrib-ref! ]
-	layers      [ EGLOutputLayerEXT-ref! ]
+	attrib_list [ EGLAttrib-ptr! ]
+	layers      [ EGLOutputLayerEXT-ptr! ]
 	max_layers  [ EGLint! ]
-	num_layers  [ EGLint-ref! ]
+	num_layers  [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglGetOutputPortsEXT!: alias function! [
 	dpy         [ EGLDisplay! ]
-	attrib_list [ EGLAttrib-ref! ]
-	ports       [ EGLOutputPortEXT-ref! ]
+	attrib_list [ EGLAttrib-ptr! ]
+	ports       [ EGLOutputPortEXT-ptr! ]
 	max_ports   [ EGLint! ]
-	num_ports   [ EGLint-ref! ]
+	num_ports   [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglOutputLayerAttribEXT!: alias function! [
@@ -969,7 +969,7 @@ eglQueryOutputLayerAttribEXT!: alias function! [
 	dpy       [ EGLDisplay! ]
 	layer     [ EGLOutputLayerEXT! ]
 	attribute [ EGLint! ]
-	value     [ EGLAttrib-ref! ]
+	value     [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglQueryOutputLayerStringEXT!: alias function! [
@@ -982,7 +982,7 @@ eglQueryOutputPortAttribEXT!: alias function! [
 	dpy       [ EGLDisplay! ]
 	port      [ EGLOutputPortEXT! ]
 	attribute [ EGLint! ]
-	value     [ EGLAttrib-ref! ]
+	value     [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglQueryOutputPortStringEXT!: alias function! [
@@ -1031,20 +1031,20 @@ eglCreatePlatformPixmapSurfaceEXT!: alias function! [
 	dpy           [ EGLDisplay! ]
 	config        [ EGLConfig! ]
 	native_pixmap [ pointer! [byte!] ]
-	attrib_list   [ EGLint-ref! ]
+	attrib_list   [ EGLint-ptr! ]
 	return: [ EGLSurface! ]
 ]
 eglCreatePlatformWindowSurfaceEXT!: alias function! [
 	dpy           [ EGLDisplay! ]
 	config        [ EGLConfig! ]
 	native_window [ pointer! [byte!] ]
-	attrib_list   [ EGLint-ref! ]
+	attrib_list   [ EGLint-ptr! ]
 	return: [ EGLSurface! ]
 ]
 eglGetPlatformDisplayEXT!: alias function! [
 	platform       [ EGLenum! ]
 	native_display [ pointer! [byte!] ]
-	attrib_list    [ EGLint-ref! ]
+	attrib_list    [ EGLint-ptr! ]
 	return: [ EGLDisplay! ]
 ]
 
@@ -1128,7 +1128,7 @@ eglStreamConsumerOutputEXT!: alias function! [
 eglSwapBuffersWithDamageEXT!: alias function! [
 	dpy     [ EGLDisplay! ]
 	surface [ EGLSurface! ]
-	rects   [ EGLint-ref! ]
+	rects   [ EGLint-ptr! ]
 	n_rects [ EGLint! ]
 	return: [ EGLBoolean! ]
 ]
@@ -1232,7 +1232,7 @@ eglCreatePixmapSurfaceHI!: alias function! [
 eglCreateSync64KHR!: alias function! [
 	dpy         [ EGLDisplay! ]
 	type        [ EGLenum! ]
-	attrib_list [ EGLAttribKHR-ref! ]
+	attrib_list [ EGLAttribKHR-ptr! ]
 	return: [ EGLSyncKHR! ]
 ]
 
@@ -1312,7 +1312,7 @@ eglCreateSync64KHR!: alias function! [
 #define  EGL_DEBUG_MSG_INFO_KHR                       33BCh
 eglDebugMessageControlKHR!: alias function! [
 	callback    [ EGLDEBUGPROCKHR! ]
-	attrib_list [ EGLAttrib-ref! ]
+	attrib_list [ EGLAttrib-ptr! ]
 	return: [ EGLint! ]
 ]
 eglLabelObjectKHR!: alias function! [
@@ -1324,7 +1324,7 @@ eglLabelObjectKHR!: alias function! [
 ]
 eglQueryDebugKHR!: alias function! [
 	attribute [ EGLint! ]
-	value     [ EGLAttrib-ref! ]
+	value     [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -1406,7 +1406,7 @@ eglCreateImageKHR!: alias function! [
 	ctx         [ EGLContext! ]
 	target      [ EGLenum! ]
 	buffer      [ EGLClientBuffer! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLImageKHR! ]
 ]
 eglDestroyImageKHR!: alias function! [
@@ -1461,7 +1461,7 @@ eglDestroyImageKHR!: alias function! [
 eglLockSurfaceKHR!: alias function! [
 	dpy         [ EGLDisplay! ]
 	surface     [ EGLSurface! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglUnlockSurfaceKHR!: alias function! [
@@ -1510,7 +1510,7 @@ eglQuerySurface64KHR!: alias function! [
 	dpy       [ EGLDisplay! ]
 	surface   [ EGLSurface! ]
 	attribute [ EGLint! ]
-	value     [ EGLAttribKHR-ref! ]
+	value     [ EGLAttribKHR-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -1539,7 +1539,7 @@ eglQuerySurface64KHR!: alias function! [
 eglSetDamageRegionKHR!: alias function! [
 	dpy     [ EGLDisplay! ]
 	surface [ EGLSurface! ]
-	rects   [ EGLint-ref! ]
+	rects   [ EGLint-ptr! ]
 	n_rects [ EGLint! ]
 	return: [ EGLBoolean! ]
 ]
@@ -1602,7 +1602,7 @@ eglClientWaitSyncKHR!: alias function! [
 eglCreateSyncKHR!: alias function! [
 	dpy         [ EGLDisplay! ]
 	type        [ EGLenum! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLSyncKHR! ]
 ]
 eglDestroySyncKHR!: alias function! [
@@ -1614,7 +1614,7 @@ eglGetSyncAttribKHR!: alias function! [
 	dpy       [ EGLDisplay! ]
 	sync      [ EGLSyncKHR! ]
 	attribute [ EGLint! ]
-	value     [ EGLint-ref! ]
+	value     [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglSignalSyncKHR!: alias function! [
@@ -1644,7 +1644,7 @@ eglSignalSyncKHR!: alias function! [
 #define  EGL_BAD_STATE_KHR                            321Ch
 eglCreateStreamKHR!: alias function! [
 	dpy         [ EGLDisplay! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLStreamKHR! ]
 ]
 eglDestroyStreamKHR!: alias function! [
@@ -1656,14 +1656,14 @@ eglQueryStreamKHR!: alias function! [
 	dpy       [ EGLDisplay! ]
 	stream    [ EGLStreamKHR! ]
 	attribute [ EGLenum! ]
-	value     [ EGLint-ref! ]
+	value     [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglQueryStreamu64KHR!: alias function! [
 	dpy       [ EGLDisplay! ]
 	stream    [ EGLStreamKHR! ]
 	attribute [ EGLenum! ]
-	value     [ EGLuint64KHR-ref! ]
+	value     [ EGLuint64KHR-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglStreamAttribKHR!: alias function! [
@@ -1686,14 +1686,14 @@ eglStreamAttribKHR!: alias function! [
 ;#define  EGL_STREAM_STATE_CONNECTING_KHR              3216h
 eglCreateStreamAttribKHR!: alias function! [
 	dpy         [ EGLDisplay! ]
-	attrib_list [ EGLAttrib-ref! ]
+	attrib_list [ EGLAttrib-ptr! ]
 	return: [ EGLStreamKHR! ]
 ]
 eglQueryStreamAttribKHR!: alias function! [
 	dpy       [ EGLDisplay! ]
 	stream    [ EGLStreamKHR! ]
 	attribute [ EGLenum! ]
-	value     [ EGLAttrib-ref! ]
+	value     [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglSetStreamAttribKHR!: alias function! [
@@ -1706,13 +1706,13 @@ eglSetStreamAttribKHR!: alias function! [
 eglStreamConsumerAcquireAttribKHR!: alias function! [
 	dpy         [ EGLDisplay! ]
 	stream      [ EGLStreamKHR! ]
-	attrib_list [ EGLAttrib-ref! ]
+	attrib_list [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglStreamConsumerReleaseAttribKHR!: alias function! [
 	dpy         [ EGLDisplay! ]
 	stream      [ EGLStreamKHR! ]
-	attrib_list [ EGLAttrib-ref! ]
+	attrib_list [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -1770,7 +1770,7 @@ eglQueryStreamTimeKHR!: alias function! [
 	dpy       [ EGLDisplay! ]
 	stream    [ EGLStreamKHR! ]
 	attribute [ EGLenum! ]
-	value     [ EGLTimeKHR-ref! ]
+	value     [ EGLTimeKHR-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -1792,7 +1792,7 @@ eglCreateStreamProducerSurfaceKHR!: alias function! [
 	dpy         [ EGLDisplay! ]
 	config      [ EGLConfig! ]
 	stream      [ EGLStreamKHR! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLSurface! ]
 ]
 
@@ -1812,7 +1812,7 @@ eglCreateStreamProducerSurfaceKHR!: alias function! [
 eglSwapBuffersWithDamageKHR!: alias function! [
 	dpy     [ EGLDisplay! ]
 	surface [ EGLSurface! ]
-	rects   [ EGLint-ref! ]
+	rects   [ EGLint-ptr! ]
 	n_rects [ EGLint! ]
 	return: [ EGLBoolean! ]
 ]
@@ -1853,15 +1853,15 @@ eglWaitSyncKHR!: alias function! [
 #define  EGL_DRM_BUFFER_STRIDE_MESA                   31D4h
 eglCreateDRMImageMESA!: alias function! [
 	dpy         [ EGLDisplay! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLImageKHR! ]
 ]
 eglExportDRMImageMESA!: alias function! [
 	dpy     [ EGLDisplay! ]
 	image   [ EGLImageKHR! ]
-	name    [ EGLint-ref! ]
-	handle  [ EGLint-ref! ]
-	stride  [ EGLint-ref! ]
+	name    [ EGLint-ptr! ]
+	handle  [ EGLint-ptr! ]
+	stride  [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -1875,8 +1875,8 @@ eglExportDMABUFImageMESA!: alias function! [
 	dpy     [ EGLDisplay! ]
 	image   [ EGLImageKHR! ]
 	fds     [ pointer! [integer!] ]
-	strides [ EGLint-ref! ]
-	offsets [ EGLint-ref! ]
+	strides [ EGLint-ptr! ]
+	offsets [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglExportDMABUFImageQueryMESA!: alias function! [
@@ -1884,7 +1884,7 @@ eglExportDMABUFImageQueryMESA!: alias function! [
 	image      [ EGLImageKHR! ]
 	fourcc     [ pointer! [integer!] ]
 	num_planes [ pointer! [integer!] ]
-	modifiers  [ EGLuint64KHR-ref! ]
+	modifiers  [ EGLuint64KHR-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -1914,7 +1914,7 @@ eglSwapBuffersRegionNOK!: alias function! [
 	dpy      [ EGLDisplay! ]
 	surface  [ EGLSurface! ]
 	numRects [ EGLint! ]
-	rects    [ EGLint-ref! ]
+	rects    [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -1928,7 +1928,7 @@ eglSwapBuffersRegion2NOK!: alias function! [
 	dpy      [ EGLDisplay! ]
 	surface  [ EGLSurface! ]
 	numRects [ EGLint! ]
-	rects    [ EGLint-ref! ]
+	rects    [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -2003,19 +2003,19 @@ eglSwapBuffersRegion2NOK!: alias function! [
 #define  EGL_NV_native_query                          1
 eglQueryNativeDisplayNV!: alias function! [
 	dpy        [ EGLDisplay! ]
-	display_id [ EGLNativeDisplayType-ref! ]
+	display_id [ EGLNativeDisplayType-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglQueryNativePixmapNV!: alias function! [
 	dpy     [ EGLDisplay! ]
 	surf    [ EGLSurface! ]
-	pixmap  [ EGLNativePixmapType-ref! ]
+	pixmap  [ EGLNativePixmapType-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglQueryNativeWindowNV!: alias function! [
 	dpy     [ EGLDisplay! ]
 	surf    [ EGLSurface! ]
-	window  [ EGLNativeWindowType-ref! ]
+	window  [ EGLNativeWindowType-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -2065,7 +2065,7 @@ eglPostSubBufferNV!: alias function! [
 eglStreamConsumerGLTextureExternalAttribsNV!: alias function! [
 	dpy         [ EGLDisplay! ]
 	stream      [ EGLStreamKHR! ]
-	attrib_list [ EGLAttrib-ref! ]
+	attrib_list [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 
@@ -2158,7 +2158,7 @@ eglStreamConsumerGLTextureExternalAttribsNV!: alias function! [
 eglQueryDisplayAttribNV!: alias function! [
 	dpy       [ EGLDisplay! ]
 	attribute [ EGLint! ]
-	value     [ EGLAttrib-ref! ]
+	value     [ EGLAttrib-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglQueryStreamMetadataNV!: alias function! [
@@ -2248,7 +2248,7 @@ eglCreateStreamSyncNV!: alias function! [
 	dpy         [ EGLDisplay! ]
 	stream      [ EGLStreamKHR! ]
 	type        [ EGLenum! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLSyncKHR! ]
 ]
 
@@ -2279,7 +2279,7 @@ eglClientWaitSyncNV!: alias function! [
 eglCreateFenceSyncNV!: alias function! [
 	dpy         [ EGLDisplay! ]
 	condition   [ EGLenum! ]
-	attrib_list [ EGLint-ref! ]
+	attrib_list [ EGLint-ptr! ]
 	return: [ EGLSyncNV! ]
 ]
 eglDestroySyncNV!: alias function! [
@@ -2293,7 +2293,7 @@ eglFenceNV!: alias function! [
 eglGetSyncAttribNV!: alias function! [
 	sync      [ EGLSyncNV! ]
 	attribute [ EGLint! ]
-	value     [ EGLint-ref! ]
+	value     [ EGLint-ptr! ]
 	return: [ EGLBoolean! ]
 ]
 eglSignalSyncNV!: alias function! [

@@ -150,9 +150,9 @@ This source was made from glew.h file, which contains these copyrights:
 
 #define GLeglClientBufferEXT! [pointer! [integer!]]
 
-GLboolean-ref!: alias struct! [value [GLboolean!]]
-GLstring-ref!:  alias struct! [value [GLstring!]]
-GLcharARB-ref!: alias struct! [value [GLcharARB!]]
+GLboolean-ptr!: alias struct! [value [GLboolean!]]
+GLstring-ptr!:  alias struct! [value [GLstring!]]
+GLcharARB-ptr!: alias struct! [value [GLcharARB!]]
 
 #define GLsync!         [pointer! [integer!]]
 #define GLsizeiptrARB!  integer!
@@ -1112,7 +1112,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 	]
 	glGetPointerv: "glGetPointerv"[
 		pname       [ GLenum! ]
-		params      [ binary-ref! ]
+		params      [ binary-ptr! ]
 	]
 	glGetPolygonStipple: "glGetPolygonStipple" [ mask [pointer! [GLubyte!]] ]
 	glGetString: "glGetString" [ name [GLenum!] return: [c-string!] ]
@@ -2492,7 +2492,7 @@ glMultiDrawElements!: alias function! [
 	mode        [ GLenum! ]
 	count       [ pointer! [GLsizei!] ]
 	type        [ GLenum! ]
-	indices     [ binary-ref! ]
+	indices     [ binary-ptr! ]
 	drawcount   [ GLsizei! ]
 ]
 ;@@ void ( GLenum pname, GLfloat param );
@@ -2793,7 +2793,7 @@ glGetBufferParameteriv!: alias function! [
 glGetBufferPointerv!: alias function! [
 	target      [ GLenum! ]
 	pname       [ GLenum! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLenum target, GLintptr offset, GLsizeiptr size, void* data );
 glGetBufferSubData!: alias function! [
@@ -3083,7 +3083,7 @@ glGetUniformiv!: alias function! [
 glGetVertexAttribPointerv!: alias function! [
 	index       [ GLuint! ]
 	pname       [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLuint index, GLenum pname, GLdouble* params );
 glGetVertexAttribdv!: alias function! [
@@ -3123,7 +3123,7 @@ glLinkProgram!: alias function! [
 glShaderSource!: alias function! [
 	shader      [ GLuint! ]
 	count       [ GLsizei! ]
-	string      [ GLstring-ref! ]
+	string      [ GLstring-ptr! ]
 	length      [ pointer! [GLint!] ]
 ]
 ;@@ void ( GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask );
@@ -3820,7 +3820,7 @@ glTexParameterIuiv!: alias function! [
 glTransformFeedbackVaryings!: alias function! [
 	program     [ GLuint! ]
 	count       [ GLsizei! ]
-	varyings    [ GLstring-ref! ]
+	varyings    [ GLstring-ptr! ]
 	bufferMode  [ GLenum! ]
 ]
 ;@@ void ( GLint location, GLuint v0 );
