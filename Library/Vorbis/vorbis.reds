@@ -15,7 +15,7 @@ Red/System [
 	#default  [ #define VORBIS_LIBRARY "libvorbis.so" ] ;@@ not tested!
 ]
 
-float32-ptr-ref!: alias struct! [value [float32-ptr!]]
+#include %../os/definitions.reds ;common aliases and defines
 
 ;-- Vorbis ERRORS and return codes --
 
@@ -73,8 +73,8 @@ vorbis_dsp_state!: alias struct! [
     analysisp [integer!]
     vi        [vorbis_info!]
 
-    pcm            [float32-ptr-ref!]
-    pcmret         [float32-ptr-ref!]
+    pcm            [float32-ptr-ptr!]
+    pcmret         [float32-ptr-ptr!]
     pcm_storage    [integer!]
     pcm_current    [integer!]
     pcm_returned   [integer!]
@@ -110,7 +110,7 @@ vorbis_block!: alias struct! [
     ;that logical bitstream.
 
     ;necessary stream state for linking to the framing abstraction
-    pcm          [float32-ptr-ref!] ;this is a pointer into local storage
+    pcm          [float32-ptr-ptr!] ;this is a pointer into local storage
     opb          [oggpack_buffer! value]
 
     lW           [integer!]
@@ -191,8 +191,8 @@ ovectl_ratemanage2_arg!: alias struct! [
 ]
 
 #enum encctlcodes! [
-    ; These values are passed as the \c number parameter of vorbis_encode_ctl().
-    ; The type of the referent of that function's \c arg pointer depends on these
+    ; These values are passed as the number parameter of `vorbis_encode_ctl`.
+    ; The type of the referent of that function's arg pointer depends on these
     ; codes.
 
     ; Query the current encoder bitrate management setting
@@ -327,7 +327,7 @@ ovectl_ratemanage2_arg!: alias struct! [
         vorbis_analysis_buffer: "vorbis_analysis_buffer" [
             v [vorbis_dsp_state!]
             vals [integer!]
-            return: [float32-ptr-ref!]
+            return: [float32-ptr-ptr!]
         ]
         vorbis_analysis_wrote: "vorbis_analysis_wrote" [
             v [vorbis_dsp_state!]
