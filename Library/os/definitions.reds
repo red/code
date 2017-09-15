@@ -36,7 +36,7 @@ integer16!:  alias struct! [lo [byte!] hi [byte!]]       ;@@ must be changed onc
 
 binary-ptr!:      alias struct! [value [pointer! [byte!]]]
 string-ptr!:      alias struct! [value [c-string!]]
-string-ref-ptr!:  alias struct! [value [string-ptr!]]
+string-ptr-ptr!:  alias struct! [value [string-ptr!]]
 handle-ptr!:      alias struct! [value [pointer! [integer!]]]
 logic-ptr!:       alias struct! [value [logic!]]
 int64-ptr!:       alias struct! [value [int64-value!]]
