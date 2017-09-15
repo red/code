@@ -343,7 +343,7 @@ glFenceSyncAPPLE!: alias function! [
 ;@@ void ( GLenum pname, GLint64* params );
 glGetInteger64vAPPLE!: alias function! [
 	pname       [ GLenum! ]
-	params      [ GLint64! ]
+	params      [ GLint64-ptr! ]
 ]
 ;@@ void ( GLsync GLsync, GLenum pname, GLsizei bufSize, GLsizei* length, GLint *values );
 glGetSyncivAPPLE!: alias function! [

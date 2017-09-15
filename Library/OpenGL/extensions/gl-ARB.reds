@@ -231,7 +231,7 @@ glProgramUniformHandleui64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	values      [ GLuint64! ]
+	values      [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLint location, GLuint64 value );
 glUniformHandleui64ARB!: alias function! [
@@ -242,7 +242,7 @@ glUniformHandleui64ARB!: alias function! [
 glUniformHandleui64vARB!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64! ]
+	value       [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint index, GLuint64EXT x );
 glVertexAttribL1ui64ARB!: alias function! [
@@ -912,7 +912,7 @@ glGetCompressedTextureImage!: alias function! [
 glGetNamedBufferParameteri64v!: alias function! [
 	buffer      [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLint64! ]
+	params      [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint buffer, GLenum pname, GLint* params );
 glGetNamedBufferParameteriv!: alias function! [
@@ -1032,7 +1032,7 @@ glGetTransformFeedbacki64_v!: alias function! [
 	xfb         [ GLuint! ]
 	pname       [ GLenum! ]
 	index       [ GLuint! ]
-	param       [ GLint64! ]
+	param       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint xfb, GLenum pname, GLuint index, GLint* param );
 glGetTransformFeedbacki_v!: alias function! [
@@ -1052,7 +1052,7 @@ glGetVertexArrayIndexed64iv!: alias function! [
 	vaobj       [ GLuint! ]
 	index       [ GLuint! ]
 	pname       [ GLenum! ]
-	param       [ GLint64! ]
+	param       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint vaobj, GLuint index, GLenum pname, GLint* param );
 glGetVertexArrayIndexediv!: alias function! [
@@ -2174,40 +2174,40 @@ glUniformMatrix4x3dv!: alias function! [
 glGetUniformi64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	params      [ GLint64! ]
+	params      [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLuint64* params );
 glGetUniformui64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	params      [ GLuint64! ]
+	params      [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei bufSize, GLint64* params );
 glGetnUniformi64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	bufSize     [ GLsizei! ]
-	params      [ GLint64! ]
+	params      [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei bufSize, GLuint64* params );
 glGetnUniformui64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	bufSize     [ GLsizei! ]
-	params      [ GLuint64! ]
+	params      [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLint64 x );
 glProgramUniform1i64ARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	x           [ GLint64! value ]
+	x           [ GLint64! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLint64* value );
 glProgramUniform1i64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLint64! ]
+	value       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLuint64 x );
 glProgramUniform1ui64ARB!: alias function! [
@@ -2220,21 +2220,21 @@ glProgramUniform1ui64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64! ]
+	value       [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLint64 x, GLint64 y );
 glProgramUniform2i64ARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	x           [ GLint64! value ]
-	y           [ GLint64! value ]
+	x           [ GLint64! ]
+	y           [ GLint64! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLint64* value );
 glProgramUniform2i64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLint64! ]
+	value       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLuint64 x, GLuint64 y );
 glProgramUniform2ui64ARB!: alias function! [
@@ -2248,22 +2248,22 @@ glProgramUniform2ui64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64! ]
+	value       [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLint64 x, GLint64 y, GLint64 z );
 glProgramUniform3i64ARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	x           [ GLint64! value ]
-	y           [ GLint64! value ]
-	z           [ GLint64! value ]
+	x           [ GLint64! ]
+	y           [ GLint64! ]
+	z           [ GLint64! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLint64* value );
 glProgramUniform3i64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLint64! ]
+	value       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLuint64 x, GLuint64 y, GLuint64 z );
 glProgramUniform3ui64ARB!: alias function! [
@@ -2278,23 +2278,23 @@ glProgramUniform3ui64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64! ]
+	value       [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLint64 x, GLint64 y, GLint64 z, GLint64 w );
 glProgramUniform4i64ARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
-	x           [ GLint64! value ]
-	y           [ GLint64! value ]
-	z           [ GLint64! value ]
-	w           [ GLint64! value ]
+	x           [ GLint64! ]
+	y           [ GLint64! ]
+	z           [ GLint64! ]
+	w           [ GLint64! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLsizei count, const GLint64* value );
 glProgramUniform4i64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLint64! ]
+	value       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint program, GLint location, GLuint64 x, GLuint64 y, GLuint64 z, GLuint64 w );
 glProgramUniform4ui64ARB!: alias function! [
@@ -2310,18 +2310,18 @@ glProgramUniform4ui64vARB!: alias function! [
 	program     [ GLuint! ]
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64! ]
+	value       [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLint location, GLint64 x );
 glUniform1i64ARB!: alias function! [
 	location    [ GLint! ]
-	x           [ GLint64! value ]
+	x           [ GLint64! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLint64* value );
 glUniform1i64vARB!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLint64! ]
+	value       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLint location, GLuint64 x );
 glUniform1ui64ARB!: alias function! [
@@ -2332,19 +2332,19 @@ glUniform1ui64ARB!: alias function! [
 glUniform1ui64vARB!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64! ]
+	value       [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLint location, GLint64 x, GLint64 y );
 glUniform2i64ARB!: alias function! [
 	location    [ GLint! ]
-	x           [ GLint64! value ]
-	y           [ GLint64! value ]
+	x           [ GLint64! ]
+	y           [ GLint64! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLint64* value );
 glUniform2i64vARB!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLint64! ]
+	value       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLint location, GLuint64 x, GLuint64 y );
 glUniform2ui64ARB!: alias function! [
@@ -2356,20 +2356,20 @@ glUniform2ui64ARB!: alias function! [
 glUniform2ui64vARB!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64! ]
+	value       [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLint location, GLint64 x, GLint64 y, GLint64 z );
 glUniform3i64ARB!: alias function! [
 	location    [ GLint! ]
-	x           [ GLint64! value ]
-	y           [ GLint64! value ]
-	z           [ GLint64! value ]
+	x           [ GLint64! ]
+	y           [ GLint64! ]
+	z           [ GLint64! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLint64* value );
 glUniform3i64vARB!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLint64! ]
+	value       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLint location, GLuint64 x, GLuint64 y, GLuint64 z );
 glUniform3ui64ARB!: alias function! [
@@ -2382,21 +2382,21 @@ glUniform3ui64ARB!: alias function! [
 glUniform3ui64vARB!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64! ]
+	value       [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLint location, GLint64 x, GLint64 y, GLint64 z, GLint64 w );
 glUniform4i64ARB!: alias function! [
 	location    [ GLint! ]
-	x           [ GLint64! value ]
-	y           [ GLint64! value ]
-	z           [ GLint64! value ]
-	w           [ GLint64! value ]
+	x           [ GLint64! ]
+	y           [ GLint64! ]
+	z           [ GLint64! ]
+	w           [ GLint64! ]
 ]
 ;@@ void ( GLint location, GLsizei count, const GLint64* value );
 glUniform4i64vARB!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLint64! ]
+	value       [ GLint64-ptr! ]
 ]
 ;@@ void ( GLint location, GLuint64 x, GLuint64 y, GLuint64 z, GLuint64 w );
 glUniform4ui64ARB!: alias function! [
@@ -2410,7 +2410,7 @@ glUniform4ui64ARB!: alias function! [
 glUniform4ui64vARB!: alias function! [
 	location    [ GLint! ]
 	count       [ GLsizei! ]
-	value       [ GLuint64! ]
+	value       [ GLuint64-ptr! ]
 ]
 
 
@@ -2919,7 +2919,7 @@ glGetInternalformati64v!: alias function! [
 	internalformat [ GLenum! ]
 	pname       [ GLenum! ]
 	bufSize     [ GLsizei! ]
-	params      [ GLint64! ]
+	params      [ GLint64-ptr! ]
 ]
 
 
@@ -4696,7 +4696,7 @@ glGetActiveUniformARB!: alias function! [
 	length      [ pointer! [GLsizei!] ]
 	size        [ pointer! [GLint!] ]
 	type        [ pointer! [GLenum!] ]
-	name        [ GLcharARB! ]
+	name        [ GLcharARB-ptr! ]
 ]
 ;@@ void ( GLhandleARB containerObj, GLsizei maxCount, GLsizei* count, GLhandleARB *obj );
 glGetAttachedObjectsARB!: alias function! [
@@ -4716,7 +4716,7 @@ glGetInfoLogARB!: alias function! [
 	obj         [ GLhandleARB! ]
 	maxLength   [ GLsizei! ]
 	length      [ pointer! [GLsizei!] ]
-	infoLog     [ GLcharARB! ]
+	infoLog     [ GLcharARB-ptr! ]
 ]
 ;@@ void ( GLhandleARB obj, GLenum pname, GLfloat* params );
 glGetObjectParameterfvARB!: alias function! [
@@ -4735,12 +4735,12 @@ glGetShaderSourceARB!: alias function! [
 	obj         [ GLhandleARB! ]
 	maxLength   [ GLsizei! ]
 	length      [ pointer! [GLsizei!] ]
-	source      [ GLcharARB! ]
+	source      [ GLcharARB-ptr! ]
 ]
 ;@@ GLint ( GLhandleARB programObj, const GLcharARB* name );
 glGetUniformLocationARB!: alias function! [
 	programObj  [ GLhandleARB! ]
-	name        [ GLcharARB! ]
+	name        [ GLcharARB-ptr! ]
 	return: [ GLint! ]
 
 ]
@@ -4764,7 +4764,7 @@ glLinkProgramARB!: alias function! [
 glShaderSourceARB!: alias function! [
 	shaderObj   [ GLhandleARB! ]
 	count       [ GLsizei! ]
-	string      [ GLcharARB-ptr! ]
+	string      [ GLcharARB-ptr-ptr! ]
 	length      [ pointer! [GLint!] ]
 ]
 ;@@ void ( GLint location, GLfloat v0 );
@@ -5250,7 +5250,7 @@ glFenceSync!: alias function! [
 ;@@ void ( GLenum pname, GLint64* params );
 glGetInteger64v!: alias function! [
 	pname       [ GLenum! ]
-	params      [ GLint64! ]
+	params      [ GLint64-ptr! ]
 ]
 ;@@ void ( GLsync GLsync,GLenum pname,GLsizei bufSize,GLsizei* length, GLint *values );
 glGetSynciv!: alias function! [
@@ -5929,13 +5929,13 @@ glTextureView!: alias function! [
 glGetQueryObjecti64v!: alias function! [
 	id          [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLint64! ]
+	params      [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint id, GLenum pname, GLuint64* params );
 glGetQueryObjectui64v!: alias function! [
 	id          [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64! ]
+	params      [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint id, GLenum target );
 glQueryCounter!: alias function! [
@@ -7062,7 +7062,7 @@ glVertexAttribPointerARB!: alias function! [
 glBindAttribLocationARB!: alias function! [
 	programObj  [ GLhandleARB! ]
 	index       [ GLuint! ]
-	name        [ GLcharARB! ]
+	name        [ GLcharARB-ptr! ]
 ]
 ;@@ void ( GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei* length, GLint *size, GLenum *type, GLcharARB *name );
 glGetActiveAttribARB!: alias function! [
@@ -7072,12 +7072,12 @@ glGetActiveAttribARB!: alias function! [
 	length      [ pointer! [GLsizei!] ]
 	size        [ pointer! [GLint!] ]
 	type        [ pointer! [GLenum!] ]
-	name        [ GLcharARB! ]
+	name        [ GLcharARB-ptr! ]
 ]
 ;@@ GLint ( GLhandleARB programObj, const GLcharARB* name );
 glGetAttribLocationARB!: alias function! [
 	programObj  [ GLhandleARB! ]
-	name        [ GLcharARB! ]
+	name        [ GLcharARB-ptr! ]
 	return: [ GLint! ]
 
 ]

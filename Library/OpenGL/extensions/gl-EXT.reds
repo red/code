@@ -4543,7 +4543,7 @@ glGenSemaphoresEXT!: alias function! [
 glGetSemaphoreParameterui64vEXT!: alias function! [
 	semaphore   [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64! ]
+	params      [ GLuint64-ptr! ]
 ]
 ;@@ GLboolean ( GLuint semaphore );
 glIsSemaphoreEXT!: alias function! [
@@ -4555,7 +4555,7 @@ glIsSemaphoreEXT!: alias function! [
 glSemaphoreParameterui64vEXT!: alias function! [
 	semaphore   [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64! ]
+	params      [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint semaphore, GLuint numBufferBarriers, const GLuint* buffers, GLuint numTextureBarriers, const GLuint *textures, const GLenum *dstLayouts );
 glSignalSemaphoreEXT!: alias function! [
@@ -5708,7 +5708,7 @@ glTextureViewEXT!: alias function! [
 glGetQueryObjecti64vEXT!: alias function! [
 	id          [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLint64EXT! ]
+	params      [ GLint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint id, GLenum pname, GLuint64EXT *params );
 glGetQueryObjectui64vEXT!: alias function! [

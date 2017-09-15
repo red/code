@@ -162,7 +162,7 @@ glGetPerfCounterInfoINTEL!: alias function! [
 	counterDataSize [ pointer! [GLuint!] ]
 	counterTypeEnum [ pointer! [GLuint!] ]
 	counterDataTypeEnum [ pointer! [GLuint!] ]
-	rawCounterMaxValue [ GLuint64! ]
+	rawCounterMaxValue [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint queryHandle, GLuint flags, GLsizei dataSize, void *data, GLuint *bytesWritten );
 glGetPerfQueryDataINTEL!: alias function! [

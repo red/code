@@ -145,14 +145,16 @@ This source was made from glew.h file, which contains these copyrights:
 
 #define GLvdpauSurfaceNV! GLintptr!
 
-#define GLstring!     c-string!
-#define GLcharARB!    [pointer! [byte!]]
+#define GLstring!          c-string!
+#define GLcharARB!         byte!
+#define GLcharARB-ptr!     c-string!
+#define GLcharARB-ptr-ptr! string-ptr!
 
 #define GLeglClientBufferEXT! [pointer! [integer!]]
 
 GLboolean-ptr!: alias struct! [value [GLboolean!]]
 GLstring-ptr!:  alias struct! [value [GLstring!]]
-GLcharARB-ptr!: alias struct! [value [GLcharARB!]]
+
 
 #define GLsync!         [pointer! [integer!]]
 #define GLsizeiptrARB!  integer!
@@ -4099,13 +4101,13 @@ glFramebufferTexture!: alias function! [
 glGetBufferParameteri64v!: alias function! [
 	target      [ GLenum! ]
 	value       [ GLenum! ]
-	data        [ GLint64! ]
+	data        [ GLint64-ptr! ]
 ]
 ;@@ void ( GLenum pname, GLuint index, GLint64 * data );
 glGetInteger64i_v!: alias function! [
 	pname       [ GLenum! ]
 	index       [ GLuint! ]
-	data        [ GLint64! ]
+	data        [ GLint64-ptr! ]
 ]
 
 

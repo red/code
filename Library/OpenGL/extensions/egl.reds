@@ -146,17 +146,16 @@ EGLClientPixmapHI!: alias struct! [
 ]
 
 
+
 #define  EGL_DONT_CARE                                              -1
 #define  EGL_NO_CONTEXT                                             [as EGLContext! 0]
 #define  EGL_NO_DISPLAY                                             [as EGLDisplay! 0]
-#define  EGL_NO_IMAGE                                               [as EGLImage! 0]
+#define  EGL_NO_IMAGE                                               [as EGLImage!   0]
 #define  EGL_NO_SURFACE                                             [as EGLSurface! 0]
-#define  EGL_NO_SYNC                                                [as EGLSync! 0]
-#define  EGL_UNKNOWN                                                [as EGLint! -1]
+#define  EGL_NO_SYNC                                                [as EGLSync!    0]
+#define  EGL_UNKNOWN                                                [as EGLint!    -1]
 #define  EGL_DEFAULT_DISPLAY                                        [as EGLNativeDisplayType! 0]
-
-
-;-------------------------------------------
+		;-------------------------------------------
 ;-- EGL_VERSION_1_0
 ;-------------------------------------------
 
@@ -525,7 +524,7 @@ eglGetCurrentContext!: alias function! [
 #define  EGL_CONTEXT_OPENGL_RESET_NOTIFICATION_STRATEGY  31BDh
 #define  EGL_NO_RESET_NOTIFICATION                    31BEh
 #define  EGL_LOSE_CONTEXT_ON_RESET                    31BFh
-;#define  EGL_FOREVER                                  FFFFFFFFFFFFFFFFh
+#define  EGL_FOREVER                                  FFFFFFFFFFFFFFFFh
 eglClientWaitSync!: alias function! [
 	dpy     [ EGLDisplay! ]
 	sync    [ EGLSync! ]
@@ -1591,7 +1590,7 @@ eglSetDamageRegionKHR!: alias function! [
 #define  EGL_CONDITION_SATISFIED_KHR                  30F6h
 #define  EGL_SYNC_TYPE_KHR                            30F7h
 #define  EGL_SYNC_REUSABLE_KHR                        30FAh
-;#define  EGL_FOREVER_KHR                              FFFFFFFFFFFFFFFFh
+#define  EGL_FOREVER_KHR                              FFFFFFFFFFFFFFFFh
 eglClientWaitSyncKHR!: alias function! [
 	dpy     [ EGLDisplay! ]
 	sync    [ EGLSyncKHR! ]
@@ -2269,7 +2268,7 @@ eglCreateStreamSyncNV!: alias function! [
 #define  EGL_SYNC_TYPE_NV                             30EDh
 #define  EGL_SYNC_CONDITION_NV                        30EEh
 #define  EGL_SYNC_FENCE_NV                            30EFh
-;#define  EGL_FOREVER_NV                               FFFFFFFFFFFFFFFFh
+#define  EGL_FOREVER_NV                               FFFFFFFFFFFFFFFFh
 eglClientWaitSyncNV!: alias function! [
 	sync    [ EGLSyncNV! ]
 	flags   [ EGLint! ]
@@ -2330,5 +2329,4 @@ eglGetSystemTimeNV!: alias function! [
 
 #define  EGL_TIZEN_image_native_surface               1
 #define  EGL_NATIVE_SURFACE_TIZEN                     32A1h
-
 ] ;end of #if OS = 'Android
