@@ -123,7 +123,7 @@ playSound: func[
     outputParameters/sampleFormat:     paFloat32 ;32 bit floating point output
     outputParameters/suggestedLatency: 0.050 ;Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
     outputParameters/hostApiSpecificStreamInfo: null
-    stream-ref: declare PaStream-ref!
+    stream-ref: declare PaStream-ptr!
 
     err: Pa_OpenStream
               stream-ref

@@ -177,7 +177,7 @@ recordSound: func[
     inputParameters/suggestedLatency: deviceInfo/defaultLowInputLatency
     inputParameters/hostApiSpecificStreamInfo: null
     
-    stream-ref: declare PaStream-ref!
+    stream-ref: declare PaStream-ptr!
 
     print-line ["Device: " inputParameters/device]
 
