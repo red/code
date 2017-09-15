@@ -1409,9 +1409,9 @@ VkInstanceCreateInfo!: alias struct! [
 	flags                   [ VkInstanceCreateFlags! ]
 	pApplicationInfo        [ VkApplicationInfo! ]
 	enabledLayerCount       [ integer! ]
-	ppEnabledLayerNames     [ string-ref! ]
+	ppEnabledLayerNames     [ string-ptr! ]
 	enabledExtensionCount   [ integer! ]
-	ppEnabledExtensionNames [ string-ref! ]
+	ppEnabledExtensionNames [ string-ptr! ]
 ]
 
 VkAllocationCallbacks!: alias struct! [
@@ -1670,9 +1670,9 @@ VkDeviceCreateInfo!: alias struct! [
 	queueCreateInfoCount    [ integer! ]
 	pQueueCreateInfos       [ VkDeviceQueueCreateInfo! ]
 	enabledLayerCount       [ integer! ]
-	ppEnabledLayerNames     [ string-ref! ]
+	ppEnabledLayerNames     [ string-ptr! ]
 	enabledExtensionCount   [ integer! ]
-	ppEnabledExtensionNames [ string-ref! ]
+	ppEnabledExtensionNames [ string-ptr! ]
 	pEnabledFeatures        [ VkPhysicalDeviceFeatures! ]
 ]
 
@@ -2588,7 +2588,7 @@ vkMapMemory!: alias function! [
 	offset          [ VkDeviceSize! ]
 	size            [ VkDeviceSize! ]
 	flags           [ VkMemoryMapFlags! ]
-	ppData          [ binary-ref! ]
+	ppData          [ binary-ptr! ]
 	return:         [ VkResult! ]
 ]
 vkUnmapMemory!: alias function! [
@@ -6110,7 +6110,7 @@ vkCreateMacOSSurfaceMVK!: alias function! [
 		offset          [ VkDeviceSize! ]
 		size            [ VkDeviceSize! ]
 		flags           [ VkMemoryMapFlags! ]
-		ppData          [ binary-ref! ]
+		ppData          [ binary-ptr! ]
 		return:         [ VkResult! ]
 	]
 	vkUnmapMemory: "vkUnmapMemory" [

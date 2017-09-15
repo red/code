@@ -78,24 +78,24 @@ glUnmapTexture2DINTEL!: alias function! [
 glColorPointervINTEL!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLenum type, const void** pointer );
 glNormalPointervINTEL!: alias function! [
 	type        [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLint size, GLenum type, const void** pointer );
 glTexCoordPointervINTEL!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLint size, GLenum type, const void** pointer );
 glVertexPointervINTEL!: alias function! [
 	size        [ GLint! ]
 	type        [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 
 
@@ -162,7 +162,7 @@ glGetPerfCounterInfoINTEL!: alias function! [
 	counterDataSize [ pointer! [GLuint!] ]
 	counterTypeEnum [ pointer! [GLuint!] ]
 	counterDataTypeEnum [ pointer! [GLuint!] ]
-	rawCounterMaxValue [ GLuint64! ]
+	rawCounterMaxValue [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint queryHandle, GLuint flags, GLsizei dataSize, void *data, GLuint *bytesWritten );
 glGetPerfQueryDataINTEL!: alias function! [

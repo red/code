@@ -109,11 +109,11 @@ This source was made from glew.h file, which contains these copyrights:
 #define GLboolean!    integer!
 #define GLbitfield!   integer!
 #define GLbyte!       byte!
-#define GLshort!      integer!
+#define GLshort!      int16-value!  ;@@ change me once proper int16! will be available
 #define GLint!        integer!
 #define GLsizei!      integer!
 #define GLubyte!      integer!
-#define GLushort!     integer!
+#define GLushort!     uint16-value! ;@@ change me once proper int16! will be available
 #define GLuint!       integer!
 #define GLfloat!      float32! ; 32-bit float
 #define GLclampf!     float32!
@@ -122,13 +122,21 @@ This source was made from glew.h file, which contains these copyrights:
 #define GLclampd!     float!
 #define GLclampx!     integer!
 #define GLfixed!      integer!
-#define GLhalf!       integer! ;unsigned short
+#define GLhalf!       uint16-value! ;@@ change me once proper int16! will be available
 #define GLhandleARB!  integer! ;unsigned int
 
-#define GLint64!      int64!
-#define GLint64EXT!   int64!
-#define GLuint64!     int64!
-#define GLuint64EXT!  int64!
+#define GLint64!      int64-value! ;@@ change me once proper int64! will be available
+#define GLint64EXT!   int64-value! ;@@ change me once proper int64! will be available
+#define GLuint64!     int64-value! ;@@ change me once proper int64! will be available
+#define GLuint64EXT!  int64-value! ;@@ change me once proper int64! will be available
+
+#define GLint64-ptr!     int64-ptr! ;@@ change me once proper int64! will be available
+#define GLint64EXT-ptr!  int64-ptr! ;@@ change me once proper int64! will be available
+#define GLuint64-ptr!    int64-ptr! ;@@ change me once proper int64! will be available
+#define GLuint64EXT-ptr! int64-ptr! ;@@ change me once proper int64! will be available
+
+#define GLshort-ptr!   int16-ptr!
+#define GLushort-ptr!  uint16-ptr!
 
 #define GLintptr!     integer!
 #define GLintptrARB!  integer! ;maybe integer64! in 64bit version
@@ -137,15 +145,16 @@ This source was made from glew.h file, which contains these copyrights:
 
 #define GLvdpauSurfaceNV! GLintptr!
 
-#define GLstring!     c-string!
-#define GLcharARB!    [pointer! [byte!]]
+#define GLstring!          c-string!
+#define GLcharARB!         byte!
+#define GLcharARB-ptr!     c-string!
+#define GLcharARB-ptr-ptr! string-ptr!
 
 #define GLeglClientBufferEXT! [pointer! [integer!]]
 
+GLboolean-ptr!: alias struct! [value [GLboolean!]]
+GLstring-ptr!:  alias struct! [value [GLstring!]]
 
-GLboolean-ref!: alias struct! [value [GLboolean!]]
-GLstring-ref!:  alias struct! [value [GLstring!]]
-GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 
 #define GLsync!         [pointer! [integer!]]
 #define GLsizeiptrARB!  integer!
@@ -786,7 +795,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		green       [ GLshort! ]
 		blue        [ GLshort! ]
 	]
-	glColor3sv: "glColor3sv" [ v [pointer! [GLshort!]] ]
+	glColor3sv: "glColor3sv" [ v [GLshort-ptr!] ]
 	glColor3ub: "glColor3ub"[
 		red         [ GLubyte! ]
 		green       [ GLubyte! ]
@@ -804,7 +813,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		green       [ GLushort! ]
 		blue        [ GLushort! ]
 	]
-	glColor3usv: "glColor3usv" [ v [pointer! [GLushort!]] ]
+	glColor3usv: "glColor3usv" [ v [GLushort-ptr!] ]
 	glColor4b: "glColor4b"[
 		red         [ GLbyte! ]
 		green       [ GLbyte! ]
@@ -839,7 +848,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		blue        [ GLshort! ]
 		alpha       [ GLshort! ]
 	]
-	glColor4sv: "glColor4sv" [ v [pointer! [GLshort!]] ]
+	glColor4sv: "glColor4sv" [ v [GLshort-ptr!] ]
 	glColor4ub: "glColor4ub"[
 		red         [ GLubyte! ]
 		green       [ GLubyte! ]
@@ -860,7 +869,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		blue        [ GLushort! ]
 		alpha       [ GLushort! ]
 	]
-	glColor4usv: "glColor4usv" [ v [pointer! [GLushort!]] ]
+	glColor4usv: "glColor4usv" [ v [GLushort-ptr!] ]
 	glColorMask: "glColorMask"[
 		red         [ GLboolean! ]
 		green       [ GLboolean! ]
@@ -1101,11 +1110,11 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 	]
 	glGetPixelMapusv: "glGetPixelMapusv"[
 		map         [ GLenum! ]
-		values      [ pointer! [GLushort!] ]
+		values      [ GLushort-ptr! ]
 	]
 	glGetPointerv: "glGetPointerv"[
 		pname       [ GLenum! ]
-		params      [ binary-ref! ]
+		params      [ binary-ptr! ]
 	]
 	glGetPolygonStipple: "glGetPolygonStipple" [ mask [pointer! [GLubyte!]] ]
 	glGetString: "glGetString" [ name [GLenum!] return: [c-string!] ]
@@ -1180,7 +1189,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 	glIndexi: "glIndexi" [ c [GLint!] ]
 	glIndexiv: "glIndexiv" [ c [pointer! [GLint!]] ]
 	glIndexs: "glIndexs" [ c [GLshort!] ]
-	glIndexsv: "glIndexsv" [ c [pointer! [GLshort!]] ]
+	glIndexsv: "glIndexsv" [ c [GLshort-ptr!] ]
 	glIndexub: "glIndexub" [ c [GLubyte!] ]
 	glIndexubv: "glIndexubv" [ c [pointer! [GLubyte!]] ]
 	glInitNames: "glInitNames" [ ]
@@ -1361,7 +1370,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		ny          [ GLshort! ]
 		nz          [ GLshort! ]
 	]
-	glNormal3sv: "glNormal3sv" [ v [pointer! [GLshort!]] ]
+	glNormal3sv: "glNormal3sv" [ v [GLshort-ptr!] ]
 	glNormalPointer: "glNormalPointer"[
 		type        [ GLenum! ]
 		stride      [ GLsizei! ]
@@ -1389,7 +1398,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 	glPixelMapusv: "glPixelMapusv"[
 		map         [ GLenum! ]
 		mapsize     [ GLsizei! ]
-		values      [ pointer! [GLushort!] ]
+		values      [ GLushort-ptr! ]
 	]
 	glPixelStoref: "glPixelStoref"[
 		pname       [ GLenum! ]
@@ -1453,7 +1462,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		x           [ GLshort! ]
 		y           [ GLshort! ]
 	]
-	glRasterPos2sv: "glRasterPos2sv" [ v [pointer! [GLshort!]] ]
+	glRasterPos2sv: "glRasterPos2sv" [ v [GLshort-ptr!] ]
 	glRasterPos3d: "glRasterPos3d"[
 		x           [ GLdouble! ]
 		y           [ GLdouble! ]
@@ -1477,7 +1486,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		y           [ GLshort! ]
 		z           [ GLshort! ]
 	]
-	glRasterPos3sv: "glRasterPos3sv" [ v [pointer! [GLshort!]] ]
+	glRasterPos3sv: "glRasterPos3sv" [ v [GLshort-ptr!] ]
 	glRasterPos4d: "glRasterPos4d"[
 		x           [ GLdouble! ]
 		y           [ GLdouble! ]
@@ -1505,7 +1514,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		z           [ GLshort! ]
 		w           [ GLshort! ]
 	]
-	glRasterPos4sv: "glRasterPos4sv" [ v [pointer! [GLshort!]] ]
+	glRasterPos4sv: "glRasterPos4sv" [ v [GLshort-ptr!] ]
 	glReadBuffer: "glReadBuffer" [ mode [GLenum!] ]
 	glReadPixels: "glReadPixels"[
 		x           [ GLint! ]
@@ -1553,8 +1562,8 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		y2          [ GLshort! ]
 	]
 	glRectsv: "glRectsv"[
-		v1          [ pointer! [GLshort!] ]
-		v2          [ pointer! [GLshort!] ]
+		v1          [ GLshort-ptr! ]
+		v2          [ GLshort-ptr! ]
 	]
 	glRenderMode: "glRenderMode" [ mode [GLenum!] return: [GLint!] ]
 	glRotated: "glRotated"[
@@ -1608,7 +1617,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 	glTexCoord1i: "glTexCoord1i" [ s [GLint!] ]
 	glTexCoord1iv: "glTexCoord1iv" [ v [pointer! [GLint!]] ]
 	glTexCoord1s: "glTexCoord1s" [ s [GLshort!] ]
-	glTexCoord1sv: "glTexCoord1sv" [ v [pointer! [GLshort!]] ]
+	glTexCoord1sv: "glTexCoord1sv" [ v [GLshort-ptr!] ]
 	glTexCoord2d: "glTexCoord2d"[
 		s           [ GLdouble! ]
 		t           [ GLdouble! ]
@@ -1628,7 +1637,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		s           [ GLshort! ]
 		t           [ GLshort! ]
 	]
-	glTexCoord2sv: "glTexCoord2sv" [ v [pointer! [GLshort!]] ]
+	glTexCoord2sv: "glTexCoord2sv" [ v [GLshort-ptr!] ]
 	glTexCoord3d: "glTexCoord3d"[
 		s           [ GLdouble! ]
 		t           [ GLdouble! ]
@@ -1652,7 +1661,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		t           [ GLshort! ]
 		r           [ GLshort! ]
 	]
-	glTexCoord3sv: "glTexCoord3sv" [ v [pointer! [GLshort!]] ]
+	glTexCoord3sv: "glTexCoord3sv" [ v [GLshort-ptr!] ]
 	glTexCoord4d: "glTexCoord4d"[
 		s           [ GLdouble! ]
 		t           [ GLdouble! ]
@@ -1680,7 +1689,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		r           [ GLshort! ]
 		q           [ GLshort! ]
 	]
-	glTexCoord4sv: "glTexCoord4sv" [ v [pointer! [GLshort!]] ]
+	glTexCoord4sv: "glTexCoord4sv" [ v [GLshort-ptr!] ]
 	glTexCoordPointer: "glTexCoordPointer"[
 		size        [ GLint! ]
 		type        [ GLenum! ]
@@ -1827,7 +1836,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		x           [ GLshort! ]
 		y           [ GLshort! ]
 	]
-	glVertex2sv: "glVertex2sv" [ v [pointer! [GLshort!]] ]
+	glVertex2sv: "glVertex2sv" [ v [GLshort-ptr!] ]
 	glVertex3d: "glVertex3d"[
 		x           [ GLdouble! ]
 		y           [ GLdouble! ]
@@ -1851,7 +1860,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		y           [ GLshort! ]
 		z           [ GLshort! ]
 	]
-	glVertex3sv: "glVertex3sv" [ v [pointer! [GLshort!]] ]
+	glVertex3sv: "glVertex3sv" [ v [GLshort-ptr!] ]
 	glVertex4d: "glVertex4d"[
 		x           [ GLdouble! ]
 		y           [ GLdouble! ]
@@ -1879,7 +1888,7 @@ GLcharARB-ref!: alias struct! [value [GLcharARB!]]
 		z           [ GLshort! ]
 		w           [ GLshort! ]
 	]
-	glVertex4sv: "glVertex4sv" [ v [pointer! [GLshort!]] ]
+	glVertex4sv: "glVertex4sv" [ v [GLshort-ptr!] ]
 	glVertexPointer: "glVertexPointer"[
 		size        [ GLint! ]
 		type        [ GLenum! ]
@@ -2236,7 +2245,7 @@ glMultiTexCoord1s!: alias function! [
 ;@@ void ( GLenum target, const GLshort *v );
 glMultiTexCoord1sv!: alias function! [
 	target      [ GLenum! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLenum target, GLdouble s, GLdouble t );
 glMultiTexCoord2d!: alias function! [
@@ -2280,7 +2289,7 @@ glMultiTexCoord2s!: alias function! [
 ;@@ void ( GLenum target, const GLshort *v );
 glMultiTexCoord2sv!: alias function! [
 	target      [ GLenum! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLenum target, GLdouble s, GLdouble t, GLdouble r );
 glMultiTexCoord3d!: alias function! [
@@ -2328,7 +2337,7 @@ glMultiTexCoord3s!: alias function! [
 ;@@ void ( GLenum target, const GLshort *v );
 glMultiTexCoord3sv!: alias function! [
 	target      [ GLenum! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q );
 glMultiTexCoord4d!: alias function! [
@@ -2380,7 +2389,7 @@ glMultiTexCoord4s!: alias function! [
 ;@@ void ( GLenum target, const GLshort *v );
 glMultiTexCoord4sv!: alias function! [
 	target      [ GLenum! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLclampf value, GLboolean invert );
 glSampleCoverage!: alias function! [
@@ -2485,7 +2494,7 @@ glMultiDrawElements!: alias function! [
 	mode        [ GLenum! ]
 	count       [ pointer! [GLsizei!] ]
 	type        [ GLenum! ]
-	indices     [ binary-ref! ]
+	indices     [ binary-ptr! ]
 	drawcount   [ GLsizei! ]
 ]
 ;@@ void ( GLenum pname, GLfloat param );
@@ -2556,7 +2565,7 @@ glSecondaryColor3s!: alias function! [
 ]
 ;@@ void ( const GLshort *v );
 glSecondaryColor3sv!: alias function! [
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLubyte red, GLubyte green, GLubyte blue );
 glSecondaryColor3ub!: alias function! [
@@ -2586,7 +2595,7 @@ glSecondaryColor3us!: alias function! [
 ]
 ;@@ void ( const GLushort *v );
 glSecondaryColor3usv!: alias function! [
-	v           [ pointer! [GLushort!] ]
+	v           [ GLushort-ptr! ]
 ]
 ;@@ void ( GLint size, GLenum type, GLsizei stride, const void *pointer );
 glSecondaryColorPointer!: alias function! [
@@ -2629,7 +2638,7 @@ glWindowPos2s!: alias function! [
 ]
 ;@@ void ( const GLshort *p );
 glWindowPos2sv!: alias function! [
-	p           [ pointer! [GLshort!] ]
+	p           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLdouble x, GLdouble y, GLdouble z );
 glWindowPos3d!: alias function! [
@@ -2669,7 +2678,7 @@ glWindowPos3s!: alias function! [
 ]
 ;@@ void ( const GLshort *p );
 glWindowPos3sv!: alias function! [
-	p           [ pointer! [GLshort!] ]
+	p           [ GLshort-ptr! ]
 ]
 
 
@@ -2786,7 +2795,7 @@ glGetBufferParameteriv!: alias function! [
 glGetBufferPointerv!: alias function! [
 	target      [ GLenum! ]
 	pname       [ GLenum! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLenum target, GLintptr offset, GLsizeiptr size, void* data );
 glGetBufferSubData!: alias function! [
@@ -3076,7 +3085,7 @@ glGetUniformiv!: alias function! [
 glGetVertexAttribPointerv!: alias function! [
 	index       [ GLuint! ]
 	pname       [ GLenum! ]
-	pointer     [ binary-ref! ]
+	pointer     [ binary-ptr! ]
 ]
 ;@@ void ( GLuint index, GLenum pname, GLdouble* params );
 glGetVertexAttribdv!: alias function! [
@@ -3116,7 +3125,7 @@ glLinkProgram!: alias function! [
 glShaderSource!: alias function! [
 	shader      [ GLuint! ]
 	count       [ GLsizei! ]
-	string      [ GLstring-ref! ]
+	string      [ GLstring-ptr! ]
 	length      [ pointer! [GLint!] ]
 ]
 ;@@ void ( GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask );
@@ -3295,7 +3304,7 @@ glVertexAttrib1s!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v );
 glVertexAttrib1sv!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLdouble x, GLdouble y );
 glVertexAttrib2d!: alias function! [
@@ -3328,7 +3337,7 @@ glVertexAttrib2s!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v );
 glVertexAttrib2sv!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLdouble x, GLdouble y, GLdouble z );
 glVertexAttrib3d!: alias function! [
@@ -3364,7 +3373,7 @@ glVertexAttrib3s!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v );
 glVertexAttrib3sv!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, const GLbyte* v );
 glVertexAttrib4Nbv!: alias function! [
@@ -3379,7 +3388,7 @@ glVertexAttrib4Niv!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v );
 glVertexAttrib4Nsv!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w );
 glVertexAttrib4Nub!: alias function! [
@@ -3402,7 +3411,7 @@ glVertexAttrib4Nuiv!: alias function! [
 ;@@ void ( GLuint index, const GLushort* v );
 glVertexAttrib4Nusv!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [integer!] ]
+	v           [ GLushort-ptr! ]
 ]
 ;@@ void ( GLuint index, const GLbyte* v );
 glVertexAttrib4bv!: alias function! [
@@ -3451,7 +3460,7 @@ glVertexAttrib4s!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v );
 glVertexAttrib4sv!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, const GLubyte* v );
 glVertexAttrib4ubv!: alias function! [
@@ -3466,7 +3475,7 @@ glVertexAttrib4uiv!: alias function! [
 ;@@ void ( GLuint index, const GLushort* v );
 glVertexAttrib4usv!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [integer!] ]
+	v           [ GLushort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* pointer );
 glVertexAttribPointer!: alias function! [
@@ -3813,7 +3822,7 @@ glTexParameterIuiv!: alias function! [
 glTransformFeedbackVaryings!: alias function! [
 	program     [ GLuint! ]
 	count       [ GLsizei! ]
-	varyings    [ GLstring-ref! ]
+	varyings    [ GLstring-ptr! ]
 	bufferMode  [ GLenum! ]
 ]
 ;@@ void ( GLint location, GLuint v0 );
@@ -3953,7 +3962,7 @@ glVertexAttribI4iv!: alias function! [
 ;@@ void ( GLuint index, const GLshort* v0 );
 glVertexAttribI4sv!: alias function! [
 	index       [ GLuint! ]
-	v0          [ pointer! [GLshort!] ]
+	v0          [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, const GLubyte* v0 );
 glVertexAttribI4ubv!: alias function! [
@@ -3976,7 +3985,7 @@ glVertexAttribI4uiv!: alias function! [
 ;@@ void ( GLuint index, const GLushort* v0 );
 glVertexAttribI4usv!: alias function! [
 	index       [ GLuint! ]
-	v0          [ pointer! [integer!] ]
+	v0          [ GLushort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLint size, GLenum type, GLsizei stride, const void*pointer );
 glVertexAttribIPointer!: alias function! [
@@ -4092,13 +4101,13 @@ glFramebufferTexture!: alias function! [
 glGetBufferParameteri64v!: alias function! [
 	target      [ GLenum! ]
 	value       [ GLenum! ]
-	data        [ GLint64! ]
+	data        [ GLint64-ptr! ]
 ]
 ;@@ void ( GLenum pname, GLuint index, GLint64 * data );
 glGetInteger64i_v!: alias function! [
 	pname       [ GLenum! ]
 	index       [ GLuint! ]
-	data        [ GLint64! ]
+	data        [ GLint64-ptr! ]
 ]
 
 

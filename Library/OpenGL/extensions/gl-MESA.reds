@@ -76,7 +76,7 @@ glWindowPos2sMESA!: alias function! [
 ]
 ;@@ void ( const GLshort* p );
 glWindowPos2svMESA!: alias function! [
-	p           [ pointer! [GLshort!] ]
+	p           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLdouble x, GLdouble y, GLdouble z );
 glWindowPos3dMESA!: alias function! [
@@ -116,7 +116,7 @@ glWindowPos3sMESA!: alias function! [
 ]
 ;@@ void ( const GLshort* p );
 glWindowPos3svMESA!: alias function! [
-	p           [ pointer! [GLshort!] ]
+	p           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLdouble x, GLdouble y, GLdouble z, GLdouble w );
 glWindowPos4dMESA!: alias function! [
@@ -160,7 +160,7 @@ glWindowPos4sMESA!: alias function! [
 ]
 ;@@ void ( const GLshort* p );
 glWindowPos4svMESA!: alias function! [
-	p           [ pointer! [GLshort!] ]
+	p           [ GLshort-ptr! ]
 ]
 
 

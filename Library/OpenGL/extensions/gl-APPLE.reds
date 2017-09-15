@@ -325,7 +325,7 @@ glObjectUnpurgeableAPPLE!: alias function! [
 glClientWaitSyncAPPLE!: alias function! [
 	GLsync      [ GLsync! ]
 	flags       [ GLbitfield! ]
-	timeout     [ GLuint64! value ]
+	timeout     [ GLuint64! ]
 	return: [ GLenum! ]
 
 ]
@@ -343,7 +343,7 @@ glFenceSyncAPPLE!: alias function! [
 ;@@ void ( GLenum pname, GLint64* params );
 glGetInteger64vAPPLE!: alias function! [
 	pname       [ GLenum! ]
-	params      [ GLint64! ]
+	params      [ GLint64-ptr! ]
 ]
 ;@@ void ( GLsync GLsync, GLenum pname, GLsizei bufSize, GLsizei* length, GLint *values );
 glGetSyncivAPPLE!: alias function! [
@@ -363,7 +363,7 @@ glIsSyncAPPLE!: alias function! [
 glWaitSyncAPPLE!: alias function! [
 	GLsync      [ GLsync! ]
 	flags       [ GLbitfield! ]
-	timeout     [ GLuint64! value ]
+	timeout     [ GLuint64! ]
 ]
 
 
@@ -417,7 +417,7 @@ glWaitSyncAPPLE!: alias function! [
 glGetTexParameterPointervAPPLE!: alias function! [
 	target      [ GLenum! ]
 	pname       [ GLenum! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLenum target, GLsizei length, void *pointer );
 glTextureRangeAPPLE!: alias function! [

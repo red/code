@@ -52,6 +52,9 @@ Red/System [
 	]
 ]
 
+#define GLFWmonitor-ptr! int-ptr!
+
+
 
 ;-  The major version number of the GLFW library.
 ;   This is incremented when the API is changed in non-compatible ways.
@@ -540,8 +543,8 @@ Red/System [
 ;   @since Added in version 3.0.
 ; 
 ;   @ingroup init
-	arg1	[ integer! ]
-	arg2	[ c-string! ]
+	arg1    [ integer! ]
+	arg2    [ c-string! ]
 ]]
 #define GLFWwindowposfun! [ function! [
 ;-  The function signature for window position callbacks.
@@ -559,9 +562,9 @@ Red/System [
 ;   @since Added in version 3.0.
 ; 
 ;   @ingroup window
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
-	arg3	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
+	arg3    [ integer! ]
 ]]
 #define GLFWwindowsizefun! [ function! [
 ;-  The function signature for window resize callbacks.
@@ -578,9 +581,9 @@ Red/System [
 ;   @glfw3 Added window handle parameter.
 ; 
 ;   @ingroup window
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
-	arg3	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
+	arg3    [ integer! ]
 ]]
 #define GLFWwindowclosefun! [ function! [
 ;-  The function signature for window close callbacks.
@@ -595,7 +598,7 @@ Red/System [
 ;   @glfw3 Added window handle parameter.
 ; 
 ;   @ingroup window
-	arg1	[ GLFWwindow! ]
+	arg1    [ GLFWwindow! ]
 ]]
 #define GLFWwindowrefreshfun! [ function! [
 ;-  The function signature for window content refresh callbacks.
@@ -610,7 +613,7 @@ Red/System [
 ;   @glfw3 Added window handle parameter.
 ; 
 ;   @ingroup window
-	arg1	[ GLFWwindow! ]
+	arg1    [ GLFWwindow! ]
 ]]
 #define GLFWwindowfocusfun! [ function! [
 ;-  The function signature for window focus/defocus callbacks.
@@ -626,8 +629,8 @@ Red/System [
 ;   @since Added in version 3.0.
 ; 
 ;   @ingroup window
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
 ]]
 #define GLFWwindowiconifyfun! [ function! [
 ;-  The function signature for window iconify/restore callbacks.
@@ -644,8 +647,8 @@ Red/System [
 ;   @since Added in version 3.0.
 ; 
 ;   @ingroup window
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
 ]]
 #define GLFWframebuffersizefun! [ function! [
 ;-  The function signature for framebuffer resize callbacks.
@@ -662,9 +665,9 @@ Red/System [
 ;   @since Added in version 3.0.
 ; 
 ;   @ingroup window
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
-	arg3	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
+	arg3    [ integer! ]
 ]]
 #define GLFWmousebuttonfun! [ function! [
 ;-  The function signature for mouse button callbacks.
@@ -684,10 +687,10 @@ Red/System [
 ;   @glfw3 Added window handle and modifier mask parameters.
 ; 
 ;   @ingroup input
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
-	arg3	[ integer! ]
-	arg4	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
+	arg3    [ integer! ]
+	arg4    [ integer! ]
 ]]
 #define GLFWcursorposfun! [ function! [
 ;-  The function signature for cursor position callbacks.
@@ -705,9 +708,9 @@ Red/System [
 ;   @since Added in version 3.0.  Replaces `GLFWmouseposfun`.
 ; 
 ;   @ingroup input
-	arg1	[ GLFWwindow! ]
-	arg2	[ float! ]
-	arg3	[ float! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ float! ]
+	arg3    [ float! ]
 ]]
 #define GLFWcursorenterfun! [ function! [
 ;-  The function signature for cursor enter/leave callbacks.
@@ -723,8 +726,8 @@ Red/System [
 ;   @since Added in version 3.0.
 ; 
 ;   @ingroup input
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
 ]]
 #define GLFWscrollfun! [ function! [
 ;-  The function signature for scroll callbacks.
@@ -740,9 +743,9 @@ Red/System [
 ;   @since Added in version 3.0.  Replaces `GLFWmousewheelfun`.
 ; 
 ;   @ingroup input
-	arg1	[ GLFWwindow! ]
-	arg2	[ float! ]
-	arg3	[ float! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ float! ]
+	arg3    [ float! ]
 ]]
 #define GLFWkeyfun! [ function! [
 ;-  The function signature for keyboard key callbacks.
@@ -762,11 +765,11 @@ Red/System [
 ;   @glfw3 Added window handle, scancode and modifier mask parameters.
 ; 
 ;   @ingroup input
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
-	arg3	[ integer! ]
-	arg4	[ integer! ]
-	arg5	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
+	arg3    [ integer! ]
+	arg4    [ integer! ]
+	arg5    [ integer! ]
 ]]
 #define GLFWcharfun! [ function! [
 ;-  The function signature for Unicode character callbacks.
@@ -782,8 +785,8 @@ Red/System [
 ;   @glfw3 Added window handle parameter.
 ; 
 ;   @ingroup input
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
 ]]
 #define GLFWcharmodsfun! [ function! [
 ;-  The function signature for Unicode character with modifiers callbacks.
@@ -802,9 +805,9 @@ Red/System [
 ;   @since Added in version 3.1.
 ; 
 ;   @ingroup input
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
-	arg3	[ integer! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
+	arg3    [ integer! ]
 ]]
 #define GLFWdropfun! [ function! [
 ;-  The function signature for file drop callbacks.
@@ -820,9 +823,9 @@ Red/System [
 ;   @since Added in version 3.1.
 ; 
 ;   @ingroup input
-	arg1	[ GLFWwindow! ]
-	arg2	[ integer! ]
-	arg3	[ string-ref! ]
+	arg1    [ GLFWwindow! ]
+	arg2    [ integer! ]
+	arg3    [ string-ptr! ]
 ]]
 #define GLFWmonitorfun! [ function! [
 ;-  The function signature for monitor configuration callbacks.
@@ -837,8 +840,8 @@ Red/System [
 ;   @since Added in version 3.0.
 ; 
 ;   @ingroup monitor
-	arg1	[ GLFWmonitor! ]
-	arg2	[ integer! ]
+	arg1    [ GLFWmonitor! ]
+	arg2    [ integer! ]
 ]]
 #define GLFWjoystickfun! [ function! [
 ;-  The function signature for joystick configuration callbacks.
@@ -854,8 +857,8 @@ Red/System [
 ;   @since Added in version 3.2.
 ; 
 ;   @ingroup input
-	arg1	[ integer! ]
-	arg2	[ integer! ]
+	arg1    [ integer! ]
+	arg2    [ integer! ]
 ]]
 
 GLFWvidmode!: alias struct! [
@@ -892,11 +895,11 @@ GLFWgammaramp!: alias struct! [
 ; 
 ;   @ingroup monitor
 	; An array of value describing the response of the red channel.
-	 red [ int-ptr! ]
+	 red [ uint16-ptr! ]
 	; An array of value describing the response of the green channel.
-	 green [ int-ptr! ]
+	 green [ uint16-ptr! ]
 	; An array of value describing the response of the blue channel.
-	 blue [ int-ptr! ]
+	 blue [ uint16-ptr! ]
 	; The number of elements in each array.
 	 size [ integer! ]
 ]
@@ -912,7 +915,7 @@ GLFWimage!: alias struct! [
 	; The height, in pixels, of this image.
 	 height [ integer! ]
 	; The pixel data of this image, arranged left-to-right, top-to-bottom.
-	 pixels [ byte-ptr! ]
+	 pixels [ c-string! ]
 ]
 
 
@@ -1013,9 +1016,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 1.0.
 	  ; 
 	  ; @ingroup init
-		major	[ int-ptr! ]
-		minor	[ int-ptr! ]
-		rev	[ int-ptr! ]
+		major   [ pointer! [integer!] ]
+		minor   [ pointer! [integer!] ]
+		rev     [ pointer! [integer!] ]
 	]
 	;@@ char* glfwGetVersionString(void)
 	glfwGetVersionString: "glfwGetVersionString"[
@@ -1080,8 +1083,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup init
-		cbfun	[ GLFWerrorfun! ]
-		return: [ int-ptr! ]
+		cbfun   [ GLFWerrorfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWmonitor** glfwGetMonitors(int* count)
 	glfwGetMonitors: "glfwGetMonitors"[
@@ -1110,8 +1113,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup monitor
-		count	[ int-ptr! ]
-		return: [ int-ptr! ]
+		count   [ pointer! [integer!] ]
+		return: [ GLFWmonitor-ptr! ]
 	]
 	;@@ GLFWmonitor* glfwGetPrimaryMonitor(void)
 	glfwGetPrimaryMonitor: "glfwGetPrimaryMonitor"[
@@ -1160,9 +1163,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup monitor
-		monitor	[ GLFWmonitor! ]
-		xpos	[ int-ptr! ]
-		ypos	[ int-ptr! ]
+		monitor [ GLFWmonitor! ]
+		xpos    [ pointer! [integer!] ]
+		ypos    [ pointer! [integer!] ]
 	]
 	;@@ void glfwGetMonitorPhysicalSize(GLFWmonitor* monitor, int* widthMM, int* heightMM)
 	glfwGetMonitorPhysicalSize: "glfwGetMonitorPhysicalSize"[
@@ -1196,9 +1199,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup monitor
-		monitor	[ GLFWmonitor! ]
-		widthMM	[ int-ptr! ]
-		heightMM	[ int-ptr! ]
+		monitor  [ GLFWmonitor! ]
+		widthMM  [ pointer! [integer!] ]
+		heightMM [ pointer! [integer!] ]
 	]
 	;@@ char* glfwGetMonitorName(GLFWmonitor* monitor)
 	glfwGetMonitorName: "glfwGetMonitorName"[
@@ -1224,7 +1227,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup monitor
-		monitor	[ GLFWmonitor! ]
+		monitor [ GLFWmonitor! ]
 		return: [ c-string! ]
 	]
 	;@@ GLFWmonitorfun glfwSetMonitorCallback(GLFWmonitorfun cbfun)
@@ -1248,8 +1251,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup monitor
-		cbfun	[ GLFWmonitorfun! ]
-		return: [ int-ptr! ]
+		cbfun   [ GLFWmonitorfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWvidmode* glfwGetVideoModes(GLFWmonitor* monitor, int* count)
 	glfwGetVideoModes: "glfwGetVideoModes"[
@@ -1282,8 +1285,8 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Changed to return an array of modes for a specific monitor.
 	  ; 
 	  ; @ingroup monitor
-		monitor	[ GLFWmonitor! ]
-		count	[ int-ptr! ]
+		monitor [ GLFWmonitor! ]
+		count   [ pointer! [integer!] ]
 		return: [ GLFWvidmode! ]
 	]
 	;@@ GLFWvidmode* glfwGetVideoMode(GLFWmonitor* monitor)
@@ -1312,7 +1315,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwGetDesktopMode`.
 	  ; 
 	  ; @ingroup monitor
-		monitor	[ GLFWmonitor! ]
+		monitor [ GLFWmonitor! ]
 		return: [ GLFWvidmode! ]
 	]
 	;@@ void glfwSetGamma(GLFWmonitor* monitor, float gamma)
@@ -1335,8 +1338,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup monitor
-		monitor	[ GLFWmonitor! ]
-		gamma	[ float32! ]
+		monitor [ GLFWmonitor! ]
+		gamma   [ float32! ]
 	]
 	;@@ GLFWgammaramp* glfwGetGammaRamp(GLFWmonitor* monitor)
 	glfwGetGammaRamp: "glfwGetGammaRamp"[
@@ -1362,7 +1365,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup monitor
-		monitor	[ GLFWmonitor! ]
+		monitor [ GLFWmonitor! ]
 		return: [ GLFWgammaramp! ]
 	]
 	;@@ void glfwSetGammaRamp(GLFWmonitor* monitor, const GLFWgammaramp* ramp)
@@ -1393,8 +1396,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup monitor
-		monitor	[ GLFWmonitor! ]
-		ramp	[ int-ptr! ]
+		monitor [ GLFWmonitor! ]
+		ramp    [ GLFWgammaramp! ]
 	]
 	;@@ void glfwDefaultWindowHints(void)
 	glfwDefaultWindowHints: "glfwDefaultWindowHints"[
@@ -1439,8 +1442,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwOpenWindowHint`.
 	  ; 
 	  ; @ingroup window
-		hint	[ integer! ]
-		value	[ integer! ]
+		hint    [ integer! ]
+		value   [ integer! ]
 	]
 	;@@ GLFWwindow* glfwCreateWindow(int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share)
 	glfwCreateWindow: "glfwCreateWindow"[
@@ -1561,11 +1564,11 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwOpenWindow`.
 	  ; 
 	  ; @ingroup window
-		width	[ integer! ]
-		height	[ integer! ]
-		title	[ c-string! ]
-		monitor	[ GLFWmonitor! ]
-		share	[ GLFWwindow! ]
+		width   [ integer! ]
+		height  [ integer! ]
+		title   [ c-string! ]
+		monitor [ GLFWmonitor! ]
+		share   [ GLFWwindow! ]
 		return: [ GLFWwindow! ]
 	]
 	;@@ void glfwDestroyWindow(GLFWwindow* window)
@@ -1595,7 +1598,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwCloseWindow`.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 	]
 	;@@ int glfwWindowShouldClose(GLFWwindow* window)
 	glfwWindowShouldClose: "glfwWindowShouldClose"[
@@ -1615,7 +1618,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 		return: [ integer! ]
 	]
 	;@@ void glfwSetWindowShouldClose(GLFWwindow* window, int value)
@@ -1638,8 +1641,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		value	[ integer! ]
+		window  [ GLFWwindow! ]
+		value   [ integer! ]
 	]
 	;@@ void glfwSetWindowTitle(GLFWwindow* window, const char* title)
 	glfwSetWindowTitle: "glfwSetWindowTitle"[
@@ -1664,8 +1667,8 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		title	[ c-string! ]
+		window  [ GLFWwindow! ]
+		title   [ c-string! ]
 	]
 	;@@ void glfwSetWindowIcon(GLFWwindow* window, int count, const GLFWimage* images)
 	glfwSetWindowIcon: "glfwSetWindowIcon"[
@@ -1704,9 +1707,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		count	[ integer! ]
-		images	[ int-ptr! ]
+		window  [ GLFWwindow! ]
+		count   [ integer! ]
+		images  [ GLFWimage! ]
 	]
 	;@@ void glfwGetWindowPos(GLFWwindow* window, int* xpos, int* ypos)
 	glfwGetWindowPos: "glfwGetWindowPos"[
@@ -1734,9 +1737,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		xpos	[ int-ptr! ]
-		ypos	[ int-ptr! ]
+		window  [ GLFWwindow! ]
+		xpos    [ pointer! [integer!] ]
+		ypos    [ pointer! [integer!] ]
 	]
 	;@@ void glfwSetWindowPos(GLFWwindow* window, int xpos, int ypos)
 	glfwSetWindowPos: "glfwSetWindowPos"[
@@ -1767,9 +1770,9 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		xpos	[ integer! ]
-		ypos	[ integer! ]
+		window  [ GLFWwindow! ]
+		xpos    [ integer! ]
+		ypos    [ integer! ]
 	]
 	;@@ void glfwGetWindowSize(GLFWwindow* window, int* width, int* height)
 	glfwGetWindowSize: "glfwGetWindowSize"[
@@ -1799,9 +1802,9 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		width	[ int-ptr! ]
-		height	[ int-ptr! ]
+		window  [ GLFWwindow! ]
+		width   [ pointer! [integer!] ]
+		height  [ pointer! [integer!] ]
 	]
 	;@@ void glfwSetWindowSizeLimits(GLFWwindow* window, int minwidth, int minheight, int maxwidth, int maxheight)
 	glfwSetWindowSizeLimits: "glfwSetWindowSizeLimits"[
@@ -1841,11 +1844,11 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		minwidth	[ integer! ]
-		minheight	[ integer! ]
-		maxwidth	[ integer! ]
-		maxheight	[ integer! ]
+		window    [ GLFWwindow! ]
+		minwidth  [ integer! ]
+		minheight [ integer! ]
+		maxwidth  [ integer! ]
+		maxheight [ integer! ]
 	]
 	;@@ void glfwSetWindowAspectRatio(GLFWwindow* window, int numer, int denom)
 	glfwSetWindowAspectRatio: "glfwSetWindowAspectRatio"[
@@ -1885,9 +1888,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		numer	[ integer! ]
-		denom	[ integer! ]
+		window  [ GLFWwindow! ]
+		numer   [ integer! ]
+		denom   [ integer! ]
 	]
 	;@@ void glfwSetWindowSize(GLFWwindow* window, int width, int height)
 	glfwSetWindowSize: "glfwSetWindowSize"[
@@ -1925,9 +1928,9 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		width	[ integer! ]
-		height	[ integer! ]
+		window  [ GLFWwindow! ]
+		width   [ integer! ]
+		height  [ integer! ]
 	]
 	;@@ void glfwGetFramebufferSize(GLFWwindow* window, int* width, int* height)
 	glfwGetFramebufferSize: "glfwGetFramebufferSize"[
@@ -1956,9 +1959,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		width	[ int-ptr! ]
-		height	[ int-ptr! ]
+		window  [ GLFWwindow! ]
+		width   [ pointer! [integer!] ]
+		height  [ pointer! [integer!] ]
 	]
 	;@@ void glfwGetWindowFrameSize(GLFWwindow* window, int* left, int* top, int* right, int* bottom)
 	glfwGetWindowFrameSize: "glfwGetWindowFrameSize"[
@@ -1995,11 +1998,11 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.1.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		left	[ int-ptr! ]
-		top	[ int-ptr! ]
-		right	[ int-ptr! ]
-		bottom	[ int-ptr! ]
+		window  [ GLFWwindow! ]
+		left    [ pointer! [integer!] ]
+		top     [ pointer! [integer!] ]
+		right   [ pointer! [integer!] ]
+		bottom  [ pointer! [integer!] ]
 	]
 	;@@ void glfwIconifyWindow(GLFWwindow* window)
 	glfwIconifyWindow: "glfwIconifyWindow"[
@@ -2026,7 +2029,7 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 	]
 	;@@ void glfwRestoreWindow(GLFWwindow* window)
 	glfwRestoreWindow: "glfwRestoreWindow"[
@@ -2053,7 +2056,7 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 	]
 	;@@ void glfwMaximizeWindow(GLFWwindow* window)
 	glfwMaximizeWindow: "glfwMaximizeWindow"[
@@ -2078,7 +2081,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in GLFW 3.2.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 	]
 	;@@ void glfwShowWindow(GLFWwindow* window)
 	glfwShowWindow: "glfwShowWindow"[
@@ -2100,7 +2103,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 	]
 	;@@ void glfwHideWindow(GLFWwindow* window)
 	glfwHideWindow: "glfwHideWindow"[
@@ -2122,7 +2125,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 	]
 	;@@ void glfwFocusWindow(GLFWwindow* window)
 	glfwFocusWindow: "glfwFocusWindow"[
@@ -2150,7 +2153,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 	]
 	;@@ GLFWmonitor* glfwGetWindowMonitor(GLFWwindow* window)
 	glfwGetWindowMonitor: "glfwGetWindowMonitor"[
@@ -2172,7 +2175,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 		return: [ GLFWmonitor! ]
 	]
 	;@@ void glfwSetWindowMonitor(GLFWwindow* window, GLFWmonitor* monitor, int xpos, int ypos, int width, int height, int refreshRate)
@@ -2222,13 +2225,13 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		monitor	[ GLFWmonitor! ]
-		xpos	[ integer! ]
-		ypos	[ integer! ]
-		width	[ integer! ]
-		height	[ integer! ]
-		refreshRate	[ integer! ]
+		window      [ GLFWwindow! ]
+		monitor     [ GLFWmonitor! ]
+		xpos        [ integer! ]
+		ypos        [ integer! ]
+		width       [ integer! ]
+		height      [ integer! ]
+		refreshRate [ integer! ]
 	]
 	;@@ int glfwGetWindowAttrib(GLFWwindow* window, int attrib)
 	glfwGetWindowAttrib: "glfwGetWindowAttrib"[
@@ -2261,8 +2264,8 @@ GLFWimage!: alias struct! [
 	  ; `glfwGetGLVersion`.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		attrib	[ integer! ]
+		window  [ GLFWwindow! ]
+		attrib  [ integer! ]
 		return: [ integer! ]
 	]
 	;@@ void glfwSetWindowUserPointer(GLFWwindow* window, void* pointer)
@@ -2286,8 +2289,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		pointer	[ int-ptr! ]
+		window  [ GLFWwindow! ]
+		pointer [ pointer! [byte!] ]
 	]
 	;@@ void* glfwGetWindowUserPointer(GLFWwindow* window)
 	glfwGetWindowUserPointer: "glfwGetWindowUserPointer"[
@@ -2308,8 +2311,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		return: [ pointer! [byte!] ]
 	]
 	;@@ GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindow* window, GLFWwindowposfun cbfun)
 	glfwSetWindowPosCallback: "glfwSetWindowPosCallback"[
@@ -2333,9 +2336,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWwindowposfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWwindowposfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindow* window, GLFWwindowsizefun cbfun)
 	glfwSetWindowSizeCallback: "glfwSetWindowSizeCallback"[
@@ -2360,9 +2363,9 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter and return value.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWwindowsizefun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWwindowsizefun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWwindowclosefun glfwSetWindowCloseCallback(GLFWwindow* window, GLFWwindowclosefun cbfun)
 	glfwSetWindowCloseCallback: "glfwSetWindowCloseCallback"[
@@ -2395,9 +2398,9 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter and return value.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWwindowclosefun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWwindowclosefun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWwindowrefreshfun glfwSetWindowRefreshCallback(GLFWwindow* window, GLFWwindowrefreshfun cbfun)
 	glfwSetWindowRefreshCallback: "glfwSetWindowRefreshCallback"[
@@ -2426,9 +2429,9 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter and return value.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWwindowrefreshfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWwindowrefreshfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWwindowfocusfun glfwSetWindowFocusCallback(GLFWwindow* window, GLFWwindowfocusfun cbfun)
 	glfwSetWindowFocusCallback: "glfwSetWindowFocusCallback"[
@@ -2456,9 +2459,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWwindowfocusfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWwindowfocusfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindow* window, GLFWwindowiconifyfun cbfun)
 	glfwSetWindowIconifyCallback: "glfwSetWindowIconifyCallback"[
@@ -2481,9 +2484,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWwindowiconifyfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWwindowiconifyfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* window, GLFWframebuffersizefun cbfun)
 	glfwSetFramebufferSizeCallback: "glfwSetFramebufferSizeCallback"[
@@ -2506,9 +2509,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWframebuffersizefun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWframebuffersizefun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ void glfwPollEvents(void)
 	glfwPollEvents: "glfwPollEvents"[
@@ -2632,7 +2635,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup window
-		timeout	[ float! ]
+		timeout [ float! ]
 	]
 	;@@ void glfwPostEmptyEvent(void)
 	glfwPostEmptyEvent: "glfwPostEmptyEvent"[
@@ -2678,8 +2681,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		mode	[ integer! ]
+		window  [ GLFWwindow! ]
+		mode    [ integer! ]
 		return: [ integer! ]
 	]
 	;@@ void glfwSetInputMode(GLFWwindow* window, int mode, int value)
@@ -2728,9 +2731,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwEnable` and `glfwDisable`.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		mode	[ integer! ]
-		value	[ integer! ]
+		window  [ GLFWwindow! ]
+		mode    [ integer! ]
+		value   [ integer! ]
 	]
 	;@@ char* glfwGetKeyName(int key, int scancode)
 	glfwGetKeyName: "glfwGetKeyName"[
@@ -2787,8 +2790,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup input
-		key	[ integer! ]
-		scancode	[ integer! ]
+		key      [ integer! ]
+		scancode [ integer! ]
 		return: [ c-string! ]
 	]
 	;@@ int glfwGetKey(GLFWwindow* window, int key)
@@ -2828,8 +2831,8 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		key	[ integer! ]
+		window  [ GLFWwindow! ]
+		key     [ integer! ]
 		return: [ integer! ]
 	]
 	;@@ int glfwGetMouseButton(GLFWwindow* window, int button)
@@ -2858,8 +2861,8 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		button	[ integer! ]
+		window  [ GLFWwindow! ]
+		button  [ integer! ]
 		return: [ integer! ]
 	]
 	;@@ void glfwGetCursorPos(GLFWwindow* window, double* xpos, double* ypos)
@@ -2897,9 +2900,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwGetMousePos`.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		xpos	[ pointer! [float!] ]
-		ypos	[ pointer! [float!] ]
+		window  [ GLFWwindow! ]
+		xpos    [ pointer! [float!] ]
+		ypos    [ pointer! [float!] ]
 	]
 	;@@ void glfwSetCursorPos(GLFWwindow* window, double xpos, double ypos)
 	glfwSetCursorPos: "glfwSetCursorPos"[
@@ -2935,9 +2938,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwSetMousePos`.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		xpos	[ float! ]
-		ypos	[ float! ]
+		window  [ GLFWwindow! ]
+		xpos    [ float! ]
+		ypos    [ float! ]
 	]
 	;@@ GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot)
 	glfwCreateCursor: "glfwCreateCursor"[
@@ -2977,9 +2980,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.1.
 	  ; 
 	  ; @ingroup input
-		image	[ int-ptr! ]
-		xhot	[ integer! ]
-		yhot	[ integer! ]
+		image   [ GLFWimage! ]
+		xhot    [ integer! ]
+		yhot    [ integer! ]
 		return: [ GLFWcursor! ]
 	]
 	;@@ GLFWcursor* glfwCreateStandardCursor(int shape)
@@ -3005,7 +3008,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.1.
 	  ; 
 	  ; @ingroup input
-		shape	[ integer! ]
+		shape   [ integer! ]
 		return: [ GLFWcursor! ]
 	]
 	;@@ void glfwDestroyCursor(GLFWcursor* cursor)
@@ -3030,7 +3033,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.1.
 	  ; 
 	  ; @ingroup input
-		cursor	[ GLFWcursor! ]
+		cursor  [ GLFWcursor! ]
 	]
 	;@@ void glfwSetCursor(GLFWwindow* window, GLFWcursor* cursor)
 	glfwSetCursor: "glfwSetCursor"[
@@ -3057,8 +3060,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.1.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		cursor	[ GLFWcursor! ]
+		window  [ GLFWwindow! ]
+		cursor  [ GLFWcursor! ]
 	]
 	;@@ GLFWkeyfun glfwSetKeyCallback(GLFWwindow* window, GLFWkeyfun cbfun)
 	glfwSetKeyCallback: "glfwSetKeyCallback"[
@@ -3101,9 +3104,9 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter and return value.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWkeyfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWkeyfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWcharfun glfwSetCharCallback(GLFWwindow* window, GLFWcharfun cbfun)
 	glfwSetCharCallback: "glfwSetCharCallback"[
@@ -3141,9 +3144,9 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter and return value.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWcharfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWcharfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWcharmodsfun glfwSetCharModsCallback(GLFWwindow* window, GLFWcharmodsfun cbfun)
 	glfwSetCharModsCallback: "glfwSetCharModsCallback"[
@@ -3176,9 +3179,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.1.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWcharmodsfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWcharmodsfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow* window, GLFWmousebuttonfun cbfun)
 	glfwSetMouseButtonCallback: "glfwSetMouseButtonCallback"[
@@ -3208,9 +3211,9 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter and return value.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWmousebuttonfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWmousebuttonfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWcursorposfun glfwSetCursorPosCallback(GLFWwindow* window, GLFWcursorposfun cbfun)
 	glfwSetCursorPosCallback: "glfwSetCursorPosCallback"[
@@ -3235,9 +3238,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwSetMousePosCallback`.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWcursorposfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWcursorposfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWwindow* window, GLFWcursorenterfun cbfun)
 	glfwSetCursorEnterCallback: "glfwSetCursorEnterCallback"[
@@ -3261,9 +3264,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWcursorenterfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWcursorenterfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWscrollfun glfwSetScrollCallback(GLFWwindow* window, GLFWscrollfun cbfun)
 	glfwSetScrollCallback: "glfwSetScrollCallback"[
@@ -3290,9 +3293,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwSetMouseWheelCallback`.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWscrollfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWscrollfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ GLFWdropfun glfwSetDropCallback(GLFWwindow* window, GLFWdropfun cbfun)
 	glfwSetDropCallback: "glfwSetDropCallback"[
@@ -3320,9 +3323,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.1.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		cbfun	[ GLFWdropfun! ]
-		return: [ int-ptr! ]
+		window  [ GLFWwindow! ]
+		cbfun   [ GLFWdropfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ int glfwJoystickPresent(int joy)
 	glfwJoystickPresent: "glfwJoystickPresent"[
@@ -3342,7 +3345,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwGetJoystickParam`.
 	  ; 
 	  ; @ingroup input
-		joy	[ integer! ]
+		joy     [ integer! ]
 		return: [ integer! ]
 	]
 	;@@ float* glfwGetJoystickAxes(int joy, int* count)
@@ -3377,8 +3380,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.  Replaces `glfwGetJoystickPos`.
 	  ; 
 	  ; @ingroup input
-		joy	[ integer! ]
-		count	[ int-ptr! ]
+		joy     [ integer! ]
+		count   [ pointer! [integer!] ]
 		return: [ pointer! [float32!] ]
 	]
 	;@@ char* glfwGetJoystickName(int joy)
@@ -3411,7 +3414,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup input
-		joy	[ integer! ]
+		joy     [ integer! ]
 		return: [ c-string! ]
 	]
 	;@@ GLFWjoystickfun glfwSetJoystickCallback(GLFWjoystickfun cbfun)
@@ -3435,8 +3438,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup input
-		cbfun	[ GLFWjoystickfun! ]
-		return: [ int-ptr! ]
+		cbfun   [ GLFWjoystickfun! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ void glfwSetClipboardString(GLFWwindow* window, const char* string)
 	glfwSetClipboardString: "glfwSetClipboardString"[
@@ -3461,8 +3464,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
-		string	[ c-string! ]
+		window  [ GLFWwindow! ]
+		string  [ c-string! ]
 	]
 	;@@ char* glfwGetClipboardString(GLFWwindow* window)
 	glfwGetClipboardString: "glfwGetClipboardString"[
@@ -3492,7 +3495,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup input
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 		return: [ c-string! ]
 	]
 	;@@ double glfwGetTime(void)
@@ -3547,7 +3550,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 2.2.
 	  ; 
 	  ; @ingroup input
-		time	[ float! ]
+		time    [ float! ]
 	]
 	;@@ uint64_t glfwGetTimerValue(void)
 	glfwGetTimerValue: "glfwGetTimerValue"[
@@ -3569,7 +3572,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup input
-		return: [ int64! value ]
+		return: [ int64-value! ]
 	]
 	;@@ uint64_t glfwGetTimerFrequency(void)
 	glfwGetTimerFrequency: "glfwGetTimerFrequency"[
@@ -3589,7 +3592,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup input
-		return: [ int64! value ]
+		return: [ int64-value! ]
 	]
 	;@@ void glfwMakeContextCurrent(GLFWwindow* window)
 	glfwMakeContextCurrent: "glfwMakeContextCurrent"[
@@ -3622,7 +3625,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.0.
 	  ; 
 	  ; @ingroup context
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 	]
 	;@@ GLFWwindow* glfwGetCurrentContext(void)
 	glfwGetCurrentContext: "glfwGetCurrentContext"[
@@ -3677,7 +3680,7 @@ GLFWimage!: alias struct! [
 	  ; @glfw3 Added window handle parameter.
 	  ; 
 	  ; @ingroup window
-		window	[ GLFWwindow! ]
+		window  [ GLFWwindow! ]
 	]
 	;@@ void glfwSwapInterval(int interval)
 	glfwSwapInterval: "glfwSwapInterval"[
@@ -3724,7 +3727,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 1.0.
 	  ; 
 	  ; @ingroup context
-		interval	[ integer! ]
+		interval [ integer! ]
 	]
 	;@@ int glfwExtensionSupported(const char* extension)
 	glfwExtensionSupported: "glfwExtensionSupported"[
@@ -3762,7 +3765,7 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 1.0.
 	  ; 
 	  ; @ingroup context
-		extension	[ c-string! ]
+		extension [ c-string! ]
 		return: [ integer! ]
 	]
 	;@@ GLFWglproc glfwGetProcAddress(const char* procname)
@@ -3804,8 +3807,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 1.0.
 	  ; 
 	  ; @ingroup context
-		procname	[ c-string! ]
-		return: [ int-ptr! ]
+		procname [ c-string! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ int glfwVulkanSupported(void)
 	glfwVulkanSupported: "glfwVulkanSupported"[
@@ -3875,8 +3878,8 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup vulkan
-		count	[ pointer! [integer!] ]
-		return: [ string-ref! ]
+		count   [ pointer! [integer!] ]
+		return: [ string-ptr! ]
 	]
 	;@@ GLFWvkproc glfwGetInstanceProcAddress(VkInstance instance, const char* procname)
 	glfwGetInstanceProcAddress: "glfwGetInstanceProcAddress"[
@@ -3917,9 +3920,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup vulkan
-		instance	[ pointer! [integer!] ]
-		procname	[ c-string! ]
-		return: [ int-ptr! ]
+		instance [ pointer! [integer!] ]
+		procname [ c-string! ]
+		return: [ pointer! [integer!] ]
 	]
 	;@@ int glfwGetPhysicalDevicePresentationSupport(VkInstance instance, VkPhysicalDevice device, uint32_t queuefamily)
 	glfwGetPhysicalDevicePresentationSupport: "glfwGetPhysicalDevicePresentationSupport"[
@@ -3952,9 +3955,9 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup vulkan
-		instance	[ pointer! [integer!] ]
-		device	[ pointer! [integer!] ]
-		queuefamily	[ integer! ]
+		instance    [ pointer! [integer!] ]
+		device      [ pointer! [integer!] ]
+		queuefamily [ integer! ]
 		return: [ integer! ]
 	]
 	;@@ VkResult glfwCreateWindowSurface(VkInstance instance, GLFWwindow* window, const VkAllocationCallbacks* allocator, VkSurfaceKHR* surface)
@@ -4005,10 +4008,18 @@ GLFWimage!: alias struct! [
 	  ; @since Added in version 3.2.
 	  ; 
 	  ; @ingroup vulkan
-		instance	[ pointer! [integer!] ]
-		window	[ GLFWwindow! ]
-		allocator	[ pointer! [integer!] ]
-		surface	[ pointer! [integer!] ]
+		instance  [ pointer! [integer!] ]
+		window    [ GLFWwindow! ]
+		allocator [ pointer! [integer!] ]
+		surface   [ pointer! [integer!] ]
 		return: [ integer! ]
 	]
 ]]
+
+
+
+;-==================================================
+;- Global definition cleanup
+;-==================================================
+
+

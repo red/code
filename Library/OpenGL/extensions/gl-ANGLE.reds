@@ -181,7 +181,7 @@ glGenQueriesANGLE!: alias function! [
 glGetQueryObjecti64vANGLE!: alias function! [
 	id          [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLint64! ]
+	params      [ GLint64-ptr! ]
 ]
 ;@@ void ( GLuint id, GLenum pname, GLint* params );
 glGetQueryObjectivANGLE!: alias function! [
@@ -193,7 +193,7 @@ glGetQueryObjectivANGLE!: alias function! [
 glGetQueryObjectui64vANGLE!: alias function! [
 	id          [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64! ]
+	params      [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint id, GLenum pname, GLuint* params );
 glGetQueryObjectuivANGLE!: alias function! [

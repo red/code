@@ -1251,7 +1251,7 @@ glGetNamedBufferParameterivEXT!: alias function! [
 glGetNamedBufferPointervEXT!: alias function! [
 	buffer      [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLuint buffer, GLintptr offset, GLsizeiptr size, void *data );
 glGetNamedBufferSubDataEXT!: alias function! [
@@ -1319,13 +1319,13 @@ glGetNamedRenderbufferParameterivEXT!: alias function! [
 glGetPointerIndexedvEXT!: alias function! [
 	target      [ GLenum! ]
 	index       [ GLuint! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLenum pname, GLuint index, void** params );
 glGetPointeri_vEXT!: alias function! [
 	pname       [ GLenum! ]
 	index       [ GLuint! ]
-	params      [ binary-ref! ]
+	params      [ binary-ptr! ]
 ]
 ;@@ void ( GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, void *pixels );
 glGetTextureImageEXT!: alias function! [
@@ -1398,13 +1398,13 @@ glGetVertexArrayPointeri_vEXT!: alias function! [
 	vaobj       [ GLuint! ]
 	index       [ GLuint! ]
 	pname       [ GLenum! ]
-	param       [ binary-ref! ]
+	param       [ binary-ptr! ]
 ]
 ;@@ void ( GLuint vaobj, GLenum pname, void** param );
 glGetVertexArrayPointervEXT!: alias function! [
 	vaobj       [ GLuint! ]
 	pname       [ GLenum! ]
-	param       [ binary-ref! ]
+	param       [ binary-ptr! ]
 ]
 ;@@ void * ( GLuint buffer, GLenum access );
 glMapNamedBufferEXT!: alias function! [
@@ -2645,7 +2645,7 @@ glMultiDrawElementsBaseVertexEXT!: alias function! [
 	mode        [ GLenum! ]
 	count       [ pointer! [GLsizei!] ]
 	type        [ GLenum! ]
-	indices     [ binary-ref! ]
+	indices     [ binary-ptr! ]
 	primcount   [ GLsizei! ]
 	basevertex  [ pointer! [GLint!] ]
 ]
@@ -3458,7 +3458,7 @@ glVertexAttribI4ivEXT!: alias function! [
 ;@@ void ( GLuint index, const GLshort *v );
 glVertexAttribI4svEXT!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint index, const GLubyte *v );
 glVertexAttribI4ubvEXT!: alias function! [
@@ -3481,7 +3481,7 @@ glVertexAttribI4uivEXT!: alias function! [
 ;@@ void ( GLuint index, const GLushort *v );
 glVertexAttribI4usvEXT!: alias function! [
 	index       [ GLuint! ]
-	v           [ pointer! [GLushort!] ]
+	v           [ GLushort-ptr! ]
 ]
 ;@@ void ( GLuint index, GLint size, GLenum type, GLsizei stride, const void *pointer );
 glVertexAttribIPointerEXT!: alias function! [
@@ -3717,7 +3717,7 @@ glBufferStorageMemEXT!: alias function! [
 	target      [ GLenum! ]
 	size        [ GLsizeiptr! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLsizei n, GLuint* memoryObjects );
 glCreateMemoryObjectsEXT!: alias function! [
@@ -3763,7 +3763,7 @@ glNamedBufferStorageMemEXT!: alias function! [
 	buffer      [ GLuint! ]
 	size        [ GLsizeiptr! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLuint memory, GLuint64 offset );
 glTexStorageMem1DEXT!: alias function! [
@@ -3772,7 +3772,7 @@ glTexStorageMem1DEXT!: alias function! [
 	internalFormat [ GLenum! ]
 	width       [ GLsizei! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLuint memory, GLuint64 offset );
 glTexStorageMem2DEXT!: alias function! [
@@ -3782,7 +3782,7 @@ glTexStorageMem2DEXT!: alias function! [
 	width       [ GLsizei! ]
 	height      [ GLsizei! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedSampleLocations, GLuint memory, GLuint64 offset );
 glTexStorageMem2DMultisampleEXT!: alias function! [
@@ -3793,7 +3793,7 @@ glTexStorageMem2DMultisampleEXT!: alias function! [
 	height      [ GLsizei! ]
 	fixedSampleLocations [ GLboolean! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLuint memory, GLuint64 offset );
 glTexStorageMem3DEXT!: alias function! [
@@ -3804,7 +3804,7 @@ glTexStorageMem3DEXT!: alias function! [
 	height      [ GLsizei! ]
 	depth       [ GLsizei! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedSampleLocations, GLuint memory, GLuint64 offset );
 glTexStorageMem3DMultisampleEXT!: alias function! [
@@ -3816,7 +3816,7 @@ glTexStorageMem3DMultisampleEXT!: alias function! [
 	depth       [ GLsizei! ]
 	fixedSampleLocations [ GLboolean! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLuint texture, GLsizei levels, GLenum internalFormat, GLsizei width, GLuint memory, GLuint64 offset );
 glTextureStorageMem1DEXT!: alias function! [
@@ -3825,7 +3825,7 @@ glTextureStorageMem1DEXT!: alias function! [
 	internalFormat [ GLenum! ]
 	width       [ GLsizei! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLuint texture, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLuint memory, GLuint64 offset );
 glTextureStorageMem2DEXT!: alias function! [
@@ -3835,7 +3835,7 @@ glTextureStorageMem2DEXT!: alias function! [
 	width       [ GLsizei! ]
 	height      [ GLsizei! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLuint texture, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedSampleLocations, GLuint memory, GLuint64 offset );
 glTextureStorageMem2DMultisampleEXT!: alias function! [
@@ -3846,7 +3846,7 @@ glTextureStorageMem2DMultisampleEXT!: alias function! [
 	height      [ GLsizei! ]
 	fixedSampleLocations [ GLboolean! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLuint texture, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLuint memory, GLuint64 offset );
 glTextureStorageMem3DEXT!: alias function! [
@@ -3857,7 +3857,7 @@ glTextureStorageMem3DEXT!: alias function! [
 	height      [ GLsizei! ]
 	depth       [ GLsizei! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 ;@@ void ( GLuint texture, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedSampleLocations, GLuint memory, GLuint64 offset );
 glTextureStorageMem3DMultisampleEXT!: alias function! [
@@ -3869,7 +3869,7 @@ glTextureStorageMem3DMultisampleEXT!: alias function! [
 	depth       [ GLsizei! ]
 	fixedSampleLocations [ GLboolean! ]
 	memory      [ GLuint! ]
-	offset      [ GLuint64! value ]
+	offset      [ GLuint64! ]
 ]
 
 
@@ -3882,7 +3882,7 @@ glTextureStorageMem3DMultisampleEXT!: alias function! [
 ;@@ void ( GLuint memory, GLuint64 size, GLenum handleType, GLint fd );
 glImportMemoryFdEXT!: alias function! [
 	memory      [ GLuint! ]
-	size        [ GLuint64! value ]
+	size        [ GLuint64! ]
 	handleType  [ GLenum! ]
 	fd          [ GLint! ]
 ]
@@ -3907,14 +3907,14 @@ glImportMemoryFdEXT!: alias function! [
 ;@@ void ( GLuint memory, GLuint64 size, GLenum handleType, void *handle );
 glImportMemoryWin32HandleEXT!: alias function! [
 	memory      [ GLuint! ]
-	size        [ GLuint64! value ]
+	size        [ GLuint64! ]
 	handleType  [ GLenum! ]
 	handle      [ pointer! [byte!] ]
 ]
 ;@@ void ( GLuint memory, GLuint64 size, GLenum handleType, const void *name );
 glImportMemoryWin32NameEXT!: alias function! [
 	memory      [ GLuint! ]
-	size        [ GLuint64! value ]
+	size        [ GLuint64! ]
 	handleType  [ GLenum! ]
 	name        [ pointer! [byte!] ]
 ]
@@ -3944,7 +3944,7 @@ glMultiDrawElementsEXT!: alias function! [
 	mode        [ GLenum! ]
 	count       [ pointer! [GLsizei!] ]
 	type        [ GLenum! ]
-	indices     [ binary-ref! ]
+	indices     [ binary-ptr! ]
 	primcount   [ GLsizei! ]
 ]
 
@@ -4483,7 +4483,7 @@ glSecondaryColor3sEXT!: alias function! [
 ]
 ;@@ void ( const GLshort *v );
 glSecondaryColor3svEXT!: alias function! [
-	v           [ pointer! [GLshort!] ]
+	v           [ GLshort-ptr! ]
 ]
 ;@@ void ( GLubyte red, GLubyte green, GLubyte blue );
 glSecondaryColor3ubEXT!: alias function! [
@@ -4513,7 +4513,7 @@ glSecondaryColor3usEXT!: alias function! [
 ]
 ;@@ void ( const GLushort *v );
 glSecondaryColor3usvEXT!: alias function! [
-	v           [ pointer! [GLushort!] ]
+	v           [ GLushort-ptr! ]
 ]
 ;@@ void ( GLint size, GLenum type, GLsizei stride, const void *pointer );
 glSecondaryColorPointerEXT!: alias function! [
@@ -4543,7 +4543,7 @@ glGenSemaphoresEXT!: alias function! [
 glGetSemaphoreParameterui64vEXT!: alias function! [
 	semaphore   [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64! ]
+	params      [ GLuint64-ptr! ]
 ]
 ;@@ GLboolean ( GLuint semaphore );
 glIsSemaphoreEXT!: alias function! [
@@ -4555,7 +4555,7 @@ glIsSemaphoreEXT!: alias function! [
 glSemaphoreParameterui64vEXT!: alias function! [
 	semaphore   [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64! ]
+	params      [ GLuint64-ptr! ]
 ]
 ;@@ void ( GLuint semaphore, GLuint numBufferBarriers, const GLuint* buffers, GLuint numTextureBarriers, const GLuint *textures, const GLenum *dstLayouts );
 glSignalSemaphoreEXT!: alias function! [
@@ -5708,13 +5708,13 @@ glTextureViewEXT!: alias function! [
 glGetQueryObjecti64vEXT!: alias function! [
 	id          [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLint64EXT! ]
+	params      [ GLint64EXT-ptr! ]
 ]
 ;@@ void ( GLuint id, GLenum pname, GLuint64EXT *params );
 glGetQueryObjectui64vEXT!: alias function! [
 	id          [ GLuint! ]
 	pname       [ GLenum! ]
-	params      [ GLuint64EXT! ]
+	params      [ GLuint64EXT-ptr! ]
 ]
 
 
@@ -5780,7 +5780,7 @@ glGetTransformFeedbackVaryingEXT!: alias function! [
 glTransformFeedbackVaryingsEXT!: alias function! [
 	program     [ GLuint! ]
 	count       [ GLsizei! ]
-	varyings    [ GLstring-ref! ]
+	varyings    [ GLstring-ptr! ]
 	bufferMode  [ GLenum! ]
 ]
 
@@ -6258,7 +6258,7 @@ glGetVariantIntegervEXT!: alias function! [
 glGetVariantPointervEXT!: alias function! [
 	id          [ GLuint! ]
 	value       [ GLenum! ]
-	data        [ binary-ref! ]
+	data        [ binary-ptr! ]
 ]
 ;@@ void ( GLuint res, GLuint src, GLuint num );
 glInsertComponentEXT!: alias function! [
@@ -6345,7 +6345,7 @@ glVariantivEXT!: alias function! [
 ;@@ void ( GLuint id, GLshort *addr );
 glVariantsvEXT!: alias function! [
 	id          [ GLuint! ]
-	addr        [ pointer! [GLshort!] ]
+	addr        [ GLshort-ptr! ]
 ]
 ;@@ void ( GLuint id, GLubyte *addr );
 glVariantubvEXT!: alias function! [
@@ -6360,7 +6360,7 @@ glVariantuivEXT!: alias function! [
 ;@@ void ( GLuint id, GLushort *addr );
 glVariantusvEXT!: alias function! [
 	id          [ GLuint! ]
-	addr        [ pointer! [GLushort!] ]
+	addr        [ GLushort-ptr! ]
 ]
 ;@@ void ( GLuint res, GLuint in, GLenum outX, GLenum outY, GLenum outZ, GLenum outW );
 glWriteMaskEXT!: alias function! [
@@ -6416,7 +6416,7 @@ glVertexWeightfvEXT!: alias function! [
 ;@@ GLboolean ( GLuint memory, GLuint64 key, GLuint timeout );
 glAcquireKeyedMutexWin32EXT!: alias function! [
 	memory      [ GLuint! ]
-	key         [ GLuint64! value ]
+	key         [ GLuint64! ]
 	timeout     [ GLuint! ]
 	return: [ GLboolean! ]
 
@@ -6424,7 +6424,7 @@ glAcquireKeyedMutexWin32EXT!: alias function! [
 ;@@ GLboolean ( GLuint memory, GLuint64 key );
 glReleaseKeyedMutexWin32EXT!: alias function! [
 	memory      [ GLuint! ]
-	key         [ GLuint64! value ]
+	key         [ GLuint64! ]
 	return: [ GLboolean! ]
 
 ]
