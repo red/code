@@ -1,5 +1,6 @@
 Red/System [
-	Title:   "Red/System OpenGL3 colored and animated cube example"
+	Title:   "Red/System OpenGL3 colored and animated cube example (v2)"
+	Purpose: {This example adds mouse wheel zooming.}
 	Author:  "Oldes"
 	File:    %gl3-cube-colored.reds
 	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
@@ -202,21 +203,43 @@ modelID:      glGetUniformLocation programID "model"
 glUseProgram 0
 
 
+model-scale: 1.0 
+real-scale:  1.0
+; Adding mouse wheel callback for model scaling:
+on-wheel: func[
+	[GLFW3_CALLING]
+	window  [GLFWwindow!]
+	xoffset [float!]
+	yoffset [float!]
+	/local sc
+][
+	;print-line ["mouse wheel: " xoffset #" " yoffset]
+	model-scale: model-scale + (yoffset * 0.2)
+	case [
+		model-scale > 2.5  [model-scale:  2.5]
+		model-scale < -2.5 [model-scale: -2.5]
+		true [] ;@@ just to make compiler happy :-/
+	]
+	;print-line [real-scale " " model-scale]
+]
+
+glfwSetScrollCallback window :on-wheel
+
+
 
 render-scene: func[
-	/local time
+	/local alfa time
 ] [
 	glClear GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
 
 	glUseProgram programID
 
 	time: glfwGetTime
-
-	;note: bellow code incrementaly adds rotation, so the animation will speed up!
-	mat4f/rotate-x model time * 0.001
-	mat4f/rotate-y model time * 0.0005
-	mat4f/rotate-z model time * 0.002
-	;:note
+	real-scale: real-scale + (model-scale - real-scale / 10.0) ;simple tween
+	mat4f/scaling  model real-scale
+	mat4f/rotate-x model sin(time)
+	mat4f/rotate-y model cos(time * 1.2)
+	mat4f/rotate-z model sin(time * 0.02)
 
 	glUniformMatrix4fv projectionID 1 GL_FALSE as pointer! [float32!] projection
 	glUniformMatrix4fv cameraID     1 GL_FALSE as pointer! [float32!] camera

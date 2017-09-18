@@ -282,6 +282,36 @@ mat4f: context [
 	]
 
 	rotate-x: func[
+		in      [mat4f!]
+		angle   [float!] ;amount to rotate in radians
+		return: [mat4f!]
+		/local c s m10 m11 m12 m13 m20 m21 m22 m23
+	][
+		m10:  in/m10
+		m11:  in/m11
+		m12:  in/m12
+		m13:  in/m13
+		m20:  in/m20
+		m21:  in/m21
+		m22:  in/m22
+		m23:  in/m23
+
+		c: as float32! cos angle
+		s: as float32! sin angle
+
+		in/m10: (c * m10) + (s * m20)
+		in/m11: (c * m11) + (s * m21)
+		in/m12: (c * m12) + (s * m22)
+		in/m13: (c * m13) + (s * m23)
+		in/m20: (c * m20) - (s * m10)
+		in/m21: (c * m21) - (s * m11)
+		in/m22: (c * m22) - (s * m12)
+		in/m23: (c * m23) - (s * m13)
+
+		in
+	]
+
+	rotate-x-into: func[
 		out     [mat4f!]
 		in      [mat4f!]
 		angle   [float!] ;amount to rotate in radians
@@ -341,6 +371,36 @@ mat4f: context [
 	]
 
 	rotate-y: func[
+		in      [mat4f!]
+		angle   [float!] ;amount to rotate in radians
+		return: [mat4f!]
+		/local c s m00 m01 m02 m03 m20 m21 m22 m23
+	][
+		m00:  in/m00
+		m01:  in/m01
+		m02:  in/m02
+		m03:  in/m03
+		m20:  in/m20
+		m21:  in/m21
+		m22:  in/m22
+		m23:  in/m23
+
+		c: as float32! cos angle
+		s: as float32! sin angle
+
+		in/m00: (c * m00) - (s * m20)
+		in/m01: (c * m01) - (s * m21)
+		in/m02: (c * m02) - (s * m22)
+		in/m03: (c * m03) - (s * m23)
+		in/m20: (c * m20) + (s * m00)
+		in/m21: (c * m21) + (s * m01)
+		in/m22: (c * m22) + (s * m02)
+		in/m23: (c * m23) + (s * m03)
+
+		in
+	]
+
+	rotate-y-into: func[
 		out     [mat4f!]
 		in      [mat4f!]
 		angle   [float!] ;amount to rotate in radians
@@ -400,6 +460,36 @@ mat4f: context [
 	]
 
 	rotate-z: func[
+		in      [mat4f!]
+		angle   [float!] ;amount to rotate in radians
+		return: [mat4f!]
+		/local c s m00 m01 m02 m03 m10 m11 m12 m13
+	][
+		m00:  in/m00
+		m01:  in/m01
+		m02:  in/m02
+		m03:  in/m03
+		m10:  in/m10
+		m11:  in/m11
+		m12:  in/m12
+		m13:  in/m13
+
+		c: as float32! cos angle
+		s: as float32! sin angle
+
+		in/m00: (c * m00) + (s * m10)
+		in/m01: (c * m01) + (s * m11)
+		in/m02: (c * m02) + (s * m12)
+		in/m03: (c * m03) + (s * m13)
+		in/m10: (c * m10) - (s * m00)
+		in/m11: (c * m11) - (s * m01)
+		in/m12: (c * m12) - (s * m02)
+		in/m13: (c * m13) - (s * m03)
+
+		in
+	]
+
+	rotate-z-into: func[
 		out     [mat4f!]
 		in      [mat4f!]
 		angle   [float!] ;amount to rotate in radians
@@ -440,7 +530,7 @@ mat4f: context [
 		out
 	]
 
-	scaling: func[
+	scaling-3d: func[
 		out     [mat4f!]
 		scx     [float!]
 		scy     [float!]
@@ -455,7 +545,7 @@ mat4f: context [
 		out
 	]
 
-	scale: func[
+	scale-3d: func[
 		out     [mat4f!]
 		in      [mat4f!]
 		scx     [float!]
@@ -466,6 +556,48 @@ mat4f: context [
 		out/m00: in/m00 * scx  out/m01: in/m01 * scx out/m02: in/m02 * scx out/m03: in/m03 * scx
 		out/m10: in/m10 * scy  out/m11: in/m11 * scy out/m12: in/m12 * scy out/m13: in/m13 * scy
 		out/m20: in/m20 * scz  out/m21: in/m21 * scz out/m22: in/m22 * scz out/m23: in/m23 * scz
+
+		if out <> in [
+			out/m30: in/m30 out/m31: in/m31 out/m32: in/m32 out/m33: in/m33
+		]
+		out
+	]
+
+	scaling: func[
+		out     [mat4f!]
+		sc      [float!]
+		return: [mat4f!] 
+	][
+		set-memory as byte-ptr! out #"^@" size? mat4f!
+		out/m00: as float32! sc
+		out/m11: as float32! sc
+		out/m22: as float32! sc
+		out/m33: as float32! 1.0
+		out
+	]
+
+	scale: func[
+		;uniform scale - all directions are same
+		v       [mat4f!]
+		sc      [float!]
+		return: [mat4f!]
+	][
+		v/m00: v/m00 * sc  v/m01: v/m01 * sc v/m02: v/m02 * sc v/m03: v/m03 * sc
+		v/m10: v/m10 * sc  v/m11: v/m11 * sc v/m12: v/m12 * sc v/m13: v/m13 * sc
+		v/m20: v/m20 * sc  v/m21: v/m21 * sc v/m22: v/m22 * sc v/m23: v/m23 * sc
+		v
+	]
+
+	scale-into: func[
+		;uniform scale - all directions are same
+		out     [mat4f!]
+		in      [mat4f!]
+		sc      [float!]
+		return: [mat4f!]
+	][
+		out/m00: in/m00 * sc  out/m01: in/m01 * sc out/m02: in/m02 * sc out/m03: in/m03 * sc
+		out/m10: in/m10 * sc  out/m11: in/m11 * sc out/m12: in/m12 * sc out/m13: in/m13 * sc
+		out/m20: in/m20 * sc  out/m21: in/m21 * sc out/m22: in/m22 * sc out/m23: in/m23 * sc
 
 		if out <> in [
 			out/m30: in/m30 out/m31: in/m31 out/m32: in/m32 out/m33: in/m33
