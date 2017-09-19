@@ -12,7 +12,7 @@ Red/System [
 init
 info
 
-data: declare binary-ref!
+data: declare binary-ptr!
 
 print-line ["exists hell.txt?  " file-exists? "hell.txt"]
 print-line ["exists hello.txt? " file-exists? "hello.txt"]

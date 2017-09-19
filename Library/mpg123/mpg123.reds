@@ -13,7 +13,7 @@ Red/System [
 	#default  [ #define MPG123_LIBRARY "libmpg123.so" ] ;@@ not tested!
 ]
 
-string-ref!:  alias struct! [value [c-string!]]
+#include %../os/definitions.reds ;common aliases and defines
 
 #define mpg123! int-ptr!
 

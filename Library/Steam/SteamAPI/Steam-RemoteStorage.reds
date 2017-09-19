@@ -114,18 +114,18 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 			pchFile     [c-string!]            ;const char *
 			pvData      [byte-ptr!]            ;const void *
 			cubData     [integer!]             ;uint32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_FileReadAsync: "SteamAPI_ISteamRemoteStorage_FileReadAsync" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
 			pchFile     [c-string!]            ;const char *
 			nOffset     [integer!]             ;uint32
 			cubToRead   [integer!]             ;uint32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_FileReadAsyncComplete: "SteamAPI_ISteamRemoteStorage_FileReadAsyncComplete" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
-			hReadCall   [uint64! value]        ;SteamAPICall_t
+			hReadCall   [uint64-value!]        ;SteamAPICall_t
 			pvBuffer    [byte-ptr!]             ;void *
 			cubToRead   [integer!]             ;uint32
 			return: [logic!]
@@ -143,7 +143,7 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 		SteamAPI_ISteamRemoteStorage_FileShare: "SteamAPI_ISteamRemoteStorage_FileShare" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
 			pchFile     [c-string!]            ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_SetSyncPlatforms: "SteamAPI_ISteamRemoteStorage_SetSyncPlatforms" [
 			instancePtr         [ISteamRemoteStorage!];intptr_t
@@ -154,23 +154,23 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 		SteamAPI_ISteamRemoteStorage_FileWriteStreamOpen: "SteamAPI_ISteamRemoteStorage_FileWriteStreamOpen" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
 			pchFile     [c-string!]            ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_FileWriteStreamWriteChunk: {SteamAPI_ISteamRemoteStorage_FileWriteStreamWriteChunk} [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
-			writeHandle [uint64! value]        ;UGCFileWriteStreamHandle_t
+			writeHandle [uint64-value!]        ;UGCFileWriteStreamHandle_t
 			pvData      [byte-ptr!]            ;const void *
 			cubData     [integer!]             ;int32
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_FileWriteStreamClose: "SteamAPI_ISteamRemoteStorage_FileWriteStreamClose" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
-			writeHandle [uint64! value]        ;UGCFileWriteStreamHandle_t
+			writeHandle [uint64-value!]        ;UGCFileWriteStreamHandle_t
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_FileWriteStreamCancel: "SteamAPI_ISteamRemoteStorage_FileWriteStreamCancel" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
-			writeHandle [uint64! value]        ;UGCFileWriteStreamHandle_t
+			writeHandle [uint64-value!]        ;UGCFileWriteStreamHandle_t
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_FileExists: "SteamAPI_ISteamRemoteStorage_FileExists" [
@@ -191,7 +191,7 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 		SteamAPI_ISteamRemoteStorage_GetFileTimestamp: "SteamAPI_ISteamRemoteStorage_GetFileTimestamp" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
 			pchFile     [c-string!]            ;const char *
-			return: [int64!]
+			return: [int64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_GetSyncPlatforms: "SteamAPI_ISteamRemoteStorage_GetSyncPlatforms" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
@@ -210,8 +210,8 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 		]
 		SteamAPI_ISteamRemoteStorage_GetQuota: "SteamAPI_ISteamRemoteStorage_GetQuota" [
 			instancePtr      [ISteamRemoteStorage!];intptr_t
-			pnTotalBytes     [uint64-ref!]     ;uint64 *
-			puAvailableBytes [uint64-ref!]     ;uint64 *
+			pnTotalBytes     [uint64-ptr!]     ;uint64 *
+			puAvailableBytes [uint64-ptr!]     ;uint64 *
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_IsCloudEnabledForAccount: {SteamAPI_ISteamRemoteStorage_IsCloudEnabledForAccount} [
@@ -228,29 +228,29 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 		]
 		SteamAPI_ISteamRemoteStorage_UGCDownload: "SteamAPI_ISteamRemoteStorage_UGCDownload" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
-			hContent    [uint64! value]        ;UGCHandle_t
+			hContent    [uint64-value!]        ;UGCHandle_t
 			unPriority  [integer!]             ;uint32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_GetUGCDownloadProgress: {SteamAPI_ISteamRemoteStorage_GetUGCDownloadProgress} [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			hContent          [uint64! value]  ;UGCHandle_t
+			hContent          [uint64-value!]  ;UGCHandle_t
 			pnBytesDownloaded [int-ptr!]       ;int32 *
 			pnBytesExpected   [int-ptr!]       ;int32 *
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_GetUGCDetails: "SteamAPI_ISteamRemoteStorage_GetUGCDetails" [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			hContent          [uint64! value]  ;UGCHandle_t
+			hContent          [uint64-value!]  ;UGCHandle_t
 			pnAppID           [int-ptr!]       ;AppId_t *
-			ppchName          [string-ref!]    ;char **
+			ppchName          [string-ptr!]    ;char **
 			pnFileSizeInBytes [int-ptr!]       ;int32 *
-			pSteamIDOwner     [CSteamID-ref!]  ;class CSteamID *
+			pSteamIDOwner     [CSteamID-ptr!]  ;class CSteamID *
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_UGCRead: "SteamAPI_ISteamRemoteStorage_UGCRead" [
 			instancePtr   [ISteamRemoteStorage!];intptr_t
-			hContent      [uint64! value]      ;UGCHandle_t
+			hContent      [uint64-value!]      ;UGCHandle_t
 			pvData        [byte-ptr!]          ;void *
 			cubDataToRead [integer!]           ;int32
 			cOffset       [integer!]           ;uint32
@@ -264,7 +264,7 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 		SteamAPI_ISteamRemoteStorage_GetCachedUGCHandle: "SteamAPI_ISteamRemoteStorage_GetCachedUGCHandle" [
 			instancePtr    [ISteamRemoteStorage!];intptr_t
 			iCachedContent [integer!]          ;int32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_PublishWorkshopFile: "SteamAPI_ISteamRemoteStorage_PublishWorkshopFile" [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
@@ -276,106 +276,106 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 			eVisibility       [ERemoteStoragePublishedFileVisibility!];ERemoteStoragePublishedFileVisibility
 			pTags             [int-ptr!]       ;struct SteamParamStringArray_t *
 			eWorkshopFileType [EWorkshopFileType!];EWorkshopFileType
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_CreatePublishedFileUpdateRequest: {SteamAPI_ISteamRemoteStorage_CreatePublishedFileUpdateRequest} [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			unPublishedFileId [uint64! value]  ;PublishedFileId_t
-			return: [uint64! value]
+			unPublishedFileId [uint64-value!]  ;PublishedFileId_t
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_UpdatePublishedFileFile: {SteamAPI_ISteamRemoteStorage_UpdatePublishedFileFile} [
 			instancePtr  [ISteamRemoteStorage!];intptr_t
-			updateHandle [uint64! value]       ;PublishedFileUpdateHandle_t
+			updateHandle [uint64-value!]       ;PublishedFileUpdateHandle_t
 			pchFile      [c-string!]           ;const char *
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_UpdatePublishedFilePreviewFile: {SteamAPI_ISteamRemoteStorage_UpdatePublishedFilePreviewFile} [
 			instancePtr    [ISteamRemoteStorage!];intptr_t
-			updateHandle   [uint64! value]     ;PublishedFileUpdateHandle_t
+			updateHandle   [uint64-value!]     ;PublishedFileUpdateHandle_t
 			pchPreviewFile [c-string!]         ;const char *
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_UpdatePublishedFileTitle: {SteamAPI_ISteamRemoteStorage_UpdatePublishedFileTitle} [
 			instancePtr  [ISteamRemoteStorage!];intptr_t
-			updateHandle [uint64! value]       ;PublishedFileUpdateHandle_t
+			updateHandle [uint64-value!]       ;PublishedFileUpdateHandle_t
 			pchTitle     [c-string!]           ;const char *
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_UpdatePublishedFileDescription: {SteamAPI_ISteamRemoteStorage_UpdatePublishedFileDescription} [
 			instancePtr    [ISteamRemoteStorage!];intptr_t
-			updateHandle   [uint64! value]     ;PublishedFileUpdateHandle_t
+			updateHandle   [uint64-value!]     ;PublishedFileUpdateHandle_t
 			pchDescription [c-string!]         ;const char *
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_UpdatePublishedFileVisibility: {SteamAPI_ISteamRemoteStorage_UpdatePublishedFileVisibility} [
 			instancePtr  [ISteamRemoteStorage!];intptr_t
-			updateHandle [uint64! value]       ;PublishedFileUpdateHandle_t
+			updateHandle [uint64-value!]       ;PublishedFileUpdateHandle_t
 			eVisibility  [ERemoteStoragePublishedFileVisibility!];ERemoteStoragePublishedFileVisibility
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_UpdatePublishedFileTags: {SteamAPI_ISteamRemoteStorage_UpdatePublishedFileTags} [
 			instancePtr  [ISteamRemoteStorage!];intptr_t
-			updateHandle [uint64! value]       ;PublishedFileUpdateHandle_t
+			updateHandle [uint64-value!]       ;PublishedFileUpdateHandle_t
 			pTags        [int-ptr!]            ;struct SteamParamStringArray_t *
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_CommitPublishedFileUpdate: {SteamAPI_ISteamRemoteStorage_CommitPublishedFileUpdate} [
 			instancePtr  [ISteamRemoteStorage!];intptr_t
-			updateHandle [uint64! value]       ;PublishedFileUpdateHandle_t
-			return: [uint64! value]
+			updateHandle [uint64-value!]       ;PublishedFileUpdateHandle_t
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_GetPublishedFileDetails: {SteamAPI_ISteamRemoteStorage_GetPublishedFileDetails} [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			unPublishedFileId [uint64! value]  ;PublishedFileId_t
+			unPublishedFileId [uint64-value!]  ;PublishedFileId_t
 			unMaxSecondsOld   [integer!]       ;uint32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_DeletePublishedFile: "SteamAPI_ISteamRemoteStorage_DeletePublishedFile" [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			unPublishedFileId [uint64! value]  ;PublishedFileId_t
-			return: [uint64! value]
+			unPublishedFileId [uint64-value!]  ;PublishedFileId_t
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_EnumerateUserPublishedFiles: {SteamAPI_ISteamRemoteStorage_EnumerateUserPublishedFiles} [
 			instancePtr  [ISteamRemoteStorage!];intptr_t
 			unStartIndex [integer!]            ;uint32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_SubscribePublishedFile: {SteamAPI_ISteamRemoteStorage_SubscribePublishedFile} [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			unPublishedFileId [uint64! value]  ;PublishedFileId_t
-			return: [uint64! value]
+			unPublishedFileId [uint64-value!]  ;PublishedFileId_t
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_EnumerateUserSubscribedFiles: {SteamAPI_ISteamRemoteStorage_EnumerateUserSubscribedFiles} [
 			instancePtr  [ISteamRemoteStorage!];intptr_t
 			unStartIndex [integer!]            ;uint32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_UnsubscribePublishedFile: {SteamAPI_ISteamRemoteStorage_UnsubscribePublishedFile} [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			unPublishedFileId [uint64! value]  ;PublishedFileId_t
-			return: [uint64! value]
+			unPublishedFileId [uint64-value!]  ;PublishedFileId_t
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_UpdatePublishedFileSetChangeDescription: {SteamAPI_ISteamRemoteStorage_UpdatePublishedFileSetChangeDescription} [
 			instancePtr         [ISteamRemoteStorage!];intptr_t
-			updateHandle        [uint64! value];PublishedFileUpdateHandle_t
+			updateHandle        [uint64-value!];PublishedFileUpdateHandle_t
 			pchChangeDescription[c-string!]    ;const char *
 			return: [logic!]
 		]
 		SteamAPI_ISteamRemoteStorage_GetPublishedItemVoteDetails: {SteamAPI_ISteamRemoteStorage_GetPublishedItemVoteDetails} [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			unPublishedFileId [uint64! value]  ;PublishedFileId_t
-			return: [uint64! value]
+			unPublishedFileId [uint64-value!]  ;PublishedFileId_t
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_UpdateUserPublishedItemVote: {SteamAPI_ISteamRemoteStorage_UpdateUserPublishedItemVote} [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			unPublishedFileId [uint64! value]  ;PublishedFileId_t
+			unPublishedFileId [uint64-value!]  ;PublishedFileId_t
 			bVoteUp           [logic!]         ;bool
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_GetUserPublishedItemVoteDetails: {SteamAPI_ISteamRemoteStorage_GetUserPublishedItemVoteDetails} [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			unPublishedFileId [uint64! value]  ;PublishedFileId_t
-			return: [uint64! value]
+			unPublishedFileId [uint64-value!]  ;PublishedFileId_t
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_EnumerateUserSharedWorkshopFiles: {SteamAPI_ISteamRemoteStorage_EnumerateUserSharedWorkshopFiles} [
 			instancePtr   [ISteamRemoteStorage!];intptr_t
@@ -383,7 +383,7 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 			unStartIndex  [integer!]           ;uint32
 			pRequiredTags [int-ptr!]           ;struct SteamParamStringArray_t *
 			pExcludedTags [int-ptr!]           ;struct SteamParamStringArray_t *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_PublishVideo: "SteamAPI_ISteamRemoteStorage_PublishVideo" [
 			instancePtr        [ISteamRemoteStorage!];intptr_t
@@ -396,19 +396,19 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 			pchDescription     [c-string!]     ;const char *
 			eVisibility        [ERemoteStoragePublishedFileVisibility!];ERemoteStoragePublishedFileVisibility
 			pTags              [int-ptr!]      ;struct SteamParamStringArray_t *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_SetUserPublishedFileAction: {SteamAPI_ISteamRemoteStorage_SetUserPublishedFileAction} [
 			instancePtr       [ISteamRemoteStorage!];intptr_t
-			unPublishedFileId [uint64! value]  ;PublishedFileId_t
+			unPublishedFileId [uint64-value!]  ;PublishedFileId_t
 			eAction           [EWorkshopFileAction!];EWorkshopFileAction
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_EnumeratePublishedFilesByUserAction: {SteamAPI_ISteamRemoteStorage_EnumeratePublishedFilesByUserAction} [
 			instancePtr  [ISteamRemoteStorage!];intptr_t
 			eAction      [EWorkshopFileAction!];EWorkshopFileAction
 			unStartIndex [integer!]            ;uint32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_EnumeratePublishedWorkshopFiles: {SteamAPI_ISteamRemoteStorage_EnumeratePublishedWorkshopFiles} [
 			instancePtr      [ISteamRemoteStorage!];intptr_t
@@ -418,14 +418,14 @@ ISteamRemoteStorage: declare ISteamRemoteStorage!
 			unDays           [integer!]        ;uint32
 			pTags            [int-ptr!]        ;struct SteamParamStringArray_t *
 			pUserTags        [int-ptr!]        ;struct SteamParamStringArray_t *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamRemoteStorage_UGCDownloadToLocation: "SteamAPI_ISteamRemoteStorage_UGCDownloadToLocation" [
 			instancePtr [ISteamRemoteStorage!] ;intptr_t
-			hContent    [uint64! value]        ;UGCHandle_t
+			hContent    [uint64-value!]        ;UGCHandle_t
 			pchLocation [c-string!]            ;const char *
 			unPriority  [integer!]             ;uint32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 	]
 ]

@@ -195,11 +195,6 @@ vorbis-decoder: context [
                                     if 0 = result [ ;test for success!
                                         vorbis_synthesis_blockin vd vb
 
-                                        ;pcm is a multichannel float vector.  In stereo, for
-                                        ;example, pcm[0] is left, and pcm[1] is right.  samples is
-                                        ;the size of each channel.  Convert the float values
-                                        ;(-1.<=range<=1.) to whatever PCM format and write it out
-
                                         pcm: 0
                                         while [ 
                                             samples: vorbis_synthesis_pcmout vd :pcm

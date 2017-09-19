@@ -40,6 +40,7 @@ string-ptr-ptr!:  alias struct! [value [string-ptr!]]
 handle-ptr!:      alias struct! [value [pointer! [integer!]]]
 logic-ptr!:       alias struct! [value [logic!]]
 int64-ptr!:       alias struct! [value [int64-value!]]
+float32-ptr-ptr!: alias struct! [value [float32-ptr!]]
 
 #if OS = 'Windows  [
 	#define HDC!                      handle!

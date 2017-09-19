@@ -10,8 +10,8 @@ Red/System [
 #include %SQLite3.reds
 
 db:     declare sqlite3!
-db-ref: declare sqlite3-ref!
-errmsg: declare string-ref!
+db-ptr: declare sqlite3-ptr!
+errmsg: declare string-ptr!
 data:   declare int-ptr!
 str:    declare c-string!
 
@@ -36,8 +36,8 @@ on-row: function [[cdecl]
 	"Process a result row."
 	data		[int-ptr!]
 	columns		[integer!]
-	values		[string-ref!]
-	names		[string-ref!]
+	values		[string-ptr!]
+	names		[string-ptr!]
 	return:		[integer!]
 ][
 	data/value: data/value + 1
@@ -74,9 +74,9 @@ status: sqlite3_initialize
 either SQLITE_OK <> status [
 	print-line ["SQLite init failed with status: " status]
 ][
-	status: sqlite3_open "test.db" db-ref
+	status: sqlite3_open "test.db" db-ptr
 	if SQLITE_OK = status [
-		db: db-ref/value
+		db: db-ptr/value
 		print-line ["DB: " db]
 
 		sqlite3_trace  db :on-trace null

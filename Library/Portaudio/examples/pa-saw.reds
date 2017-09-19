@@ -80,7 +80,7 @@ playSound: func[
     userData/pitch-left:  as float32! 0.01
     userData/pitch-right: as float32! 0.03
     
-    stream-ref: declare PaStream-ref!
+    stream-ref: declare PaStream-ptr!
 
     err: Pa_OpenDefaultStream
               stream-ref

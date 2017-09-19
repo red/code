@@ -20,7 +20,7 @@ ISteamUser: declare ISteamUser!
 		]
 		SteamAPI_ISteamUser_GetSteamID: "SteamAPI_ISteamUser_GetSteamID" [
 			instancePtr [ISteamUser!]          ;intptr_t
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUser_InitiateGameConnection: "SteamAPI_ISteamUser_InitiateGameConnection" [
 			instancePtr       [ISteamUser!]    ;intptr_t
@@ -28,14 +28,14 @@ ISteamUser: declare ISteamUser!
 			cbMaxAuthBlob     [integer!]       ;int
 			steamIDGameServer [CSteamID!]      ;class CSteamID
 			unIPServer        [integer!]       ;uint32
-			usPortServer      [uint16!]        ;uint16
+			usPortServer      [uint16-value!]        ;uint16
 			bSecure           [logic!]         ;bool
 			return: [integer!]
 		]
 		SteamAPI_ISteamUser_TerminateGameConnection: "SteamAPI_ISteamUser_TerminateGameConnection" [
 			instancePtr  [ISteamUser!]         ;intptr_t
 			unIPServer   [integer!]            ;uint32
-			usPortServer [uint16!]             ;uint16
+			usPortServer [uint16-value!]             ;uint16
 		]
 		SteamAPI_ISteamUser_TrackAppUsageEvent: "SteamAPI_ISteamUser_TrackAppUsageEvent" [
 			instancePtr    [ISteamUser!]       ;intptr_t
@@ -125,13 +125,13 @@ ISteamUser: declare ISteamUser!
 			instancePtr       [ISteamUser!]    ;intptr_t
 			steamIDGameServer [CSteamID!]      ;class CSteamID
 			unIPServer        [integer!]       ;uint32
-			usPortServer      [uint16!]        ;uint16
+			usPortServer      [uint16-value!]        ;uint16
 		]
 		SteamAPI_ISteamUser_RequestEncryptedAppTicket: "SteamAPI_ISteamUser_RequestEncryptedAppTicket" [
 			instancePtr     [ISteamUser!]      ;intptr_t
 			pDataToInclude  [byte-ptr!]        ;void *
 			cbDataToInclude [integer!]         ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUser_GetEncryptedAppTicket: "SteamAPI_ISteamUser_GetEncryptedAppTicket" [
 			instancePtr [ISteamUser!]          ;intptr_t
@@ -153,7 +153,7 @@ ISteamUser: declare ISteamUser!
 		SteamAPI_ISteamUser_RequestStoreAuthURL: "SteamAPI_ISteamUser_RequestStoreAuthURL" [
 			instancePtr    [ISteamUser!]       ;intptr_t
 			pchRedirectURL [c-string!]         ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUser_BIsPhoneVerified: "SteamAPI_ISteamUser_BIsPhoneVerified" [
 			instancePtr [ISteamUser!]          ;intptr_t

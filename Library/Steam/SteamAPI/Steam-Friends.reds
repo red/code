@@ -66,7 +66,7 @@ ISteamFriends: declare ISteamFriends!
 #define k_cFriendsGroupLimit  100
 
 ; invalid friends group identifier constant
-#define k_FriendsGroupID_Invalid -1 ;int16!
+#define k_FriendsGroupID_Invalid -1 ;@@ int16-value!
 
 #define k_cEnumerateFollowersMax  50
 
@@ -87,7 +87,7 @@ ISteamFriends: declare ISteamFriends!
 		SteamAPI_ISteamFriends_SetPersonaName: "SteamAPI_ISteamFriends_SetPersonaName" [
 			instancePtr    [ISteamFriends!]    ;intptr_t
 			pchPersonaName [c-string!]         ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_GetPersonaState: "SteamAPI_ISteamFriends_GetPersonaState" [
 			instancePtr [ISteamFriends!]       ;intptr_t
@@ -102,7 +102,7 @@ ISteamFriends: declare ISteamFriends!
 			instancePtr  [ISteamFriends!]      ;intptr_t
 			iFriend      [integer!]            ;int
 			iFriendFlags [integer!]            ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_GetFriendRelationship: "SteamAPI_ISteamFriends_GetFriendRelationship" [
 			instancePtr   [ISteamFriends!]     ;intptr_t
@@ -148,22 +148,22 @@ ISteamFriends: declare ISteamFriends!
 		SteamAPI_ISteamFriends_GetFriendsGroupIDByIndex: "SteamAPI_ISteamFriends_GetFriendsGroupIDByIndex" [
 			instancePtr [ISteamFriends!]       ;intptr_t
 			iFG         [integer!]             ;int
-			return: [int16!]
+			return: [int16-value!]
 		]
 		SteamAPI_ISteamFriends_GetFriendsGroupName: "SteamAPI_ISteamFriends_GetFriendsGroupName" [
 			instancePtr    [ISteamFriends!]    ;intptr_t
-			friendsGroupID [int16!]            ;FriendsGroupID_t
+			friendsGroupID [int16-value!]      ;FriendsGroupID_t
 			return: [c-string!]
 		]
 		SteamAPI_ISteamFriends_GetFriendsGroupMembersCount: "SteamAPI_ISteamFriends_GetFriendsGroupMembersCount" [
 			instancePtr    [ISteamFriends!]    ;intptr_t
-			friendsGroupID [int16!]            ;FriendsGroupID_t
+			friendsGroupID [int16-value!]      ;FriendsGroupID_t
 			return: [integer!]
 		]
 		SteamAPI_ISteamFriends_GetFriendsGroupMembersList: "SteamAPI_ISteamFriends_GetFriendsGroupMembersList" [
 			instancePtr        [ISteamFriends!];intptr_t
-			friendsGroupID     [int16!]        ;FriendsGroupID_t
-			pOutSteamIDMembers [CSteamID-ref!] ;class CSteamID *
+			friendsGroupID     [int16-value!]  ;FriendsGroupID_t
+			pOutSteamIDMembers [CSteamID-ptr!] ;class CSteamID *
 			nMembersCount      [integer!]      ;int
 		]
 		SteamAPI_ISteamFriends_HasFriend: "SteamAPI_ISteamFriends_HasFriend" [
@@ -179,7 +179,7 @@ ISteamFriends: declare ISteamFriends!
 		SteamAPI_ISteamFriends_GetClanByIndex: "SteamAPI_ISteamFriends_GetClanByIndex" [
 			instancePtr [ISteamFriends!]       ;intptr_t
 			iClan       [integer!]             ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_GetClanName: "SteamAPI_ISteamFriends_GetClanName" [
 			instancePtr [ISteamFriends!]       ;intptr_t
@@ -201,9 +201,9 @@ ISteamFriends: declare ISteamFriends!
 		]
 		SteamAPI_ISteamFriends_DownloadClanActivityCounts: "SteamAPI_ISteamFriends_DownloadClanActivityCounts" [
 			instancePtr     [ISteamFriends!]   ;intptr_t
-			psteamIDClans   [CSteamID-ref!]    ;class CSteamID *
+			psteamIDClans   [CSteamID-ptr!]    ;class CSteamID *
 			cClansToRequest [integer!]         ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_GetFriendCountFromSource: "SteamAPI_ISteamFriends_GetFriendCountFromSource" [
 			instancePtr   [ISteamFriends!]     ;intptr_t
@@ -214,7 +214,7 @@ ISteamFriends: declare ISteamFriends!
 			instancePtr   [ISteamFriends!]     ;intptr_t
 			steamIDSource [CSteamID!]          ;class CSteamID
 			iFriend       [integer!]           ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_IsUserInSource: "SteamAPI_ISteamFriends_IsUserInSource" [
 			instancePtr   [ISteamFriends!]     ;intptr_t
@@ -277,12 +277,12 @@ ISteamFriends: declare ISteamFriends!
 		SteamAPI_ISteamFriends_RequestClanOfficerList: "SteamAPI_ISteamFriends_RequestClanOfficerList" [
 			instancePtr [ISteamFriends!]       ;intptr_t
 			steamIDClan [CSteamID!]            ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_GetClanOwner: "SteamAPI_ISteamFriends_GetClanOwner" [
 			instancePtr [ISteamFriends!]       ;intptr_t
 			steamIDClan [CSteamID!]            ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_GetClanOfficerCount: "SteamAPI_ISteamFriends_GetClanOfficerCount" [
 			instancePtr [ISteamFriends!]       ;intptr_t
@@ -293,7 +293,7 @@ ISteamFriends: declare ISteamFriends!
 			instancePtr [ISteamFriends!]       ;intptr_t
 			steamIDClan [CSteamID!]            ;class CSteamID
 			iOfficer    [integer!]             ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_GetUserRestrictions: "SteamAPI_ISteamFriends_GetUserRestrictions" [
 			instancePtr [ISteamFriends!]       ;intptr_t
@@ -342,7 +342,7 @@ ISteamFriends: declare ISteamFriends!
 		SteamAPI_ISteamFriends_GetCoplayFriend: "SteamAPI_ISteamFriends_GetCoplayFriend" [
 			instancePtr   [ISteamFriends!]     ;intptr_t
 			iCoplayFriend [integer!]           ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_GetFriendCoplayTime: "SteamAPI_ISteamFriends_GetFriendCoplayTime" [
 			instancePtr   [ISteamFriends!]     ;intptr_t
@@ -357,7 +357,7 @@ ISteamFriends: declare ISteamFriends!
 		SteamAPI_ISteamFriends_JoinClanChatRoom: "SteamAPI_ISteamFriends_JoinClanChatRoom" [
 			instancePtr [ISteamFriends!]       ;intptr_t
 			steamIDClan [CSteamID!]            ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_LeaveClanChatRoom: "SteamAPI_ISteamFriends_LeaveClanChatRoom" [
 			instancePtr [ISteamFriends!]       ;intptr_t
@@ -373,7 +373,7 @@ ISteamFriends: declare ISteamFriends!
 			instancePtr [ISteamFriends!]       ;intptr_t
 			steamIDClan [CSteamID!]            ;class CSteamID
 			iUser       [integer!]             ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_SendClanChatMessage: "SteamAPI_ISteamFriends_SendClanChatMessage" [
 			instancePtr     [ISteamFriends!]   ;intptr_t
@@ -388,7 +388,7 @@ ISteamFriends: declare ISteamFriends!
 			prgchText       [byte-ptr!]        ;void *
 			cchTextMax      [integer!]         ;int
 			peChatEntryType [int-ptr!]         ;EChatEntryType *
-			psteamidChatter [CSteamID-ref!]    ;class CSteamID *
+			psteamidChatter [CSteamID-ptr!]    ;class CSteamID *
 			return: [integer!]
 		]
 		SteamAPI_ISteamFriends_IsClanChatAdmin: "SteamAPI_ISteamFriends_IsClanChatAdmin" [
@@ -435,17 +435,17 @@ ISteamFriends: declare ISteamFriends!
 		SteamAPI_ISteamFriends_GetFollowerCount: "SteamAPI_ISteamFriends_GetFollowerCount" [
 			instancePtr [ISteamFriends!]       ;intptr_t
 			steamID     [CSteamID!]            ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_IsFollowing: "SteamAPI_ISteamFriends_IsFollowing" [
 			instancePtr [ISteamFriends!]       ;intptr_t
 			steamID     [CSteamID!]            ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamFriends_EnumerateFollowingList: "SteamAPI_ISteamFriends_EnumerateFollowingList" [
 			instancePtr  [ISteamFriends!]      ;intptr_t
 			unStartIndex [integer!]            ;uint32
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 	]
 ]

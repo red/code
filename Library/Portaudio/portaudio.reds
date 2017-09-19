@@ -14,21 +14,7 @@ Red/System [
 	#default  [   ]
 ]
 
-long-long-ptr!: alias struct! [lo [integer!] hi [integer!]] ;@@ There is no `int64!` datatype in Red/System yet
-#define long-long!        float! ;@@ struct is passed by reference so far so I must fake passing `long long` using `float!`
-#define MAX_32_PRECISION 4294967296.0
-int64-to-float: func[i [long-long-ptr!]	return: [float!]][
-	(MAX_32_PRECISION * as float! i/hi)  + (as float! i/lo) ;@@ float can be used as a workaround to pass long-long! value in function call (instead int64!)
-]
-float-to-int64: func[f [float!] return: [long-long-ptr!] /local i [long-long-ptr!] ][
-	i: declare long-long-ptr!
-	i/hi: as integer! (f / MAX_32_PRECISION)
-	i/lo: as integer! f
-	i
-]
-ZERO_INT64: declare long-long-ptr! [0 0]
-
-
+#include %../os/definitions.reds ;common aliases and defines
 
 #define PaHostApiIndex! integer!
 #define PaDeviceIndex!  integer!
@@ -36,7 +22,7 @@ ZERO_INT64: declare long-long-ptr! [0 0]
 #define PaError!        integer!
 
 #define PaStream!     [pointer! [integer!]]
-PaStream-ref!:  alias struct! [value [PaStream!]]
+PaStream-ptr!:  alias struct! [value [PaStream!]]
 
 PaVersionInfo!: alias struct! [
 	versionMajor    [integer!]
@@ -625,7 +611,7 @@ PaStreamCallbackTimeInfo!: alias struct! [
 
 		Pa_OpenStream: "Pa_OpenStream" [
 			; Opens a stream for either input, output or both.
-			stream [PaStream-ref!]
+			stream [PaStream-ptr!]
 			; @param stream The address of a PaStream pointer which will receive
 			; a pointer to the newly opened stream.
             inputParameters  [PaStreamParameters!]
@@ -677,7 +663,7 @@ PaStreamCallbackTimeInfo!: alias struct! [
         Pa_OpenDefaultStream: "Pa_OpenDefaultStream" [
 			; A simplified version of Pa_OpenStream() that opens the default input
 			; and/or output devices.
-			stream [PaStream-ref!]
+			stream [PaStream-ptr!]
 			; @param stream The address of a PaStream pointer which will receive
 			; a pointer to the newly opened stream.
             numInputChannels  [integer!]

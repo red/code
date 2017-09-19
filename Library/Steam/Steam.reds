@@ -9,8 +9,6 @@ Red/System [
 
 #include %SteamAPI/Steam-API.reds
 
-binary-ref!:  alias struct! [value [byte-ptr!]]
-
 isReady: false
 
 init: func[
@@ -30,7 +28,7 @@ list-friends: func[
 	type [integer!]
 	/local
 		num [integer!]
-		id  [uint64! value]
+		id  [uint64-value!]
 		name [c-string!]
 ][
 	num: SteamAPI_ISteamFriends_GetFriendCount ISteamFriends type
@@ -49,7 +47,7 @@ file-write: func[file [c-string!] data [byte-ptr!] length [integer!] return: [lo
 ]
 file-read: func[
 	file [c-string!]
-	data [binary-ref!]
+	data [binary-ptr!]
 	return: [integer!]
 	/local
 		size   [integer!]
@@ -93,8 +91,8 @@ list-files: func[
 
 info: func[
 	/local
-		total     [uint64!]
-		available [uint64!]
+		total     [uint64-value!]
+		available [uint64-value!]
 		res       [logic!]
 ][
 	if any [isReady init] [

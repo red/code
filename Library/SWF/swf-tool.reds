@@ -14,14 +14,14 @@ Red/System [
 #include %../os/time-elapsed.reds
 #include %swf-io.reds
 
-string-ref!:  alias struct! [value [c-string!]]
+#include %../os/definitions.reds ;common aliases and defines
 
 #import [
 	LIBC-file cdecl [
 		strtol: "strtol" [
 			;converts the initial part of the string to integer
 			string	[c-string!]
-			endptr  [string-ref!]
+			endptr  [string-ptr!]
 			base    [integer!]
 			return:	[integer!]
 		]
@@ -62,7 +62,7 @@ do-input: func [
 		str* actions n
 ][
 	n: 1
-	str*: declare string-ref!
+	str*: declare string-ptr!
 	actions: 0
 	file-name: null
 

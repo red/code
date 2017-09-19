@@ -102,7 +102,7 @@ ISteamNetworking: declare ISteamNetworking!
 			pubDest        [byte-ptr!]         ;void *
 			cubDest        [integer!]          ;uint32
 			pcubMsgSize    [int-ptr!]          ;uint32 *
-			psteamIDRemote [CSteamID-ref!]     ;class CSteamID *
+			psteamIDRemote [CSteamID-ptr!]     ;class CSteamID *
 			nChannel       [integer!]          ;int
 			return: [logic!]
 		]
@@ -137,7 +137,7 @@ ISteamNetworking: declare ISteamNetworking!
 			instancePtr         [ISteamNetworking!];intptr_t
 			nVirtualP2PPort     [integer!]     ;int
 			nIP                 [integer!]     ;uint32
-			nPort               [uint16!]      ;uint16
+			nPort               [uint16-value!]      ;uint16
 			bAllowUseOfPacketRelay[logic!]     ;bool
 			return: [integer!]
 		]
@@ -152,7 +152,7 @@ ISteamNetworking: declare ISteamNetworking!
 		SteamAPI_ISteamNetworking_CreateConnectionSocket: "SteamAPI_ISteamNetworking_CreateConnectionSocket" [
 			instancePtr [ISteamNetworking!]    ;intptr_t
 			nIP         [integer!]             ;uint32
-			nPort       [uint16!]              ;uint16
+			nPort       [uint16-value!]              ;uint16
 			nTimeoutSec [integer!]             ;int
 			return: [integer!]
 		]
@@ -209,17 +209,17 @@ ISteamNetworking: declare ISteamNetworking!
 		SteamAPI_ISteamNetworking_GetSocketInfo: "SteamAPI_ISteamNetworking_GetSocketInfo" [
 			instancePtr    [ISteamNetworking!] ;intptr_t
 			hSocket        [integer!]          ;SNetSocket_t
-			pSteamIDRemote [CSteamID-ref!]     ;class CSteamID *
+			pSteamIDRemote [CSteamID-ptr!]     ;class CSteamID *
 			peSocketStatus [int-ptr!]          ;int *
 			punIPRemote    [int-ptr!]          ;uint32 *
-			punPortRemote  [pointer! [uint16!]];uint16 *
+			punPortRemote  [uint16-ptr!];uint16 *
 			return: [logic!]
 		]
 		SteamAPI_ISteamNetworking_GetListenSocketInfo: "SteamAPI_ISteamNetworking_GetListenSocketInfo" [
 			instancePtr   [ISteamNetworking!]  ;intptr_t
 			hListenSocket [integer!]           ;SNetListenSocket_t
 			pnIP          [int-ptr!]           ;uint32 *
-			pnPort        [pointer! [uint16!]] ;uint16 *
+			pnPort        [uint16-ptr!] ;uint16 *
 			return: [logic!]
 		]
 		SteamAPI_ISteamNetworking_GetSocketConnectionType: "SteamAPI_ISteamNetworking_GetSocketConnectionType" [

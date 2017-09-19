@@ -47,8 +47,8 @@ ISteamMatchmaking: declare ISteamMatchmaking!
 			iGame               [integer!]     ;int
 			pnAppID             [int-ptr!]     ;AppId_t *
 			pnIP                [int-ptr!]     ;uint32 *
-			pnConnPort          [pointer! [uint16!]];uint16 *
-			pnQueryPort         [pointer! [uint16!]];uint16 *
+			pnConnPort          [uint16-ptr!];uint16 *
+			pnQueryPort         [uint16-ptr!];uint16 *
 			punFlags            [int-ptr!]     ;uint32 *
 			pRTime32LastPlayedOnServer[int-ptr!];uint32 *
 			return: [logic!]
@@ -57,8 +57,8 @@ ISteamMatchmaking: declare ISteamMatchmaking!
 			instancePtr         [ISteamMatchmaking!];intptr_t
 			nAppID              [integer!]     ;AppId_t
 			nIP                 [integer!]     ;uint32
-			nConnPort           [uint16!]      ;uint16
-			nQueryPort          [uint16!]      ;uint16
+			nConnPort           [uint16-value!]      ;uint16
+			nQueryPort          [uint16-value!]      ;uint16
 			unFlags             [integer!]     ;uint32
 			rTime32LastPlayedOnServer[integer!];uint32
 			return: [integer!]
@@ -67,14 +67,14 @@ ISteamMatchmaking: declare ISteamMatchmaking!
 			instancePtr [ISteamMatchmaking!]   ;intptr_t
 			nAppID      [integer!]             ;AppId_t
 			nIP         [integer!]             ;uint32
-			nConnPort   [uint16!]              ;uint16
-			nQueryPort  [uint16!]              ;uint16
+			nConnPort   [uint16-value!]              ;uint16
+			nQueryPort  [uint16-value!]              ;uint16
 			unFlags     [integer!]             ;uint32
 			return: [logic!]
 		]
 		SteamAPI_ISteamMatchmaking_RequestLobbyList: "SteamAPI_ISteamMatchmaking_RequestLobbyList" [
 			instancePtr [ISteamMatchmaking!]   ;intptr_t
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamMatchmaking_AddRequestLobbyListStringFilter: {SteamAPI_ISteamMatchmaking_AddRequestLobbyListStringFilter} [
 			instancePtr     [ISteamMatchmaking!];intptr_t
@@ -112,18 +112,18 @@ ISteamMatchmaking: declare ISteamMatchmaking!
 		SteamAPI_ISteamMatchmaking_GetLobbyByIndex: "SteamAPI_ISteamMatchmaking_GetLobbyByIndex" [
 			instancePtr [ISteamMatchmaking!]   ;intptr_t
 			iLobby      [integer!]             ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamMatchmaking_CreateLobby: "SteamAPI_ISteamMatchmaking_CreateLobby" [
 			instancePtr [ISteamMatchmaking!]   ;intptr_t
 			eLobbyType  [ELobbyType!]          ;ELobbyType
 			cMaxMembers [integer!]             ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamMatchmaking_JoinLobby: "SteamAPI_ISteamMatchmaking_JoinLobby" [
 			instancePtr  [ISteamMatchmaking!]  ;intptr_t
 			steamIDLobby [CSteamID!]           ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamMatchmaking_LeaveLobby: "SteamAPI_ISteamMatchmaking_LeaveLobby" [
 			instancePtr  [ISteamMatchmaking!]  ;intptr_t
@@ -144,7 +144,7 @@ ISteamMatchmaking: declare ISteamMatchmaking!
 			instancePtr  [ISteamMatchmaking!]  ;intptr_t
 			steamIDLobby [CSteamID!]           ;class CSteamID
 			iMember      [integer!]            ;int
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamMatchmaking_GetLobbyData: "SteamAPI_ISteamMatchmaking_GetLobbyData" [
 			instancePtr  [ISteamMatchmaking!]  ;intptr_t
@@ -204,7 +204,7 @@ ISteamMatchmaking: declare ISteamMatchmaking!
 			instancePtr     [ISteamMatchmaking!];intptr_t
 			steamIDLobby    [CSteamID!]        ;class CSteamID
 			iChatID         [integer!]         ;int
-			pSteamIDUser    [CSteamID-ref!]    ;class CSteamID *
+			pSteamIDUser    [CSteamID-ptr!]    ;class CSteamID *
 			pvData          [byte-ptr!]        ;void *
 			cubData         [integer!]         ;int
 			peChatEntryType [int-ptr!]         ;EChatEntryType *
@@ -219,15 +219,15 @@ ISteamMatchmaking: declare ISteamMatchmaking!
 			instancePtr       [ISteamMatchmaking!];intptr_t
 			steamIDLobby      [CSteamID!]      ;class CSteamID
 			unGameServerIP    [integer!]       ;uint32
-			unGameServerPort  [uint16!]        ;uint16
+			unGameServerPort  [uint16-value!]        ;uint16
 			steamIDGameServer [CSteamID!]      ;class CSteamID
 		]
 		SteamAPI_ISteamMatchmaking_GetLobbyGameServer: "SteamAPI_ISteamMatchmaking_GetLobbyGameServer" [
 			instancePtr        [ISteamMatchmaking!];intptr_t
 			steamIDLobby       [CSteamID!]     ;class CSteamID
 			punGameServerIP    [int-ptr!]      ;uint32 *
-			punGameServerPort  [pointer! [uint16!]];uint16 *
-			psteamIDGameServer [CSteamID-ref!] ;class CSteamID *
+			punGameServerPort  [uint16-ptr!];uint16 *
+			psteamIDGameServer [CSteamID-ptr!] ;class CSteamID *
 			return: [logic!]
 		]
 		SteamAPI_ISteamMatchmaking_SetLobbyMemberLimit: "SteamAPI_ISteamMatchmaking_SetLobbyMemberLimit" [
@@ -256,7 +256,7 @@ ISteamMatchmaking: declare ISteamMatchmaking!
 		SteamAPI_ISteamMatchmaking_GetLobbyOwner: "SteamAPI_ISteamMatchmaking_GetLobbyOwner" [
 			instancePtr  [ISteamMatchmaking!]  ;intptr_t
 			steamIDLobby [CSteamID!]           ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamMatchmaking_SetLobbyOwner: "SteamAPI_ISteamMatchmaking_SetLobbyOwner" [
 			instancePtr     [ISteamMatchmaking!];intptr_t

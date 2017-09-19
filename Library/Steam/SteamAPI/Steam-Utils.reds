@@ -70,7 +70,7 @@ ISteamUtils: declare ISteamUtils!
 		SteamAPI_ISteamUtils_GetCSERIPPort: "SteamAPI_ISteamUtils_GetCSERIPPort" [
 			instancePtr [ISteamUtils!]         ;intptr_t
 			unIP        [int-ptr!]             ;uint32 *
-			usPort      [pointer! [uint16!]]   ;uint16 *
+			usPort      [uint16-ptr!]   ;uint16 *
 			return: [logic!]
 		]
 		SteamAPI_ISteamUtils_GetCurrentBatteryPower: "SteamAPI_ISteamUtils_GetCurrentBatteryPower" [
@@ -87,22 +87,22 @@ ISteamUtils: declare ISteamUtils!
 		]
 		SteamAPI_ISteamUtils_IsAPICallCompleted: "SteamAPI_ISteamUtils_IsAPICallCompleted" [
 			instancePtr   [ISteamUtils!]       ;intptr_t
-			hSteamAPICall [uint64! value]      ;SteamAPICall_t
-			pbFailed      [logic-ref!]  ;bool *
+			hSteamAPICall [uint64-value!]      ;SteamAPICall_t
+			pbFailed      [logic-ptr!]  ;bool *
 			return: [logic!]
 		]
 		SteamAPI_ISteamUtils_GetAPICallFailureReason: "SteamAPI_ISteamUtils_GetAPICallFailureReason" [
 			instancePtr   [ISteamUtils!]       ;intptr_t
-			hSteamAPICall [uint64! value]      ;SteamAPICall_t
+			hSteamAPICall [uint64-value!]      ;SteamAPICall_t
 			return: [ESteamAPICallFailure!]
 		]
 		SteamAPI_ISteamUtils_GetAPICallResult: "SteamAPI_ISteamUtils_GetAPICallResult" [
 			instancePtr       [ISteamUtils!]   ;intptr_t
-			hSteamAPICall     [uint64! value]  ;SteamAPICall_t
+			hSteamAPICall     [uint64-value!]  ;SteamAPICall_t
 			pCallback         [byte-ptr!]      ;void *
 			cubCallback       [integer!]       ;int
 			iCallbackExpected [integer!]       ;int
-			pbFailed          [logic-ref!];bool *
+			pbFailed          [logic-ptr!];bool *
 			return: [logic!]
 		]
 		SteamAPI_ISteamUtils_GetIPCCallCount: "SteamAPI_ISteamUtils_GetIPCCallCount" [
@@ -124,7 +124,7 @@ ISteamUtils: declare ISteamUtils!
 		SteamAPI_ISteamUtils_CheckFileSignature: "SteamAPI_ISteamUtils_CheckFileSignature" [
 			instancePtr [ISteamUtils!]         ;intptr_t
 			szFileName  [c-string!]            ;const char *
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamUtils_ShowGamepadTextInput: "SteamAPI_ISteamUtils_ShowGamepadTextInput" [
 			instancePtr     [ISteamUtils!]     ;intptr_t

@@ -7,7 +7,7 @@ Red [
 	
 ]
 #system [
-	binary-ref!:  alias struct! [value [byte-ptr!]]
+	binary-ptr!:  alias struct! [value [byte-ptr!]]
 
 	Steam: context [
 		#include %Steam.reds
@@ -60,11 +60,11 @@ Steam: context [
 			c-file [c-string!]
 			len    [integer!]
 			bytes  [integer!]
-			data   [binary-ref!]
+			data   [binary-ptr!]
 			bin    [red-binary!]
 	][
 		len: -1
-		data: declare binary-ref!
+		data: declare binary-ptr!
 		c-file:	unicode/to-utf8 file :len
 		
 		bytes: Steam/file-read c-file data

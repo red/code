@@ -13,8 +13,8 @@ ISteamGameServer: declare ISteamGameServer!
 		SteamAPI_ISteamGameServer_InitGameServer: "SteamAPI_ISteamGameServer_InitGameServer" [
 			instancePtr      [ISteamGameServer!];intptr_t
 			unIP             [integer!]        ;uint32
-			usGamePort       [uint16!]         ;uint16
-			usQueryPort      [uint16!]         ;uint16
+			usGamePort       [uint16-value!]         ;uint16
+			usQueryPort      [uint16-value!]         ;uint16
 			unFlags          [integer!]        ;uint32
 			nGameAppId       [integer!]        ;AppId_t
 			pchVersionString [c-string!]       ;const char *
@@ -56,7 +56,7 @@ ISteamGameServer: declare ISteamGameServer!
 		]
 		SteamAPI_ISteamGameServer_GetSteamID: "SteamAPI_ISteamGameServer_GetSteamID" [
 			instancePtr [ISteamGameServer!]    ;intptr_t
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamGameServer_WasRestartRequested: "SteamAPI_ISteamGameServer_WasRestartRequested" [
 			instancePtr [ISteamGameServer!]    ;intptr_t
@@ -84,7 +84,7 @@ ISteamGameServer: declare ISteamGameServer!
 		]
 		SteamAPI_ISteamGameServer_SetSpectatorPort: "SteamAPI_ISteamGameServer_SetSpectatorPort" [
 			instancePtr     [ISteamGameServer!];intptr_t
-			unSpectatorPort [uint16!]          ;uint16
+			unSpectatorPort [uint16-value!]          ;uint16
 		]
 		SteamAPI_ISteamGameServer_SetSpectatorServerName: "SteamAPI_ISteamGameServer_SetSpectatorServerName" [
 			instancePtr         [ISteamGameServer!];intptr_t
@@ -115,12 +115,12 @@ ISteamGameServer: declare ISteamGameServer!
 			unIPClient      [integer!]         ;uint32
 			pvAuthBlob      [byte-ptr!]        ;const void *
 			cubAuthBlobSize [integer!]         ;uint32
-			pSteamIDUser    [CSteamID-ref!]    ;class CSteamID *
+			pSteamIDUser    [CSteamID-ptr!]    ;class CSteamID *
 			return: [logic!]
 		]
 		SteamAPI_ISteamGameServer_CreateUnauthenticatedUserConnection: {SteamAPI_ISteamGameServer_CreateUnauthenticatedUserConnection} [
 			instancePtr [ISteamGameServer!]    ;intptr_t
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamGameServer_SendUserDisconnect: "SteamAPI_ISteamGameServer_SendUserDisconnect" [
 			instancePtr [ISteamGameServer!]    ;intptr_t
@@ -172,7 +172,7 @@ ISteamGameServer: declare ISteamGameServer!
 		]
 		SteamAPI_ISteamGameServer_GetServerReputation: "SteamAPI_ISteamGameServer_GetServerReputation" [
 			instancePtr [ISteamGameServer!]    ;intptr_t
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamGameServer_GetPublicIP: "SteamAPI_ISteamGameServer_GetPublicIP" [
 			instancePtr [ISteamGameServer!]    ;intptr_t
@@ -183,7 +183,7 @@ ISteamGameServer: declare ISteamGameServer!
 			pData       [byte-ptr!]            ;const void *
 			cbData      [integer!]             ;int
 			srcIP       [integer!]             ;uint32
-			srcPort     [uint16!]              ;uint16
+			srcPort     [uint16-value!]              ;uint16
 			return: [logic!]
 		]
 		SteamAPI_ISteamGameServer_GetNextOutgoingPacket: "SteamAPI_ISteamGameServer_GetNextOutgoingPacket" [
@@ -191,7 +191,7 @@ ISteamGameServer: declare ISteamGameServer!
 			pOut        [byte-ptr!]            ;void *
 			cbMaxOut    [integer!]             ;int
 			pNetAdr     [int-ptr!]             ;uint32 *
-			pPort       [pointer! [uint16!]]   ;uint16 *
+			pPort       [uint16-ptr!]           ;uint16 *
 			return: [integer!]
 		]
 		SteamAPI_ISteamGameServer_EnableHeartbeats: "SteamAPI_ISteamGameServer_EnableHeartbeats" [
@@ -208,12 +208,12 @@ ISteamGameServer: declare ISteamGameServer!
 		SteamAPI_ISteamGameServer_AssociateWithClan: "SteamAPI_ISteamGameServer_AssociateWithClan" [
 			instancePtr [ISteamGameServer!]    ;intptr_t
 			steamIDClan [CSteamID!]            ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 		SteamAPI_ISteamGameServer_ComputeNewPlayerCompatibility: {SteamAPI_ISteamGameServer_ComputeNewPlayerCompatibility} [
 			instancePtr      [ISteamGameServer!];intptr_t
 			steamIDNewPlayer [CSteamID!]       ;class CSteamID
-			return: [uint64! value]
+			return: [uint64-value!]
 		]
 	]
 ]
