@@ -678,5 +678,3 @@ ctx-bbcode: context [
 	]
 ]
 bbcode: get in ctx-bbcode 'bbcode
-
-bbcode {[code=red]Red Text[/code][b]foo}
