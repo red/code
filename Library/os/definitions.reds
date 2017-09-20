@@ -18,7 +18,7 @@ Red/System [
 
 #define ZERO_MEMORY(pointer bytes) [set-memory pointer #"^@" bytes]
 #define FREE_MEMORY(pointer)       [free as byte-ptr! pointer]
-#define ALLOCATE_AS(type)             [as type allocate size? type]
+#define ALLOCATE_AS(type)          [as type allocate size? type]
 ;note: there is function zero-memory defined in Red\modules\view\backends\windows\win32.reds !
 
 
@@ -68,84 +68,4 @@ float32-ptr-ptr!: alias struct! [value [float32-ptr!]]
 	#define HPVIDEODEV-ptr!           handle-ptr!
 	#define HVIDEOINPUTDEVICENV-ptr!  handle-ptr!
 	#define HVIDEOOUTPUTDEVICENV-ptr! handle-ptr!
-
-	#define COLORREF! handle!
-
-	POINTFLOAT!: alias struct! [
-		x [float32!]
-		y [float32!]
-	]
-
-	POINT!: alias struct! [
-		x [integer!]
-		y [integer!]
-	]
-
-	RECT!: alias struct! [ ;@@ Red uses RECT_STRUCT
-		left		[integer!]
-		top			[integer!]
-		right		[integer!]
-		bottom		[integer!]
-	]
-	MSG!: alias struct! [ ;@@ Red uses tagMSG
-		hWnd	[handle!]
-		msg		[integer!]
-		wParam	[integer!]
-		lParam	[integer!]
-		time	[integer!]
-		pt		[POINT! value]
-	]
-	WindowProc!: alias function! [ ;@@ Red uses wndproc-cb!
-		hWnd	[handle!]
-		msg		[integer!]
-		wParam	[integer!]
-		lParam	[integer!]
-		return: [integer!]
-	]
-	WNDCLASSEX!: alias struct! [
-		cbSize		  [integer!]
-		style		  [integer!]
-		lpfnWndProc	  [WindowProc!]
-		cbClsExtra    [integer!]
-		cbWndExtra    [integer!]
-		hInstance	  [handle!]
-		hIcon	  	  [handle!]
-		hCursor		  [handle!]
-		hbrBackground [integer!]
-		lpszMenuName  [c-string!]
-		lpszClassName [c-string!]
-		hIconSm	  	  [integer!]
-	]
-	LAYERPLANEDESCRIPTOR!: alias struct! [
-		nSize-nVersion   [integer!]  ;WORD + WORD
-		dwFlags          [integer!]  ;DWORD 
-		iPixelType       [byte!]  
-		cColorBits       [byte!]  
-		cRedBits         [byte!]  
-		cRedShift        [byte!]  
-		cGreenBits       [byte!]  
-		cGreenShift      [byte!]  
-		cBlueBits        [byte!]  
-		cBlueShift       [byte!]  
-		cAlphaBits       [byte!]  
-		cAlphaShift      [byte!]  
-		cAccumBits       [byte!]  
-		cAccumRedBits    [byte!]  
-		cAccumGreenBits  [byte!]  
-		cAccumBlueBits   [byte!]  
-		cAccumAlphaBits  [byte!]  
-		cDepthBits       [byte!]  
-		cStencilBits     [byte!]  
-		cAuxBuffers      [byte!]  
-		iLayerType       [byte!]  
-		bReserved        [byte!]  
-		crTransparent    [COLORREF!]
-	]
-	GLYPHMETRICSFLOAT!: alias struct! [
-		gmfBlackBoxX     [float32!]
-		gmfBlackBoxY     [float32!]
-		gmfptGlyphOrigin [POINTFLOAT! value]
-		gmfCellIncX      [float32!]
-		gmfCellIncY      [float32!]
-	]
 ]
