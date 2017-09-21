@@ -134,6 +134,7 @@ sockaddr!: alias struct! [
 #import [
 	#either OS = 'Windows ["Ws2_32.dll" stdcall][LIBC-file cdecl] [
 		accept: "accept" [
+		;permits an incoming connection attempt on a socket.
 			s              [SOCKET!]
 			addr           [sockaddr!]
 			addrlen        [int-ptr!]
@@ -145,6 +146,19 @@ sockaddr!: alias struct! [
 			namelen        [integer!]  ; The length, in bytes, of the value pointed to by the name parameter.
 			return:        [integer!]  ; If no error occurs, bind returns zero. Otherwise, it returns SOCKET_ERROR
 		]
+		connect: "connect" [
+			s              [SOCKET!]
+			addr           [sockaddr!]
+			addrlen        [integer!]
+			return:        [integer!] 
+		]
+		getpeername: "getpeername" [
+		;retrieves the address of the peer to which a socket is connected.
+			s              [SOCKET!]
+			addr           [sockaddr!]
+			addrlen        [int-ptr!]
+			return:        [integer!] 
+		] 
 		htons: "htons" [
 		;converts a u_short from host to TCP/IP network byte order (which is big-endian).
 			;@@ FIXME once we will have int16! type in Red
@@ -172,7 +186,16 @@ sockaddr!: alias struct! [
 			netshort       [integer!] ;uint16!
 			return:        [integer!] ;uint16!
 		]
+		recv: "recv" [
+		;receives data from a connected socket or a bound connectionless socket.
+			s              [SOCKET!]
+			buf            [byte-ptr!]
+			len            [integer!]
+			flags          [integer!]
+			return:        [integer!]
+		]
 		recvfrom: "recvfrom" [
+		;receives a datagram and stores the source address.
 			s              [SOCKET!]
 			buf            [byte-ptr!]
 			len            [integer!]
