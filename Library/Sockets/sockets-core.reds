@@ -133,6 +133,12 @@ sockaddr!: alias struct! [
 
 #import [
 	#either OS = 'Windows ["Ws2_32.dll" stdcall][LIBC-file cdecl] [
+		accept: "accept" [
+			s              [SOCKET!]
+			addr           [sockaddr!]
+			addrlen        [int-ptr!]
+			return:        [SOCKET!]
+		]
 		bind: "bind" [
 			s              [SOCKET!]   ; A descriptor identifying an unbound socket.
 			name           [sockaddr!] ; Sockaddr structure of the local address to assign to the bound socket.
@@ -154,6 +160,12 @@ sockaddr!: alias struct! [
 			address        [ip-address!]
 			return:        [c-string!]
 		]
+		listen: "listen" [
+		;places a socket in a state in which it is listening for an incoming connection.
+			s              [SOCKET!]
+			backlog        [integer!] ;The maximum length of the queue of pending connections. 
+			return:        [integer!]
+		]
 		ntohs: "ntohs" [
 		;converts a u_short from TCP/IP network byte order to host byte order (which is little-endian on Intel processors).
 			;@@ FIXME once we will have int16! type in Red
@@ -169,6 +181,13 @@ sockaddr!: alias struct! [
 			fromlen        [int-ptr!]
 			return:        [integer!]
 		]
+		send: "send" [
+			s              [SOCKET!]
+			buf            [byte-ptr!]
+			len            [integer!]
+			flags          [integer!]
+			return:        [integer!]
+		]
 		sendto: "sendto" [
 			s              [SOCKET!]
 			buf            [byte-ptr!]
@@ -178,6 +197,7 @@ sockaddr!: alias struct! [
 			tolen          [integer!] ;= 16 -> size of sockaddr!
 			return:        [integer!]
 		]
+
 		#either OS = 'Windows [
 			closesocket: "closesocket" [
 				s              [SOCKET!]

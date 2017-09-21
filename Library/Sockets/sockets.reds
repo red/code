@@ -54,6 +54,7 @@ sockets: context [
 		ip      [ip-address!]
 		port    [integer!]
 		return: [sockaddr!]
+		/local address
 	][
 		address: ALLOCATE_AS(sockaddr!)
 		address/family-port: (AF_INET and FFFFh) or ((htons port) << 16) ;@@ TODO: change once we will have real int16! type
