@@ -50,6 +50,35 @@ sockets: context [
 		]
 	]
 
+	make-address: func[
+		ip      [ip-address!]
+		port    [integer!]
+		return: [sockaddr!]
+	][
+		address: ALLOCATE_AS(sockaddr!)
+		address/family-port: (AF_INET and FFFFh) or ((htons port) << 16) ;@@ TODO: change once we will have real int16! type
+		address/ip:   ip
+		address/zero: 0.0 ;just clearing these padding bytes
+		address
+	]
+
+	make-server: func[
+		"Creates sockaddress and binds it to provided socket"
+		s       [SOCKET!]
+		ip      [ip-address!]
+		port    [integer!]
+		return: [sockaddr!]
+		/local server
+	][
+		server: make-address ip port
+		if 0 <> bind s server size? sockaddr! [
+			;failed!
+			FREE_MEMORY(server)
+			return null
+		]
+		server
+	]
+
 	get-error: func[return: [integer!]][
 		#either OS = 'Windows [WSAGetLastError][error]
 	]

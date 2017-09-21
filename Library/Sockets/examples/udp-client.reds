@@ -16,11 +16,7 @@ if s = null [
 ]
 print "Socket created.^/"
 
-address: ALLOCATE_AS(sockaddr!)
-address/family-port: (AF_INET and FFFFh) or ((htons 8888) << 16) ;@@ TODO: change once we will have real int16! type
-address/addr:  inet_addr "127.0.0.1"
-address/zero:  0.0 ;just clearing these padding bytes 
-
+address: sockets/make-address inet_addr "127.0.0.1" 8888
 address-bytes: size? address
 
 buffer-bytes: 512

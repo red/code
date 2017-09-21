@@ -16,26 +16,16 @@ if s = null [
 ]
 print "Socket created.^/"
 
-server: ALLOCATE_AS(sockaddr!)
-server/family-port: (AF_INET and FFFFh) or ((htons 8888) << 16)
-server/addr/value:  INADDR_ANY
-server/zero: 0.0 ;just clearing these padding bytes 
+server: sockets/make-server s INADDR_ANY 8888
 
-print-line ["server/family-port: " as int-ptr! server/family-port]
-print-line ["server/addr/value:  " as int-ptr! server/addr/value]
-
-if 0 <> bind s as int-ptr! server 16 [
+if server = null [
 	print-line ["Bind failed with error: " sockets/get-error]
 	quit 1
 ]
 
 print "Bind done^/"
 
-address: ALLOCATE_AS(sockaddr!)
-address/family-port: (AF_INET and FFFFh) or ((htons 8888) << 16) ;@@ TODO: change once we will have real int16! type
-address/addr:  inet_addr "127.0.0.1"
-address/zero:  0.0 ;just clearing these padding bytes 
-
+address: sockets/make-address inet_addr "127.0.0.1" 8888
 address-bytes: size? address
 
 buffer-bytes: 512
@@ -53,7 +43,7 @@ forever [
 		quit 1
 	]
 	print-line [
-		"Received packet from: " inet_ntoa address/addr #":" ntohs (server/family-port >> 16)
+		"Received packet from: " inet_ntoa address/ip #":" ntohs (server/family-port >> 16)
 		" with: " as c-string! buffer
 	]
 

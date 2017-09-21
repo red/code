@@ -108,14 +108,12 @@ Red/System [
 	IPPROTO_MAX:      256
 ]
 
-in_addr!: alias struct! [
-	value [integer!]
-]
+#define ip-address! integer!
 
 sockaddr!: alias struct! [
 	family-port  [TWO-SHORTS!] ; e.g. AF_INET +
 							   ; e.g. htons 3490   
-	addr         [in_addr! value] ;
+	ip           [ip-address!] ;
 	zero         [float!] ;(bytes 8) zero this if you want to
 ]
 #define sockaddr_in! sockaddr!
@@ -136,10 +134,10 @@ sockaddr!: alias struct! [
 #import [
 	#either OS = 'Windows ["Ws2_32.dll" stdcall][LIBC-file cdecl] [
 		bind: "bind" [
-			s              [SOCKET!]  ; A descriptor identifying an unbound socket.
-			name           [int-ptr!] ; A pointer to a sockaddr structure of the local address to assign to the bound socket.
-			namelen        [integer!] ; The length, in bytes, of the value pointed to by the name parameter.
-			return:        [integer!] ; If no error occurs, bind returns zero. Otherwise, it returns SOCKET_ERROR
+			s              [SOCKET!]   ; A descriptor identifying an unbound socket.
+			name           [sockaddr!] ; Sockaddr structure of the local address to assign to the bound socket.
+			namelen        [integer!]  ; The length, in bytes, of the value pointed to by the name parameter.
+			return:        [integer!]  ; If no error occurs, bind returns zero. Otherwise, it returns SOCKET_ERROR
 		]
 		htons: "htons" [
 		;converts a u_short from host to TCP/IP network byte order (which is big-endian).
@@ -150,16 +148,16 @@ sockaddr!: alias struct! [
 		inet_addr: "inet_addr" [
 		;converts a string containing an IPv4 dotted-decimal address into a proper address for the IN_ADDR structure.
 			adress         [c-string!]
-			return:        [in_addr! value]
+			return:        [ip-address!]
 		]
 		inet_ntoa: "inet_ntoa" [
-			address        [in_addr! value]
+			address        [ip-address!]
 			return:        [c-string!]
 		]
 		ntohs: "ntohs" [
 		;converts a u_short from TCP/IP network byte order to host byte order (which is little-endian on Intel processors).
 			;@@ FIXME once we will have int16! type in Red
-			netshort      [integer!] ;uint16!
+			netshort       [integer!] ;uint16!
 			return:        [integer!] ;uint16!
 		]
 		recvfrom: "recvfrom" [
