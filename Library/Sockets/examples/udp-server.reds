@@ -9,7 +9,7 @@ Red/System [
 
 #include %../sockets.reds
 
-s: sockets/make-socket AF_INET SOCK_DGRAM 0 NULL 0 0
+s: sockets/make-socket AF_INET SOCK_DGRAM 0
 if s = null [
 	print-line ["Could not create socket: " sockets/get-error]
 	quit 1
