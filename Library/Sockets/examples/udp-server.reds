@@ -25,7 +25,7 @@ print-line ["server/family-port: " as int-ptr! server/family-port]
 print-line ["server/addr/value:  " as int-ptr! server/addr/value]
 
 if 0 <> bind s as int-ptr! server 16 [
-	print-line ["Bind failed with error: " WSAGetLastError]
+	print-line ["Bind failed with error: " sockets/get-error]
 	quit 1
 ]
 
@@ -49,7 +49,7 @@ forever [
 
 	received: recvfrom s buffer buffer-bytes 0 address :address-bytes
 	if received < 0 [
-		print-line ["`recvfrom` failed with error: " WSAGetLastError]
+		print-line ["`recvfrom` failed with error: " sockets/get-error]
 		quit 1
 	]
 	print-line [
@@ -58,7 +58,7 @@ forever [
 	]
 
 	if SOCKET_ERROR = sendto s buffer received 0 address address-bytes [
-		print-line ["`sendto` failed with error: " WSAGetLastError]
+		print-line ["`sendto` failed with error: " sockets/get-error]
 		quit 1
 	]
 ]

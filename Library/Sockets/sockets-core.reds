@@ -141,10 +141,6 @@ sockaddr!: alias struct! [
 			namelen        [integer!] ; The length, in bytes, of the value pointed to by the name parameter.
 			return:        [integer!] ; If no error occurs, bind returns zero. Otherwise, it returns SOCKET_ERROR
 		]
-		closesocket: "closesocket" [
-			s              [SOCKET!]
-			return:        [integer!] ; If no error occurs, bind returns zero. Otherwise, it returns SOCKET_ERROR
-		]
 		htons: "htons" [
 		;converts a u_short from host to TCP/IP network byte order (which is big-endian).
 			;@@ FIXME once we will have int16! type in Red
@@ -184,7 +180,11 @@ sockaddr!: alias struct! [
 			tolen          [integer!] ;= 16 -> size of sockaddr!
 			return:        [integer!]
 		]
-		#if OS = 'Windows [
+		#either OS = 'Windows [
+			closesocket: "closesocket" [
+				s              [SOCKET!]
+				return:        [integer!] ; If no error occurs, bind returns zero. Otherwise, it returns SOCKET_ERROR
+			]
 			WSACleanup: "WSACleanup" [
 				return: [integer!]
 			]
@@ -205,7 +205,18 @@ sockaddr!: alias struct! [
 				lpWSAData         [WSAData!]
 				return: [integer!]
 			]
-		] 
+		][
+			socket: "socket" [
+				af             [integer!]
+				type           [integer!]
+				protocol       [integer!]
+				return:        [SOCKET!]  
+			]
+			closesocket: "close" [
+				s              [SOCKET!]
+				return:        [integer!]
+			]
+		]
 	]
 ]
 

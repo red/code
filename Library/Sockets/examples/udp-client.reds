@@ -42,7 +42,7 @@ while[n < 10] [
 	print-line ["Sending message[" n "]: " as c-string! buffer]
 
 	if SOCKET_ERROR = sendto s buffer bytes 0 address address-bytes [
-		print-line ["`sendto` failed with error: " WSAGetLastError]
+		print-line ["`sendto` failed with error: " sockets/get-error]
 		quit 1
 	]
 
@@ -52,7 +52,7 @@ while[n < 10] [
 
 	received: recvfrom s buffer buffer-bytes 0 address :address-bytes
 	if received < 0 [
-		print-line ["`recvfrom` failed with error: " WSAGetLastError]
+		print-line ["`recvfrom` failed with error: " sockets/get-error]
 		quit 1
 	]
 	print-line ["Received packet with: " as c-string! buffer]
