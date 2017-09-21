@@ -33,23 +33,31 @@ buffer: allocate buffer-bytes
 
 bytes:    0 ;will hold number of bytes to send
 received: 0 ;will hold number of received bytes
-
+error:    0
 forever [
 	ZERO_MEMORY(buffer buffer-bytes)
 
 	received: recvfrom s buffer buffer-bytes 0 address :address-bytes
-	if received < 0 [
-		print-line ["`recvfrom` failed with error: " sockets/get-error]
-		quit 1
-	]
-	print-line [
-		"Received packet from: " inet_ntoa address/ip #":" ntohs (server/family-port >> 16)
-		" with: " as c-string! buffer
-	]
+	either received < 0 [
+		error: sockets/get-error
+		switch error [
+			10054 [
+				print-line "Connection reset by peer."
+			]
+			default [
+				print-line ["`recvfrom` failed with error: " error " received: " received]
+			]
+		]
+		
+	][
+		print-line [
+			"Received packet from: " inet_ntoa address/ip #":" ntohs (server/family-port >> 16)
+			" with: " as c-string! buffer
+		]
 
-	if SOCKET_ERROR = sendto s buffer received 0 address address-bytes [
-		print-line ["`sendto` failed with error: " sockets/get-error]
-		quit 1
+		if SOCKET_ERROR = sendto s buffer received 0 address address-bytes [
+			print-line ["`sendto` failed with error: " sockets/get-error]
+		]
 	]
 ]
 
