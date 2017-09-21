@@ -1,5 +1,5 @@
 Red/System [
-	Title:  "Windows Ws2_32.dll imports"
+	Title:  "Windows Ws2_32.dll (Winsock) imports"
 	File:   %Ws2_32.reds
 	Tabs:   4
 	License: {
@@ -186,12 +186,12 @@ sockaddr!: alias struct! [
 		return: [integer!]
 	]
 	WSASocket: "WSASocketW" [
-		af             [integer!]          ; _In_ int                
-		type           [integer!]          ; _In_ int                
-		protocol       [integer!]          ; _In_ int                
-		lpProtocolInfo [WSAPROTOCOL_INFO!] ; _In_ LPWSAPROTOCOL_INFO 
-		group          [GROUP!]            ; _In_ GROUP              
-		dwFlag         [integer!]          ; _In_ DWORD
+		af             [integer!]          ; address family specification
+		type           [integer!]          ; type specification for the new socket
+		protocol       [integer!]          ; If a value of 0 is specified, the caller does not wish to specify a protocol and the service provider will choose the protocol to use.
+		lpProtocolInfo [WSAPROTOCOL_INFO!] ; characteristics of the socket to be created
+		group          [GROUP!]            ; An existing socket group ID or an appropriate action to take when creating a new socket and a new socket group.
+		dwFlag         [integer!]          ; A set of flags used to specify additional socket attributes.
 		return:        [SOCKET!]           
 	]
 	WSAStartup: "WSAStartup" [
