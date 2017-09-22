@@ -6,7 +6,7 @@ Red/System [
 	Author:  "Oldes"
 	File:    %tcp-server.reds
 	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
-	License: "BSD-3 - https:;//github.com/red/red/blob/master/BSD-3-License.txt"
+	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
 	Note: {Based on tutorial: http://www.binarytides.com/code-tcp-socket-server-winsock/}
 ]
 

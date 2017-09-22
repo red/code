@@ -1,11 +1,9 @@
 Red/System [
 	Title:   "Red/System - crossplaform Sockets binding - imports and definitions"
-	File:   %sockets-core.reds
-	Tabs:   4
-	License: {
-		Distributed under the Boost Software License, Version 1.0.
-		See https://github.com/red/red/blob/master/BSL-License.txt
-	}
+	Author:  "Oldes"
+	File:    %sockets-core.reds
+	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
+	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
 ]
 
 #include %../os/definitions.reds

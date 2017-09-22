@@ -3,7 +3,7 @@ Red/System [
 	Author:  "Oldes"
 	File:    %sockets.reds
 	Rights:  "Copyright (C) 2017 David 'Oldes' Oliva. All rights reserved."
-	License: "BSD-3 - https:;//github.com/red/red/blob/master/BSD-3-License.txt"
+	License: "BSD-3 - https://github.com/red/red/blob/master/BSD-3-License.txt"
 	Note: {Based on tutorial: http://www.binarytides.com/udp-socket-programming-in-winsock/}
 ]
 
