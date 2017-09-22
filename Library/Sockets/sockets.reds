@@ -51,12 +51,21 @@ sockets: context [
 	]
 
 	make-address: func[
+		"Allocates a new socket address struct and fills it with ip and port info values"
 		ip      [ip-address!]
 		port    [integer!]
 		return: [sockaddr!]
-		/local address
 	][
-		address: ALLOCATE_AS(sockaddr!)
+		init-address ALLOCATE_AS(sockaddr!) ip port
+	]
+
+	init-address: func[
+		"Fills existing socket address struct with ip and port info values"
+		address  [sockaddr!]
+		ip       [ip-address!]
+		port     [integer!]
+		return: [sockaddr!]
+	][
 		address/family-port: (AF_INET and FFFFh) or ((htons port) << 16) ;@@ TODO: change once we will have real int16! type
 		address/ip:   ip
 		address/zero: 0.0 ;just clearing these padding bytes

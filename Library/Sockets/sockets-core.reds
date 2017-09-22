@@ -158,7 +158,14 @@ sockaddr!: alias struct! [
 			addr           [sockaddr!]
 			addrlen        [int-ptr!]
 			return:        [integer!] 
-		] 
+		]
+		getsockname: "getsockname" [
+		;retrieves the local name for a socket.
+			s              [SOCKET!]
+			addr           [sockaddr!]
+			addrlen        [int-ptr!]
+			return:        [integer!] 
+		]
 		htons: "htons" [
 		;converts a u_short from host to TCP/IP network byte order (which is big-endian).
 			;@@ FIXME once we will have int16! type in Red
