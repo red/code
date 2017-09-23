@@ -12,7 +12,7 @@ Red/System [
 ]
 
 #include %common.reds
-#include %../../os/typed-array.reds
+#include %../../os/datatypes/typed-array.reds
 #include %../../3D-math/matrix-float32.reds
 
 ;some functions used in this example are defined as ARB extensions

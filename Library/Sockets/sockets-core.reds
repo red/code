@@ -116,7 +116,7 @@ sockaddr!: alias struct! [
 ]
 #define sockaddr_in! sockaddr!
 
-#if OS = 'Windows [
+#either OS = 'Windows [
 	#define WSAPROTOCOL_INFO! int-ptr!
 	WSAData!: alias struct! [
 	;@@ used here just like a placeholder - change once array struct values will be available in Red/System!
@@ -127,6 +127,21 @@ sockaddr!: alias struct! [
 	;                                 ; unsigned short iMaxUdpDg;
 	;    lpVendorInfo    [c-string!]  ; char FAR * lpVendorInfo;
 	] ;- WSAData! size is: 400 bytes
+	hostent!: alias struct! [
+		name         [c-string!]
+		aliases      [int-ptr!]  ;A NULL-terminated array of alternate names.
+		addrtype-length [TWO-SHORTS!] ;The type of address being returned.
+		                              ;The length, in bytes, of each address.
+		list    [struct! [ips [pointer! [integer!]]]]  ;A NULL-terminated list of addresses for the host. Addresses are returned in network byte order. 
+	]
+][
+	hostent!: alias struct! [
+		name         [c-string!]
+		aliases      [int-ptr!]  ;A NULL-terminated array of alternate names.
+		addrtype     [integer!]  ;The type of address being returned.
+		length       [integer!]  ;The length, in bytes, of each address.
+		list    [struct! [ips [pointer! [integer!]]]]  ;A NULL-terminated list of addresses for the host. Addresses are returned in network byte order. 
+	]
 ]
 
 #import [
@@ -149,6 +164,10 @@ sockaddr!: alias struct! [
 			addr           [sockaddr!]
 			addrlen        [integer!]
 			return:        [integer!] 
+		]
+		gethostbyname: "gethostbyname" [
+			host           [c-string!]
+			return:        [hostent!]
 		]
 		getpeername: "getpeername" [
 		;retrieves the address of the peer to which a socket is connected.
