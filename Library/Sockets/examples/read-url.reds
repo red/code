@@ -26,6 +26,8 @@ main: func [
 
 		print "---------------------------------------------------^/"
 
+		if result = null [ exit ]
+
 		data: strstr as c-string! result "^M^/^M^/" ;finds HTTP header end
 		if data = null [
 			print-line ["*** Result does not contain valid HTTP response!"]

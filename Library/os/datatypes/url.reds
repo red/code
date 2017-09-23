@@ -143,7 +143,7 @@ read-url: func[
 	port: either url/port > 0 [url/port][80]
 	path: either url/path <> null [url/path]["/"]
 
-	buffer-size: 512 ;1024 * 2 ;could be enough for request and read chunks
+	buffer-size: 1024 * 2 ;could be enough for request and read chunks
 
 	;- init TCP socket --------------------------------------
 
@@ -154,6 +154,11 @@ read-url: func[
 	address: declare sockaddr!
 	print "Resolving host's ip... "
 	ip: sockets/host-to-ip url/host
+	if ip = 0 [
+		print "FAILED^/"
+		size/value: 0
+		return null
+	]
 	print-line inet_ntoa ip ;prints ip in dotted format
 
 	;- connect to specified host server ---------------------

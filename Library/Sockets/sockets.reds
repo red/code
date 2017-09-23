@@ -99,6 +99,7 @@ sockets: context [
 		/local h [hostent!]
 	][
 		h: gethostbyname host
+		if h = null [return 0]
 		h/list/ips/1
 	]
 
