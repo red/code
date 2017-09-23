@@ -99,8 +99,6 @@ sockets: context [
 		/local h [hostent!]
 	][
 		h: gethostbyname host
-		print-line [h " " h/name " " as int-ptr! h/list]
-		print-line ".."
 		h/list/ips/1
 	]
 
