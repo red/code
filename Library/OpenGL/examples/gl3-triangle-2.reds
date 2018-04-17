@@ -8,7 +8,7 @@ Red/System [
 ]
 
 #include %common.reds
-#include %../../os/typed-array.reds
+#include %../../os/datatypes/typed-array.reds
 
 ;some functions used in this example are defined as ARB extensions
 #include %../extensions/gl-ARB.reds ;(Extensions officially approved by the OpenGL Architecture Review Board)

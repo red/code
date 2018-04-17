@@ -6,11 +6,21 @@ Red/System [
 	License: "BSD-3 - https:;//github.com/red/red/blob/master/BSD-3-License.txt"
 ]
 
+
+
 ;use this code only when Red runtime is not embedded 
 #if red-pass? = no [
 	;place code which is part of the Red runtime here
 	#define handle!	[pointer! [integer!]]
 ]
+
+;some useful macros:
+
+#define ZERO_MEMORY(pointer bytes) [set-memory pointer #"^@" bytes]
+#define FREE_MEMORY(pointer)       [free as byte-ptr! pointer]
+#define ALLOCATE_AS(type)          [as type allocate size? type]
+;note: there is function zero-memory defined in Red\modules\view\backends\windows\win32.reds !
+
 
 ;this code is not part of the Red runtime, but is common in multiple libraries
 
@@ -24,7 +34,6 @@ int64!: alias struct! [lo [integer!] hi [integer!]]
 #define uint64-ptr!   uint64!
 
 
-
 ;@@ !!! it is not possible to use int16! as compiler refuses it.
 integer16!:  alias struct! [lo [byte!] hi [byte!]]       ;@@ must be changed once we will get real integer16! type
 #define uint16! integer16! ;@@ this is probably not safe! Check Steam binding where it was originaly used!
@@ -33,6 +42,8 @@ integer16!:  alias struct! [lo [byte!] hi [byte!]]       ;@@ must be changed onc
 #define uint16-value! [integer16! value]
 #define int16-ptr!     integer16!
 #define uint16-ptr!    integer16!
+
+#define TWO-SHORTS! integer! ;again - temp workaround - used for 2 int16 values in structs
 
 binary-ptr!:      alias struct! [value [pointer! [byte!]]]
 string-ptr!:      alias struct! [value [c-string!]]
