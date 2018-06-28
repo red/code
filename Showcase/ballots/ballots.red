@@ -137,7 +137,7 @@ view compose/deep [
 	] return
 	
 	pad -25x0 big-text right "VOTES FOR" 
-	pad -10x0 big-text 125 left font [] react [
+	pad -10x0 big-text 126 left font [] react [
 		face/text: uppercase form voter/selected
 		face/font/color: voter/draw/4
 	]
