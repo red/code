@@ -123,3 +123,4 @@ context [
 ]
 
 system/view/auto-sync?: yes
+do-events

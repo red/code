@@ -44,6 +44,7 @@ loop 100 [
 ]
 
 view [
+	title "Bubbles"
 	size 400x400
 	origin 0x0
 	canvas: base 400x400 10.10.255 draw d rate 60
