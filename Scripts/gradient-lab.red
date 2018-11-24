@@ -76,7 +76,7 @@ set-fill-param: func [idx "Field index" value][
 
 view [
 	title "Gradient Lab"
-	style txt: text 40
+	style txt: text 50
 	style color-box: base 50x50 128.128.128
 		; only buttons get on-click
 		on-down [cur-color-face: face   set-sliders face/color][cur-color-face]
@@ -102,8 +102,7 @@ view [
 	
 	at 550x25
 	panel [
-		txt "Fill Style:" style-lst: drop-list data ["Radial" "Linear" "Diamond"]
-			on-create [face/selected: 1]
+		txt "Fill Style:" style-lst: drop-list data ["Radial" "Linear" "Diamond"] select 1
 		return
 		text 120x50 "Click a color box to set the gradient color" 
 		c1: color-box red  c2: color-box green  c3: color-box blue  return
