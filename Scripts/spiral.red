@@ -32,6 +32,7 @@ op: :-
 xx: random 20.20.20
 
 view [
+	title "Spiral"
 	canvas: base size all-over white rate 60 on-time [
 		if color < 30.30.30 [op: :+  xx: random 20.20.20]
 		if color > 200.200.200 [op: :-  xx: random 20.20.20]

@@ -7,6 +7,7 @@ Red [
 
 tick: 0
 view/tight [
+	title "Ellipse"
 	box 300x300 rate 90 draw [
 		translate 150x150
 		circle 0x0 100
