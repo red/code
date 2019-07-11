@@ -12,6 +12,6 @@ Red [
 
 view [
 	text-list data parse
-		read https://api.github.com/repos/red/red/events
-		[collect [any [thru "message" 3 skip keep to ["\n" | {"}]]]]
+		read https://api.github.com/repos/red/red/commits
+		[collect [any [thru {"message":"} keep to [{"} | "\n"]]]]
 ]
