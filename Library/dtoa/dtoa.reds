@@ -25,44 +25,44 @@ Red/System [
 #define WORD_0(x) [x/int2]						;-- for little endian
 #define WORD_1(x) [x/int1]
 
-#define BIG_INT_X(x) (as int-ptr! (as byte-ptr! x) + 20)
+#define DTOA_BIG_INT_X(x) (as int-ptr! (as byte-ptr! x) + 20)
 
 #define STORE_AND_INC(a b c) [
 	a/value: b << 16 or (c and FFFFh)
 	a: a + 1
 ]
 
-#define EXP_SHIFT		20
-#define EXP_SHIFT1		20
-#define EXP_MSK1		00100000h
-#define EXP_MSK11		00100000h
-#define EXP_MASK		7FF00000h
-#define NBITS			53
-#define BIAS			1023
-#define EMAX			1023
-#define EMIN			-1022
-#define ETINY			-1074					;-- smallest denormal is 2**Etiny
-#define EXP_1			3FF00000h
-#define EXP_11			3FF00000h
-#define EBITS			11
-#define FRAC_MASK		000FFFFFh
-#define FRAC_MASK1		000FFFFFh
-#define TEN_PMAX		22
-#define BNDRY_MASK		000FFFFFh
-#define BNDRY_MASK1 	000FFFFFh
-#define SIGN_BIT		80000000h
-#define LOG2P			1
-#define TINY0			0
-#define TINY1			1
-#define INT_MAX			14
+#define DTOA_EXP_SHIFT		20
+#define DTOA_EXP_SHIFT1		20
+#define DTOA_EXP_MSK1		00100000h
+#define DTOA_EXP_MSK11		00100000h
+#define DTOA_EXP_MASK		7FF00000h
+#define DTOA_NBITS			53
+#define DTOA_BIAS			1023
+#define DTOA_EMAX			1023
+#define DTOA_EMIN			-1022
+#define DTOA_ETINY			-1074					;-- smallest denormal is 2**DTOA_ETINY
+#define DTOA_EXP_1			3FF00000h
+#define DTOA_EXP_11			3FF00000h
+#define DTOA_EBITS			11
+#define FRAC_MASK			000FFFFFh
+#define FRAC_MASK1			000FFFFFh
+#define TEN_PMAX			22
+#define BNDRY_MASK			000FFFFFh
+#define BNDRY_MASK1 		000FFFFFh
+#define DTOA_SIGN_BIT		80000000h
+#define DTOA_LOG2P			1
+#define DTOA_TINY0			0
+#define DTOA_TINY1			1
+#define DTOA_INT_MAX		14
 
-#define FLT_RADIX		2.0						;@@ value for machines except the IBM 360 and derivatives
-#define DBL_MAX_10_EXP	308						;@@ value for IEEE_Arith
-#define DBL_MAX_EXP		1024					;@@ value for IEEE_Arith
-#define N_BIGTENS		5
+#define FLT_RADIX			2.0						;@@ value for machines except the IBM 360 and derivatives
+#define DBL_MAX_10_EXP		308						;@@ value for IEEE_Arith
+#define DBL_MAX_EXP			1024					;@@ value for IEEE_Arith
+#define N_BIGTENS			5
 
-#define BIG_0			[(FRAC_MASK1 or (DBL_MAX_EXP + BIAS - 1 * EXP_MSK1))]
-#define BIG_1			FFFFFFFFh
+#define DTOA_BIG_0			[(FRAC_MASK1 or (DBL_MAX_EXP + DTOA_BIAS - 1 * DTOA_EXP_MSK1))]
+#define DTOA_BIG_1			FFFFFFFFh
 
 red-dtoa: context [
 	P05:  [5 25 125]
@@ -150,18 +150,18 @@ red-dtoa: context [
 
 		if wc > a/maxwds [k: k + 1]
 		c: Balloc k								;@@ check if c = null ?
-		x: BIG_INT_X(c)
+		x: DTOA_BIG_INT_X(c)
 		xa: x + wc
 		while [x < xa][
 			x/value: 0
 			x: x + 1
 		]
 
-		xa: BIG_INT_X(a)
+		xa: DTOA_BIG_INT_X(a)
 		xae: xa + wa
-		xb: BIG_INT_X(b)
+		xb: DTOA_BIG_INT_X(b)
 		xbe: xb + wb
-		xc0: BIG_INT_X(c)
+		xc0: DTOA_BIG_INT_X(c)
 		while [xb < xbe][
 			y: xb/value and FFFFh
 			if y <> 0 [
@@ -200,7 +200,7 @@ red-dtoa: context [
 			xb: xb + 1
 			xc0: xc0 + 1
 		]
-		xc0: BIG_INT_X(c)
+		xc0: DTOA_BIG_INT_X(c)
 		xc: xc0 + wc
 		while [xc: xc - 1 all [wc > 0 zero? xc/1]][wc: wc - 1]
 		c/wds: wc
@@ -223,7 +223,7 @@ red-dtoa: context [
 			b1	[big-int!]
 	][
 		wds: b/wds
-		x: BIG_INT_X(b)
+		x: DTOA_BIG_INT_X(b)
 		i: 0
 		carry: a
 		until [
@@ -243,7 +243,7 @@ red-dtoa: context [
 				Bfree b
 				b: b1
 			]
-			x: BIG_INT_X(b)
+			x: DTOA_BIG_INT_X(b)
 			wds: wds + 1
 			x/wds: carry
 			b/wds: wds
@@ -312,7 +312,7 @@ red-dtoa: context [
 		]
 
 		b1: Balloc k1							;@@ check if b1 = null ?
-		x1: BIG_INT_X(b1)
+		x1: DTOA_BIG_INT_X(b1)
 		i: 0
 		while [i < n][
 			x1/value: 0
@@ -320,7 +320,7 @@ red-dtoa: context [
 			i: i + 1
 		]
 
-		x: BIG_INT_X(b)
+		x: DTOA_BIG_INT_X(b)
 		xe: x + b/wds
 		k: k and 1Fh
 		either k <> 0 [
@@ -359,9 +359,9 @@ red-dtoa: context [
 		j: b/wds
 		if i <> j [return i - j]
 
-		xa0: BIG_INT_X(a)
+		xa0: DTOA_BIG_INT_X(a)
 		xa: xa0 + j
-		xb0: BIG_INT_X(b)
+		xb0: DTOA_BIG_INT_X(b)
 		xb: xb0 + j
 		until [
 			xa: xa - 1
@@ -405,12 +405,12 @@ red-dtoa: context [
 		c: Balloc a/k
 		c/sign: i
 		wa: a/wds
-		xa: BIG_INT_X(a)
+		xa: DTOA_BIG_INT_X(a)
 		xae: xa + wa
 		wb: b/wds
-		xb: BIG_INT_X(b)
+		xb: DTOA_BIG_INT_X(b)
 		xbe: xb + wb
-		xc: BIG_INT_X(c)
+		xc: DTOA_BIG_INT_X(c)
 		borrow: 0
 		until [
 			y: xa/value and FFFFh - (xb/value and FFFFh) - borrow
@@ -451,7 +451,7 @@ red-dtoa: context [
 			x	[int-ptr!]
 			wds [integer!]
 	][
-		x: BIG_INT_X(b)
+		x: DTOA_BIG_INT_X(b)
 		wds: b/wds
 		rv: (hi0bits x/wds) - 4
 		if p2 > 0 [rv: rv - p2]
@@ -471,8 +471,8 @@ red-dtoa: context [
 	][
 		n: s/wds
 		if b/wds < n [return 0]
-		sx: BIG_INT_X(s)
-		bx: BIG_INT_X(b)
+		sx: DTOA_BIG_INT_X(s)
+		bx: DTOA_BIG_INT_X(b)
 		;@@ do unsigned int division
 		q: as-integer floor (uint-to-float bx/n) / (uint-to-float sx/n + 1)			;-- ensure q <= true quotient
 		n: n - 1
@@ -497,7 +497,7 @@ red-dtoa: context [
 				sx > sxe
 			]
 			if zero? bxe/value [
-				bx: BIG_INT_X(b)
+				bx: DTOA_BIG_INT_X(b)
 				while [
 					bxe: bxe - 1
 					all [bxe > bx zero? bxe/value]
@@ -510,8 +510,8 @@ red-dtoa: context [
 			q: q + 1
 			borrow: 0
 			carry: 0
-			bx: BIG_INT_X(b)
-			sx: BIG_INT_X(s)
+			bx: DTOA_BIG_INT_X(b)
+			sx: DTOA_BIG_INT_X(s)
 			until [
 				si: sx/value
 				ys: si and FFFFh + carry
@@ -526,7 +526,7 @@ red-dtoa: context [
 				sx: sx + 1
 				sx > sxe
 			]
-			bx: BIG_INT_X(b)
+			bx: DTOA_BIG_INT_X(b)
 			bxe: bx + n
 			if zero? bxe/value [
 				while [
@@ -560,10 +560,10 @@ red-dtoa: context [
 		db: as int64! :fb
 		k: 32 * (a/wds - b/wds) + ka - kb
 		either k > 0 [
-			da/int2: da/int2 + (k * EXP_MSK1)
+			da/int2: da/int2 + (k * DTOA_EXP_MSK1)
 		][
 			k: 0 - k
-			db/int2: db/int2 + (k * EXP_MSK1)
+			db/int2: db/int2 + (k * DTOA_EXP_MSK1)
 		]
 		fa / fb
 	]
@@ -636,27 +636,27 @@ red-dtoa: context [
 	][
 		d:   declare int64!
 		f:   as pointer! [float!] d
-		xa0: BIG_INT_X(a)
+		xa0: DTOA_BIG_INT_X(a)
 		xa:  xa0 + a/wds - 1
 		y:   xa/value
 
 		k: hi0bits y
 		e/value: 32 - k
-		if k < EBITS [
-			d/int2: EXP_1 or (y >>> (EBITS - k))
+		if k < DTOA_EBITS [
+			d/int2: DTOA_EXP_1 or (y >>> (DTOA_EBITS - k))
 			w: either xa > xa0 [xa: xa - 1 xa/value][0]
-			d/int1: y << (32 - EBITS + k) or (w >>> (EBITS - k))
+			d/int1: y << (32 - DTOA_EBITS + k) or (w >>> (DTOA_EBITS - k))
 			return f/value
 		]
 
 		z: either xa > xa0 [xa: xa - 1 xa/value][0]
-		k: k - EBITS
+		k: k - DTOA_EBITS
 		either k <> 0 [
-			d/int2: EXP_1 or (y << k) or (z >>> (32 - k))
+			d/int2: DTOA_EXP_1 or (y << k) or (z >>> (32 - k))
 			y: either xa > xa0 [xa: xa - 1 xa/value][0]
 			d/int1: z << k or (y >>> (32 - k))
 		][
-			d/int2: EXP_1 or y
+			d/int2: DTOA_EXP_1 or y
 			d/int1: z
 		]
 		return f/value
@@ -671,15 +671,15 @@ red-dtoa: context [
 			d b de k x y z i w0
 	][
 		b:  Balloc 1
-		x:  BIG_INT_X(b)
+		x:  DTOA_BIG_INT_X(b)
 		d:  as int64! :f
 		w0: WORD_0(d)
 		z:  w0 and FRAC_MASK
 		w0: w0 and 7FFFFFFFh			;-- clear sign bit, which we ignore
 		d/int2: w0						;@@ little endian or big endian ?
 
-		de: w0 >>> EXP_SHIFT
-		if de <> 0 [z: z or EXP_MSK1]
+		de: w0 >>> DTOA_EXP_SHIFT
+		if de <> 0 [z: z or DTOA_EXP_MSK1]
 		y: WORD_1(d)
 		either zero? y [
 			k: lo0bits :z
@@ -701,10 +701,10 @@ red-dtoa: context [
 		]
 
 		either zero? de [
-			e/value: de - BIAS - 52 + 1 + k
+			e/value: de - DTOA_BIAS - 52 + 1 + k
 			bits/value: 32 * i - hi0bits x/i
 		][
-			e/value: de - BIAS - 52 + k
+			e/value: de - DTOA_BIAS - 52 + k
 			bits/value: 53 - k
 		]
 		b
@@ -789,15 +789,15 @@ red-dtoa: context [
 		w0:    WORD_0(d)
 		w1:    WORD_1(d)
 
-		either zero? (w0 and SIGN_BIT) [
+		either zero? (w0 and DTOA_SIGN_BIT) [
 			sign?: no
 		][
 			sign?: yes
-			w0: w0 and (not SIGN_BIT)
+			w0: w0 and (not DTOA_SIGN_BIT)
 			d/int2: w0								;@@ WORD_0(d): w0 little endian or big endian ?
 		]
 
-		if w0 and EXP_MASK = EXP_MASK [
+		if w0 and DTOA_EXP_MASK = DTOA_EXP_MASK [
 			decpt/value: 9999
 			if all [
 				zero? w1
@@ -816,11 +816,11 @@ red-dtoa: context [
 		be: 0
 		bbits: 0
 		b: float-to-big f :be :bbits
-		i: w0 >>> EXP_SHIFT1 and (EXP_MASK >> EXP_SHIFT1)
+		i: w0 >>> DTOA_EXP_SHIFT1 and (DTOA_EXP_MASK >> DTOA_EXP_SHIFT1)
 		fsave: f
 		d2: d
 		denorm: either zero? i [
-			i: bbits + be + BIAS + 51
+			i: bbits + be + DTOA_BIAS + 51
 			x: either i > 32 [
 				w0 << (64 - i) or (w1 >>> (i - 32))
 			][
@@ -828,16 +828,16 @@ red-dtoa: context [
 			]
 			f: uint-to-float x
 			ww0: WORD_0(d2)
-			ww0: ww0 - (31 * EXP_MSK1)
+			ww0: ww0 - (31 * DTOA_EXP_MSK1)
 			d2/int2: ww0						;@@ little endian or big endian ?
-			i: i - (BIAS + 52)
+			i: i - (DTOA_BIAS + 52)
 			yes
 		][
 			ww0: WORD_0(d2)
 			ww0: ww0 and FRAC_MASK1
-			ww0: ww0 or EXP_11
+			ww0: ww0 or DTOA_EXP_11
 			d2/int2: ww0						;@@ little endian or big endian ?
-			i: i - BIAS
+			i: i - DTOA_BIAS
 			no
 		]
 
@@ -871,7 +871,7 @@ red-dtoa: context [
 			s5: 0
 		]
 
-		if all [be >= 0 k <= INT_MAX] [			;-- Do we have a "small" integer?
+		if all [be >= 0 k <= DTOA_INT_MAX] [			;-- Do we have a "small" integer?
 			ki: k + 1
 			ds: TENS/ki
 			until [
@@ -887,7 +887,7 @@ red-dtoa: context [
 
 		m2: b2
 		m5: b5
-		i: either denorm [be + (BIAS + 52)][1 + 53 - bbits]
+		i: either denorm [be + (DTOA_BIAS + 52)][1 + 53 - bbits]
 		b2: b2 + i
 		s2: s2 + i
 		mhi: int-to-big 1
@@ -915,10 +915,10 @@ red-dtoa: context [
 		if all [
 			zero? w1
 			zero? (w0 and BNDRY_MASK)
-			w0 and (EXP_MASK and (not EXP_MSK1)) <> 0
+			w0 and (DTOA_EXP_MASK and (not DTOA_EXP_MSK1)) <> 0
 		][
-			b2: b2 + LOG2P
-			s2: s2 + LOG2P
+			b2: b2 + DTOA_LOG2P
+			s2: s2 + DTOA_LOG2P
 			spec_case: yes
 		]
 
@@ -943,7 +943,7 @@ red-dtoa: context [
 		if spec_case [
 			mhi: Balloc mhi/k
 			Bcopy(mhi mlo)
-			mhi: Blshift mhi LOG2P
+			mhi: Blshift mhi DTOA_LOG2P
 		]
 
 		while [true][
@@ -1072,22 +1072,22 @@ red-dtoa: context [
 	][
 		d:     as int64! :f
 		b:     Balloc 1
-		x:     BIG_INT_X(b)
+		x:     DTOA_BIG_INT_X(b)
 		b/wds: 2
 		x0:    WORD_1(d)
 		x1:    WORD_0(d) and FRAC_MASK
-		exp:   ETINY - 1 + ((WORD_0(d) and EXP_MASK) >>> EXP_SHIFT)
+		exp:   DTOA_ETINY - 1 + ((WORD_0(d) and DTOA_EXP_MASK) >>> DTOA_EXP_SHIFT)
 
-		either exp < ETINY [exp: ETINY][x1: x1 or EXP_MSK1]
+		either exp < DTOA_ETINY [exp: DTOA_ETINY][x1: x1 or DTOA_EXP_MSK1]
 
 		if all [
 			scale <> 0
 			any [x0 <> 0 x1 <> 0]
 		][
 			exp: exp - scale
-			if exp < ETINY [
-				scale: ETINY - exp
-				exp: ETINY
+			if exp < DTOA_ETINY [
+				scale: DTOA_ETINY - exp
+				exp: DTOA_ETINY
 				if scale >= 32 [
 					x0: x1
 					x1: 0
@@ -1115,7 +1115,7 @@ red-dtoa: context [
 			L	[integer!]
 	][
 		d: as int64! :f
-		L: d/int2 and EXP_MASK - (52 * EXP_MSK1)
+		L: d/int2 and DTOA_EXP_MASK - (52 * DTOA_EXP_MSK1)
 		d/int2: L
 		d/int1: 0
 		f
@@ -1133,9 +1133,9 @@ red-dtoa: context [
 		u: b
 		either all [
 			bc/scale <> 0
-			2 * 53 + 1 > (b/int2 and EXP_MASK >>> EXP_SHIFT)
+			2 * 53 + 1 > (b/int2 and DTOA_EXP_MASK >>> DTOA_EXP_SHIFT)
 		][
-			u/int2: 53 + 2 * EXP_MSK1
+			u/int2: 53 + 2 * DTOA_EXP_MSK1
 			u/int1: 0
 			f
 		][
@@ -1262,12 +1262,12 @@ red-dtoa: context [
 	#define STRTOD_RETURN [return either neg? [0.0 - rv][rv]]
 
 	#define STRTOD_OVERFLOW [
-		d/int2: EXP_MASK
+		d/int2: DTOA_EXP_MASK
 		d/int1: 0
 		STRTOD_RETURN
 	]
 
-	#define STRTOD_UNDERFLOW [return either neg? [-0.0][0.0]]
+	#define STRTOD_UNDERFLOW [return 0.0]
 
 	#define STRTOD_BREAK [
 		Bfree bb
@@ -1279,7 +1279,7 @@ red-dtoa: context [
 			bigcomp d s0 bc
 		]
 		if bc/scale <> 0 [
-			d0/int2: EXP_1 - (2 * 53 * EXP_MSK1)
+			d0/int2: DTOA_EXP_1 - (2 * 53 * DTOA_EXP_MSK1)
 			d0/int1: 0
 			rv: rv * rv0
 		]
@@ -1288,14 +1288,14 @@ red-dtoa: context [
 
 	#define STRTOD_DROP_DOWN [
 		if bc/scale <> 0 [
-			L: d/int2 and EXP_MASK
-			if L <= (2 * 53 + 1 * EXP_MSK1) [
-				if L > (53 + 2 * EXP_MSK1) [STRTOD_BREAK]
+			L: d/int2 and DTOA_EXP_MASK
+			if L <= (2 * 53 + 1 * DTOA_EXP_MSK1) [
+				if L > (53 + 2 * DTOA_EXP_MSK1) [STRTOD_BREAK]
 				if bc/nd > nd [STRTOD_BREAK]
 				STRTOD_UNDERFLOW
 			]
 		]
-		L: d/int2 and EXP_MASK - EXP_MSK1
+		L: d/int2 and DTOA_EXP_MASK - DTOA_EXP_MSK1
 		d/int2: L or BNDRY_MASK1
 		d/int1: FFFFFFFFh
 		STRTOD_BREAK
@@ -1479,15 +1479,15 @@ red-dtoa: context [
 						j: j + 1
 						e1: e1 >> 1
 					]
-					d/int2: d/int2 - (53 * EXP_MSK1)
+					d/int2: d/int2 - (53 * DTOA_EXP_MSK1)
 					rv: rv * BIGTENS/j
-					z: d/int2 and EXP_MASK
-					if z > (DBL_MAX_EXP + BIAS - 53 * EXP_MSK1) [STRTOD_OVERFLOW]
-					either z > (DBL_MAX_EXP + BIAS - 54 * EXP_MSK1) [
-						d/int2: BIG_0
-						d/int1: BIG_1
+					z: d/int2 and DTOA_EXP_MASK
+					if z > (DBL_MAX_EXP + DTOA_BIAS - 53 * DTOA_EXP_MSK1) [STRTOD_OVERFLOW]
+					either z > (DBL_MAX_EXP + DTOA_BIAS - 54 * DTOA_EXP_MSK1) [
+						d/int2: DTOA_BIG_0
+						d/int1: DTOA_BIG_1
 					][
-						d/int2: d/int2 + (53 * EXP_MSK1)
+						d/int2: d/int2 + (53 * DTOA_EXP_MSK1)
 					]
 				]
 			]
@@ -1510,7 +1510,7 @@ red-dtoa: context [
 						e1: e1 >> 1
 					]
 
-					j: 2 * 53 + 1 - (d/int2 and EXP_MASK >>> EXP_SHIFT)
+					j: 2 * 53 + 1 - (d/int2 and DTOA_EXP_MASK >>> DTOA_EXP_SHIFT)
 					if all [
 						bc/scale <> 0
 						j > 0
@@ -1518,7 +1518,7 @@ red-dtoa: context [
 						either j >= 32 [
 							d/int1: 0
 							either j >= 53 [
-								d/int2: 53 + 2 * EXP_MSK1
+								d/int2: 53 + 2 * DTOA_EXP_MSK1
 							][
 								d/int2: d/int2 and (FFFFFFFFh << (j - 32))
 							]
@@ -1623,7 +1623,7 @@ red-dtoa: context [
 					zero? d/int1
 					zero? (d/int2 and BNDRY_MASK)
 				][
-					j: d/int2 and EXP_MASK >>> EXP_SHIFT
+					j: d/int2 and DTOA_EXP_MASK >>> DTOA_EXP_SHIFT
 					if j - bc/scale >= 2 [
 						rv: rv - (0.5 * sulp rv bc)
 						STRTOD_BREAK
@@ -1641,7 +1641,7 @@ red-dtoa: context [
 					dsign <> 0
 					w1 <> 0
 					w0 and BNDRY_MASK <> 0
-					w0 and EXP_MASK <= (2 * 53 + 1 * EXP_MSK1)
+					w0 and DTOA_EXP_MASK <= (2 * 53 + 1 * DTOA_EXP_MSK1)
 				][STRTOD_BREAK]
 
 				if all [
@@ -1649,7 +1649,7 @@ red-dtoa: context [
 					delta/wds <= 1
 				][STRTOD_BREAK]
 
-				delta: Blshift delta LOG2P
+				delta: Blshift delta DTOA_LOG2P
 				if 0 < Bcmp delta bs [STRTOD_DROP_DOWN]
 				STRTOD_BREAK
 			]
@@ -1657,12 +1657,12 @@ red-dtoa: context [
 			if zero? i [
 				case [
 					dsign <> 0 [
-						y: w0 and EXP_MASK
+						y: w0 and DTOA_EXP_MASK
 						j: either all [
 							bc/scale <> 0
-							y <= (2 * 53 * EXP_MSK1)
+							y <= (2 * 53 * DTOA_EXP_MSK1)
 						][
-							FFFFFFFFh and (FFFFFFFFh << (107 - (y >>> EXP_SHIFT)))
+							FFFFFFFFh and (FFFFFFFFh << (107 - (y >>> DTOA_EXP_SHIFT)))
 						][
 							FFFFFFFFh
 						]
@@ -1670,7 +1670,7 @@ red-dtoa: context [
 							w0 and BNDRY_MASK1 = BNDRY_MASK1
 							w1 = j
 						][
-							d/int2: w0 and EXP_MASK + EXP_MSK1
+							d/int2: w0 and DTOA_EXP_MASK + DTOA_EXP_MSK1
 							d/int1: 0
 							STRTOD_BREAK
 						]
@@ -1700,7 +1700,7 @@ red-dtoa: context [
 						aadj1: 1.0
 					]
 					any [w1 <> 0 w0 and BNDRY_MASK <> 0][
-						if all [w1 = TINY1 zero? w0][
+						if all [w1 = DTOA_TINY1 zero? w0][
 							if bc/nd > nd [STRTOD_BREAK]
 							STRTOD_UNDERFLOW
 						]
@@ -1721,15 +1721,15 @@ red-dtoa: context [
 				aadj1: either dsign <> 0 [aadj][0.0 - aadj]
 			]
 
-			y: w0 and EXP_MASK
-			either y = (DBL_MAX_EXP + BIAS - 1 * EXP_MSK1) [
+			y: w0 and DTOA_EXP_MASK
+			either y = (DBL_MAX_EXP + DTOA_BIAS - 1 * DTOA_EXP_MSK1) [
 				rv0: rv
-				d/int2: w0 - (53 * EXP_MSK1)
+				d/int2: w0 - (53 * DTOA_EXP_MSK1)
 				adj: aadj1 * ulp rv
 				rv: rv + adj
 				w0: WORD_0(d)
-				either w0 and EXP_MASK >= (DBL_MAX_EXP + BIAS - 53 * EXP_MSK1) [
-					if all [w0 = BIG_0 w1 = BIG_1][
+				either w0 and DTOA_EXP_MASK >= (DBL_MAX_EXP + DTOA_BIAS - 53 * DTOA_EXP_MSK1) [
+					if all [w0 = DTOA_BIG_0 w1 = DTOA_BIG_1][
 						Bfree bb
 						Bfree bd
 						Bfree bs
@@ -1737,14 +1737,14 @@ red-dtoa: context [
 						Bfree delta
 						STRTOD_OVERFLOW
 					]
-					d/int2: BIG_0
-					d/int1: BIG_1
+					d/int2: DTOA_BIG_0
+					d/int1: DTOA_BIG_1
 					next?: no
-				][d/int2: w0 + (53 * EXP_MSK1)]
+				][d/int2: w0 + (53 * DTOA_EXP_MSK1)]
 			][
 				if all [
 					bc/scale <> 0
-					y <= (2 * 53 * EXP_MSK1)
+					y <= (2 * 53 * DTOA_EXP_MSK1)
 				][
 					if aadj <= 2147483647.0 [
 						z: as-integer floor aadj
@@ -1753,7 +1753,7 @@ red-dtoa: context [
 						aadj1: either dsign <> 0 [aadj][0.0 - aadj]
 					]
 					aadj2: aadj1
-					d2/int2: d2/int2 + (107 * EXP_MSK1 - y)
+					d2/int2: d2/int2 + (107 * DTOA_EXP_MSK1 - y)
 					aadj1: aadj2
 				]
 				adj: aadj1 * ulp rv
@@ -1761,7 +1761,7 @@ red-dtoa: context [
 			]
 
 			if next? [
-				z: d/int2 and EXP_MASK
+				z: d/int2 and DTOA_EXP_MASK
 				if bc/nd = nd [
 					if zero? bc/scale [
 						if y = z [

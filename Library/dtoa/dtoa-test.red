@@ -41,7 +41,6 @@ dtoa-to-float: routine [
 		p = tail
 	]
 
-	cur/1: #"^@"
 	float/box red-dtoa/string-to-float s0 cur
 ]
 
@@ -51,8 +50,8 @@ dtoa-to-string: routine [
 		f	[float!]
 		buf [red-string!]
 ][
-	f: number/value
-	buf: string/rs-make-at as cell! number 1			;-- 16 bits string
+	f: number
+	buf: string/rs-make-at as cell! stack/arguments 4
 	string/concatenate-literal buf red-dtoa/form-float f
 	stack/set-last as red-value! buf
 ]
@@ -1084,8 +1083,12 @@ float-cases: [
 
 print "Tests start..."
 
+error: 0
 foreach val float-cases [
-	if val/2 <> dtoa-to-string dtoa-to-float val/1 [print ["Failed " val/1 " " val/2]]
+	if val/2 <> dtoa-to-string dtoa-to-float val/1 [
+		error: error + 1
+		print ["Failed " val/1 " " val/2]
+	]
 ]
 
-print "Tests done."
+if zero? error [print "Tests done without error."]
