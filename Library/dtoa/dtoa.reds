@@ -75,6 +75,9 @@ red-dtoa: context [
 	TINYTENS: [1e-16 1e-32 1e-64 1e-128 0.0]
 	TINYTENS/5: 9007199254740992.0 * 9007199254740992e-256
 
+	freelist: [null null null null null null null null]
+	KMax: (size? freelist) - 1
+
 	int64!: alias struct! [int1 [integer!] int2 [integer!]]
 
 	big-int!: alias struct! [
@@ -97,16 +100,27 @@ red-dtoa: context [
 		k		[integer!]
 		return: [big-int!]
 		/local
+			idx	[integer!]
 			x	[integer!]
 			len [integer!]						;@@ should be unsigned integer!
 			big [big-int!]
 	][
-		x: 1 << k
-		len: x - 1 * 4 + 8 + (size? big-int!) - 1 / 8
+		idx: k + 1
+		big: as big-int! freelist/idx
 
-		big: as big-int! allocate len * 8		;@@ check if big = null
-		big/k: k
-		big/maxwds: x
+		either all [
+			k <= KMax
+			big <> null
+		][
+			freelist/idx: as-integer big/next
+		][
+			x: 1 << k
+			len: x - 1 * 4 + 8 + (size? big-int!) - 1 / 8
+
+			big: as big-int! allocate len * 8		;@@ check if big = null
+			big/k: k
+			big/maxwds: x
+		]
 		big/sign: 0
 		big/wds: 0
 		big
@@ -114,8 +128,18 @@ red-dtoa: context [
 
 	Bfree: func [
 		p		[big-int!]
+		/local
+			idx	[integer!]
 	][
-		if p <> null [free as byte-ptr! p]
+		if p <> null [
+			either p/k > KMax [
+				free as byte-ptr! p
+			][
+				idx: p/k + 1
+				p/next: as big-int! freelist/idx
+				freelist/idx: as-integer p
+			]
+		]
 	]
 
 	#define Bcopy(x y) [
