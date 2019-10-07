@@ -76,10 +76,10 @@ set-fill-param: func [idx "Field index" value][
 
 view [
 	title "Gradient Lab"
-	style txt: text 40
+	style txt: text 50
 	style color-box: base 50x50 128.128.128
 		; only buttons get on-click
-		on-down [cur-color-face: face   set-sliders face/color][cur-color-face]
+		on-down [cur-color-face: face   set-sliders face/color]
 		;react [face/color: to-color R/data G/data B/data]
 	style color-sld: slider 256 0% [update-cur-color]
 	style param-sld: slider 256 0%
