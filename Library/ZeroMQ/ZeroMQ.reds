@@ -15,8 +15,8 @@ Red/System [
 	}
 ]
 
-#define handle! byte-ptr!
-#define zmq-socket! handle!
+#define zmq-context! byte-ptr!
+#define zmq-socket! byte-ptr!
 
 
 #enum zmq-error-code! [
@@ -174,8 +174,8 @@ zmq-event!: alias struct! [
 	value  [integer!] ;value is either error code, fd or reconnect interval
 ]
 zmq-poll-item!: alias struct! [
-	socket [handle!]
-	fd     [handle!]
+	socket [zmq-socket!]
+	fd     [byte-ptr!]
 	events [integer!] ;consist of 2 shorts
 ]
 
@@ -209,15 +209,15 @@ ZMQ: context [
 		;*  0MQ infrastructure (a.k.a. context) initialisation & termination.         */
 		;******************************************************************************/
 
-		ctx_new: "zmq_ctx_new" [ return: [handle!]]
-		ctx_term: "zmq_ctx_term" [context [handle!] return: [integer!]]
-		ctx_shutdown: "zmq_ctx_shutdown" [context [handle!] return: [integer!]]
-		ctx_set: "zmq_ctx_set" [context [handle!] option [integer!] optval [integer!] return: [integer!]]
-		ctx_get: "zmq_ctx_get" [context [handle!] option [integer!] return: [integer!]]
+		ctx_new: "zmq_ctx_new" [ return: [zmq-context!]]
+		ctx_term: "zmq_ctx_term" [context [zmq-context!] return: [integer!]]
+		ctx_shutdown: "zmq_ctx_shutdown" [context [zmq-context!] return: [integer!]]
+		ctx_set: "zmq_ctx_set" [context [zmq-context!] option [integer!] optval [integer!] return: [integer!]]
+		ctx_get: "zmq_ctx_get" [context [zmq-context!] option [integer!] return: [integer!]]
 		;*  Old (legacy) API
-		init: "zmq_init" [io_threads [integer!] return: [handle!]]
-		term: "zmq_term" [context [handle!] return: [integer!]]
-		ctx_destroy: "zmq_ctx_destroy" [context [handle!] return: [integer!]]
+		init: "zmq_init" [io_threads [integer!] return: [byte-ptr!]]
+		term: "zmq_term" [context [zmq-context!] return: [integer!]]
+		ctx_destroy: "zmq_ctx_destroy" [context [zmq-context!] return: [integer!]]
 
 		;******************************************************************************/
 		;*  0MQ message definition.                                                   */
@@ -228,8 +228,8 @@ ZMQ: context [
 			msg     [zmq-message!]
 			data    [byte-ptr!]
 			size    [integer!]
-			ffn     [function! [data [byte-ptr!] hint [handle!]]]
-			hint    [handle!]
+			ffn     [function! [data [byte-ptr!] hint [byte-ptr!]]]
+			hint    [byte-ptr!]
 			return: [integer!]
 		]
 		msg_send: "zmq_msg_send" [
