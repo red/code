@@ -19,6 +19,8 @@ mouse-down: func [face event][
 	hit: none
 	down-pos: event/offset
 	if hit? distance (down-pos - d-img/:IDX_I_TL) [hit: IDX_I_TL]
+	if hit? distance (down-pos - d-img/:IDX_I_TR) [hit: IDX_I_TR]
+	if hit? distance (down-pos - d-img/:IDX_I_BL) [hit: IDX_I_BL]
 	if hit? distance (down-pos - d-img/:IDX_I_BR) [hit: IDX_I_BR]
 ]
 mouse-up: func [face event][
@@ -33,7 +35,9 @@ mouse-move: func [face event][
 			d-img/:hit: event/offset
 			switch hit reduce [
 				IDX_I_TL [d-grab-tl/:IDX_G_POS: event/offset]
+				IDX_I_TR [d-grab-tr/:IDX_G_POS: event/offset]
 				IDX_I_BR [d-grab-br/:IDX_G_POS: event/offset]
+				IDX_I_BL [d-grab-bl/:IDX_G_POS: event/offset]
 			]
 		]
 	][
@@ -48,15 +52,23 @@ img: load/as read/binary img-url 'png
 
 
 draw-blk: compose [
-	d-img: image img 100x100 (50x50 + img/size)
+	d-img: image img
+		100x100
+		(as-pair 50 + img/size/x 100)
+		(50x50 + img/size)
+		(as-pair 100 50 + img/size/y)
 	fill-pen yellow
 	d-grab-tl: circle 100x100 (grab-size)
+	d-grab-tr: circle (as-pair 50 + img/size/x 100) (grab-size)
 	d-grab-br: circle (50x50 + img/size) (grab-size)
+	d-grab-bl: circle (as-pair 100 50 + img/size/y) (grab-size)
 ]
 
 IDX_I_IMG: 2    ; image in canvas draw block
 IDX_I_TL:  3    ; top-left
-IDX_I_BR:  4    ; bottom-right
+IDX_I_TR:  4    ; top-right
+IDX_I_BR:  5    ; bottom-right
+IDX_I_BL:  6    ; bottom-left
 IDX_G_POS: 2	; Grab handle center
 
 view [
