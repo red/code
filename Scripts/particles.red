@@ -68,8 +68,8 @@ context [
 				remove/part particles slots
 			][
 				reduce/into [
-					'fill-pen 'radial pos 0 p/5 p/2 p/2 p/1 * 2
-						p/2 - 0.0.0.128 p/2 - 0.0.0.64 p/2 'circle pos p/5
+					'fill-pen 'radial p/2 p/2 p/1 * 2
+						p/2 - 0.0.0.128 p/2 - 0.0.0.64 p/2 pos p/5 'circle pos p/5
 				] tail fx
 				particles: skip particles slots
 			]
