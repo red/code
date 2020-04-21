@@ -61,13 +61,13 @@ shapes: [
 		line 13x29 27x29
 	]
 	circle: [
-		at 0x0 person draw [
+		at 0x0 base transparent draw [
 			pen gray fill-pen off
 			line-width 4 disk: circle -1x-1 100
 		] 260x260
 	]
 	circles: [
-		at 0x0 person draw [
+		at 0x0 base transparent draw [
 			pen gray fill-pen off disks:
 			line-width 1 circle -1x-1 120
 			line-width 2 circle -1x-1 90
