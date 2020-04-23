@@ -41,13 +41,14 @@ context [
 				no
 			]
 			open [
-				depth: depth + 1
-				if depth > list/deepest [list/deepest: depth]
-				find any-path! type
+				either find any-path! type [yes][
+					depth: depth + 1
+					if depth > list/deepest [list/deepest: depth]
+					no
+				]
 			]
 			close [
-				depth: depth - 1
-				find any-path! type
+				either find any-path! type [yes][depth: depth - 1 no]
 			]
 		]
 	]
