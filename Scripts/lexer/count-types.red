@@ -5,7 +5,7 @@ Red [
 	Date:    22/04/2020
 	License: "MIT"
 	Notes: 	 {
-		This script allow analyzing one or more Red/Rebol source code in text formats
+		This script allows analyzing one or more Red/Rebol source code in text formats
 		by counting the number of values present per-datatype. This analysis is conducted
 		using a customized lexer that counts recognized tokens without loading them.
 	}
@@ -24,19 +24,19 @@ context [
 	][
 		[scan load error open close]					;-- exclude 'prescan event for faster processing
 		switch event [
-			error 	  [input: next input no]			;-- skip over syntax errors silently
 			scan open [									;-- only counts scanned tokens and any-block! series
 				unless pos: find list type [repend pos: tail list [type 0]]
 				pos/2: pos/2 + 1
 				event = 'open							;-- return TRUE for OPEN event, so that nested containers
 			]											;-- can be counted properly.
 			close load [no]								;-- do not load values, do not store any-block containers.
+			error 	   [input: next input no]			;-- skip over syntax errors silently
 		]
 	]
 
 	set 'count-types function [
 		"Return the count of all values per-datatype in the input file, or in-memory source code"
-		src [file! string! binary!] "Source file to analyze or 
+		src [file! string! binary!] "Source file or in-memory buffer to analyze"
 		/cumul						"Cumulate the stats with previous calls"
 		/extern list
 	][
