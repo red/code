@@ -13,8 +13,8 @@ context [
 	template: [
 		integer 	0
 		float		0.0
-		word		0
-		string		0
+		word		""
+		string		""
 		issue		0
 		file		0
 		deepest		0
@@ -22,21 +22,32 @@ context [
 	depth: 0
 	list:  none
 	
-	lex: func [
+	lex: function [
 		event	[word!]
 		input	[string! binary!]
 		type	[datatype! word! none!]
 		line	[integer!]
 		token
 		return: [logic!]
+		/extern list depth
 	][
-		[load open close]								;-- only intercept containers construction events
+		[scan load open close]
 		switch event [
+			scan [
+				either any [str?: type = 'string! attempt [find any-word! get type]][
+					entry: pick [string word] str?
+					if token/2 - token/1 > length? list/:entry [
+						list/:entry: to-string copy/part
+							at head input token/1
+							at head input token/2
+					]
+					no
+				][yes]
+			]
 			load [
-				case [
-					type = integer! [if token > list/integer [list/integer: token]]
-					type = float!	[if token > list/float	 [list/float: token]]
-					;type = word!
+				switch to-word type [
+					integer! [if token > list/integer [list/integer: token]]
+					float!	 [if token > list/float	 [list/float: token]]
 				]
 				no
 			]
