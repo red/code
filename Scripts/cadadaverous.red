@@ -1,7 +1,7 @@
 Red [
-    Title:  "My other car is CDR"
-    Author: @9214
-    Date:   24-Aug-2017
+	Title:  "My other car is CDR"
+	Author: @9214
+	Date:   24-Aug-2017
 	File:   %cadadaverous.red
 	Purpose: {
 		A variation on Lisp's compositions of CAR and CDR primitives
@@ -20,8 +20,8 @@ system/lexer/pre-load: function [source][
 		] 
 		"r"
 	]
-	
-    parse source [
+
+	parse source [
 		any [
 			change composition (form chain) (clear chain)
 			| skip
@@ -31,7 +31,7 @@ system/lexer/pre-load: function [source][
 
 example: reduce load {
 	"SICP, exercise 2.25"
-	
+
 	cadaddr [1 3 [5 7] 9]
 	caar [[7]]
 	cadadadadadadr [1 [2 [3 [4 [5 [6 7]]]]]]
