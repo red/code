@@ -1,0 +1,42 @@
+Red [
+	Title:   "Lexer-based "
+	Author:  "Nenad Rakocevic"
+	File: 	 %get-comments.red
+	Date:    18/05/2020
+	License: "MIT"
+	Notes: 	 {
+		@@ FIXME TBD
+	}
+]
+
+context [
+	list: none
+	
+	lex: func [
+		event	[word!]
+		input	[string! binary!]
+		type	[datatype! word! none!]
+		line	[integer!]
+		token
+		return: [logic!]
+	][
+		[scan]											;-- only scan events
+		if type = 'comment [
+			repend list [line trim/tail to-string copy/part head input token]
+		]
+		no												;-- do not load values
+	]
+
+	set 'get-comments func [
+		"Return a list of words and their respective occurences count"
+		src [file! string! binary!] "Source file or in-memory buffer to load"
+	][
+		if file? src [src: read/binary src]
+		list: make block! 50
+		transcode/trace src :lex
+		new-line/skip list on 2
+	]
+]
+
+;-- Usage example
+probe get-comments %unique-words.red
