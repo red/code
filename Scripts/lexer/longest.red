@@ -1,5 +1,5 @@
 Red [
-	Title:   "Lexer-based biggest values analyzing tool"
+	Title:   "Lexer-based longest/biggest values analyzing tool"
 	Author:  "Nenad Rakocevic"
 	File: 	 %longest.red
 	Date:    22/04/2020

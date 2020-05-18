@@ -1,5 +1,5 @@
 Red [
-	Title:   "Lexer-based "
+	Title:   "Lexer-based words stats tool"
 	Author:  "Nenad Rakocevic"
 	File: 	 %unique-words.red
 	Date:    15/05/2020
