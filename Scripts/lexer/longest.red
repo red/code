@@ -33,12 +33,12 @@ context [
 	list:  none
 	
 	lex: function [
-		event	[word!]
-		input	[string! binary!]
-		type	[datatype! word! none!]
-		line	[integer!]
-		token
-		return: [logic!]
+		event	[word!]									;-- event name
+		input	[string! binary!]						;-- input series at current loading position
+		type	[datatype! word! none!]					;-- type of token or value currently processed.
+		line	[integer!]								;-- current input line number
+		token											;-- current token as an input slice (pair!) or a loaded value.
+		return: [logic!]								;-- YES: continue to next lexing stage, NO: cancel current token lexing
 		/extern list depth
 	][
 		[scan load open close]
