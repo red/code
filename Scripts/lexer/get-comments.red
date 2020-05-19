@@ -5,7 +5,9 @@ Red [
 	Date:    18/05/2020
 	License: "MIT"
 	Notes: 	 {
-		@@ FIXME TBD
+		Extracts all the line comments from a Red file. Could be used to process some special
+		type of comments (like "@@" "FIXME" "TBD"...), or save comments with their line number
+		to be eventually saved back with the original code if needed.
 	}
 ]
 
