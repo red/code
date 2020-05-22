@@ -26,7 +26,7 @@ context [
 		inp: head input
 		switch event [
 			scan [
-				if type = 'float! [						;-- catch the float literals with commas
+				if type = float! [						;-- catch the float literals with commas
 					if pos: find/part at inp token/1 #"," at inp token/2 [
 						pos/1: #" "						;-- replace the comma in float literal by a whitespace
 						input: at inp token/1			;-- reposition input to try loading the token again

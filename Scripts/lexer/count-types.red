@@ -25,7 +25,7 @@ context [
 		[scan load error open close]					;-- exclude 'prescan event for faster processing
 		switch event [
 			scan open [									;-- only counts scanned tokens and any-block! series
-				unless pos: find list type [repend pos: tail list [type 0]]
+				unless pos: find/only list type [repend pos: tail list [type 0]]		
 				pos/2: pos/2 + 1
 				event = 'open							;-- return TRUE for OPEN event, so that nested containers
 			]											;-- can be counted properly.

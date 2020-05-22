@@ -44,7 +44,7 @@ context [
 		[scan load open close]
 		switch event [
 			scan [
-				either any [str?: type = 'string! attempt [find any-word! get type]][
+				either any [str?: type = string! attempt [find any-word! type]][
 					entry: pick [string word] str?
 					if token/2 - token/1 > length? list/:entry [
 						list/:entry: to-string copy/part head input token

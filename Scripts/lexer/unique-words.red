@@ -19,7 +19,7 @@ context [
 		return: [logic!]								;-- YES: continue to next lexing stage, NO: cancel current token lexing
 	][
 		[scan]											;-- only scan events
-		if find [word! set-word! lit-word! get-word!] type [
+		if all [datatype? type find any-word! type][
 			token: copy/part head input token
 			token: trim/with to-string token "':"
 			list/:token: 1 + any [list/:token 0]
