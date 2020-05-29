@@ -26,11 +26,10 @@ mandelIter: function [cx cy maxIter][
 ]
 
 mandelbrot: function [img xmin xmax ymin ymax iterations][
+	img/image/argb: white
 	width:  img/image/size/x
 	height: img/image/size/y
 	pix:	img/image/rgb
-	
-	img/image/rgb: white
 	
 	iy: 0
 	while [iy < height] [
@@ -74,8 +73,10 @@ view [
 	]
 	button "Draw" 150x40 [
 		t0: now/time/precise
+		face/enabled?: no
 		mandelbrot img xmin/data xmax/data ymin/data ymax/data iterations/data
 		dt/data: round now/time/precise - t0
+		face/enabled?: yes
 	]
 	across txt "time (s):" dt: txt
 	below return
