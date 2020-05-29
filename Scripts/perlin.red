@@ -96,7 +96,7 @@ gen-texture: routine [
 			-y: -y + 1
 			yy: yy + coeff
 			if 255.0 < yy [
-				yy: yy % 255.0
+				yy: as float! ((as integer! yy) and FFh)
 				y: y + 1
 			]
 
@@ -112,7 +112,7 @@ gen-texture: routine [
 				-x: -x + 1
 				xx: xx + coeff
 				if 255.0 < xx [
-					xx: xx % 255.0
+					xx: as float! ((as integer! xx) and FFh)
 					x: x + 1
 				]
 
