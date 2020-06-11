@@ -35,7 +35,6 @@ context [
 		list: make map! 1000
 		transcode/trace src :lex
 		new-line/skip (sort/skip/compare/all body-of list 2 func [a b][a/2 > b/2]) yes 2
-		
 	]
 ]
 
