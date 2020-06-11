@@ -81,7 +81,7 @@ context [
 		list: copy template
 		transcode/trace src :lex
 		desc: descriptions
-		foreach [n v] list [print rejoin ["- " desc/1 ": " v] desc: next desc]
+		foreach [n v] list [print rejoin ["- " desc/1 ": " all [v <> 0 mold v]] desc: next desc]
 		()												;-- no extra output in console
 	]
 ]
