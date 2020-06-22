@@ -169,7 +169,7 @@ getSBitsLength: func[
 ][
 	if value = 0 [return 0]
 	if value < 0 [value: 0 - value]
-	2 + as integer! (log-2 as float! value) / 0.6931471805599453
+	2 + as integer! (log-e as float! value) / 0.6931471805599453
 ]
 getUBitsLength: func[
 	"Returns number of bits needed to store unsigned integer value"
@@ -178,7 +178,7 @@ getUBitsLength: func[
 ][
 	if value = 0 [return 0]
 	if value < 0 [value: 0 - value]
-	1 + as integer! (log-2 as float! value) / 0.6931471805599453
+	1 + as integer! (log-e as float! value) / 0.6931471805599453
 ]
 
 
