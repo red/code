@@ -17,6 +17,7 @@ view [
      b "7"  b "8"  b "9"  b "*"  return 
      b "0"  b "."  b "/"  b "=" [
      	attempt [
+             foreach op ["+" "-" "/" "*"][replace/all f/text op rejoin [" " op " "]]
              calculation: form math load f/text 
              append clear f/text calculation
      	]
