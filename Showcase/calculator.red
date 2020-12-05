@@ -15,10 +15,5 @@ view [
      b "1"  b "2"  b "3"  b " + "  return 
      b "4"  b "5"  b "6"  b " - "  return 
      b "7"  b "8"  b "9"  b " * "  return 
-     b "0"  b "."  b " / "  b "=" [
-     	attempt [
-             calculation: form math load f/text 
-             append clear f/text calculation
-     	]
-     ] 
+     b "0"  b "."  b " / "  b "=" [attempt [f/text: form math load f/text]] 
 ]
