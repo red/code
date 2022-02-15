@@ -1,10 +1,10 @@
 Red []
 
 a-an: func [
-    {Returns the appropriate variant of a or an (simple, vs 100% grammatically correct)} 
+    "Returns the appropriate variant of a or an"
     str [string!] 
     /pre "Prepend to str" 
-    /local tmp lst {List of words that start with a vowel which sounds like a consonant}
+    /local tmp lst "List of words that start with a vowel which sounds like a consonant"
 ][
     lst: do load %cs.txt    ;-- consonant sounds
     tmp: case [
