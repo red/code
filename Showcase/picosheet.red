@@ -30,6 +30,7 @@ repeat y 9 [
 		append p set ref make face! [
 			size: 90x24
 			type: pick [text field] header?
+			options: compose [sync: (any-type!)]
 			
 			offset: -20x10 + as-pair
 				((x - 1) * size/x + 2)
