@@ -35,6 +35,10 @@ Red/System [
 	#define O_WRONLY    1
 	#define O_RDWR      2
 	#define O_BINARY    0
+	#define O_CREAT     64
+	#define O_EXCL      128
+	#define O_TRUNC     512
+	#define O_APPEND    1024
 
 	#define S_IREAD     256
 	#define S_IWRITE    128
