@@ -5,7 +5,7 @@ Those scripts show how to use the lexer events and callback function to modify i
 
 `%count-type.red`: Analyzing one or more Red/Rebol source code in text formats by counting the number of values present per-datatype.
 
-`%flatten.red`: Customized Red values loader that will flatten all nested container structures (expect for paths) and return a one-dimensional list of all the loaded values.
+`%flatten.red`: Customized Red values loader that will flatten all nested container structures (except for paths) and return a one-dimensional list of all the loaded values.
 
 `%get-comments`: Extracts all the line comments from a Red file.
 
