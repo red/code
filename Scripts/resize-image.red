@@ -6,7 +6,7 @@ Red [
 	Needs:   View
 ]
 
-distance: func [pos [pair!]][square-root add pos/x ** 2 pos/y ** 2]
+distance: func [pos [pair! point2D!]][square-root add pos/x ** 2 pos/y ** 2]
 
 grab-size: 5
 
