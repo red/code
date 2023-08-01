@@ -26,7 +26,7 @@ win: layout [
 ]
 
 follow: func [left right /local old][
-	all [pair? old: left/extra left/offset: left/offset + old / 2]
+	all [point2D? old: left/extra left/offset: left/offset + old / 2]
 	left/extra: right/offset
 ]
 

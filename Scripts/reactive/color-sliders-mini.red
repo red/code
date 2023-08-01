@@ -9,7 +9,7 @@ Red [
 	}
 ]
 
-to-int: function [value [percent!]][to integer! 255 * value]
+to-int: function [value [percent!]][to-integer 255 * value]
 
 view [
 	below

@@ -274,9 +274,9 @@ data: make reactor! [
 	; results reactor use `is` blocks so this object didn't know anything
 	; about it. Finally, I just included these fields here, so it's self-
 	; contained and the code is slightly simpler.
-	bmr-1918: is [bmr-calc-1918 height weight age]
-	bmr-1984: is [bmr-calc-1984 height weight age]
-	bmr-1990: is [bmr-calc-1990 height weight age]
+	relate bmr-1918: [bmr-calc-1918 height weight age]
+	relate bmr-1984: [bmr-calc-1984 height weight age]
+	relate bmr-1990: [bmr-calc-1990 height weight age]
 ]
 
 
