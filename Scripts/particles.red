@@ -7,8 +7,6 @@ Red [
 	Needs:  View
 ]
 
-system/view/auto-sync?: no
-
 context [
 	screen-size: 600x500
 	particles-count: 100
@@ -37,7 +35,8 @@ context [
 		bx: base black screen-size
 	]
 	bx/draw: make block! particles-count * 14
-
+	system/view/auto-sync?: no
+	
 	while [bx/state][
 		particles: head particles
 		loop 10 [
@@ -78,6 +77,6 @@ context [
 		fps: fps + 1
 		loop 5 [do-events/no-wait]
 	]
+	system/view/auto-sync?: yes
 ]
 
-system/view/auto-sync?: yes

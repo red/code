@@ -20,8 +20,6 @@ Red [
 	}
 ]
 
-system/view/auto-sync?: no
-
 context [
 	clock: big-handle: small-handle: sec-handle: none
 
@@ -122,5 +120,4 @@ context [
 	][resize]
 ]
 
-system/view/auto-sync?: yes
 do-events

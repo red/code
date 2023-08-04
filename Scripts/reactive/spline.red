@@ -14,8 +14,6 @@ Red [
 	}
 ]
 
-system/view/auto-sync?: yes
-
 light-blue: 102.148.179.36
 
 view/tight [
