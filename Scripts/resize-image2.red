@@ -24,9 +24,7 @@ view compose/deep [
 	panel 960x720 black [
 		style nub: base (radius * 2) transparent loose draw [fill-pen yellow circle (radius) (radius/x)]
 		
-		img: image url 100x100 loose on-drag-start [
-			object [min: 0x0 max: face/parent/size - face/size]
-		] on-drag [
+		img: image url 100x100 loose on-drag [
 			no-react [
 				left/offset:  img/offset - radius
 				right/offset: img/offset + img/size - radius
