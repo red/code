@@ -20,8 +20,6 @@ Red [
 	}
 ]
 
-system/view/auto-sync?: no
-
 context [
 	clock: big-handle: small-handle: sec-handle: none
 
@@ -114,13 +112,9 @@ context [
 
 	win: layout/tight [
 		title "Amiga Clock"
+		on-close [remove-event-func :size-handler]
 		clock: base 400x400 amiga-blue rate 0:0:1 on-time [draw-clock clock]
 	]
 	
-	view/options/flags/no-wait win [
-		actors: context [on-close: func [f e][remove-event-func :size-handler]]
-	][resize]
+	view/flags win [resize]
 ]
-
-system/view/auto-sync?: yes
-do-events

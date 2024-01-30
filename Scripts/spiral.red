@@ -7,8 +7,6 @@ Red [
 	Notes:	 "Ported from Rebol to Red by Pekr, optimized by Nenad Rakocevic. Modified by DideC"
 ]
 
-system/view/auto-sync?: no
-
 size: 700x700
 ff: 0
 mod: 1
@@ -31,7 +29,7 @@ color: random 255.255.255
 op: :-
 xx: random 20.20.20
 
-view [
+view/no-sync [
 	title "Spiral"
 	canvas: base size all-over white rate 60 on-time [
 		if color < 30.30.30 [op: :+  xx: random 20.20.20]
