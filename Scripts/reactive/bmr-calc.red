@@ -6,8 +6,6 @@ Red [
 	Comment: {
 		An experiment in reactivity and data modeling.
 
-		145 lines with blanks and comments removed.
-
 		TBD: Caloric calcs based on activity level.
 
 		References:
@@ -54,7 +52,7 @@ linear-interpolate: func [
 ;]
 
 ; Then I decided to structure it more during a refactoring pass.
-data-ranges: [
+data-ranges: [									; Units are strictly informational
 	height [from 100 to 250 cm]
 	weight [from  45 to 160 kg]
 	age    [from   5 to 125 years]
@@ -98,8 +96,8 @@ map-range: func [
 ;-------------------------------------------------------------------------------
 ; Data Functions
 
-; This is another unusual approach, at a glance. Normally you might
-; expect these functions to convert the value to a normalized result
+; This is another unusual approach, at a glance. You might expect
+; these functions to convert the value to a simple, normalized result
 ; (e.g. normalize height to cm). Then you would convert that to other
 ; unit types and format it elsewhere. That matches the Single
 ; Responsibility Principle, or very granular cohesion. And I do like
@@ -129,8 +127,8 @@ to-height: function [
 	reduce [
 		'cm cm
 		'in inches
-		'ft-in reduce ['ft inches / 12  'in mod inches 12]
-		'formed-imperial imp: rejoin [inches / 12 {'} mod inches 12 {"}]
+		'ft-in reduce ['ft to integer! inches / 12  'in mod inches 12]
+		'formed-imperial imp: rejoin [to integer! inches / 12 {'} mod inches 12 {"}]
 		'formed-metric   met: rejoin [cm 'cm]
 		'formed rejoin [imp " / " met]
 	]
@@ -258,8 +256,8 @@ bmr-calc-1990: func [
 ; have to refer to anything in the UI. Wait! That makes it a "feature".
 ;
 ; This is where reactions are sourced. When any of the height/weight/age
-; values change, the bmr-* reactions trigger. In turn, other reactors
-; can "watch" for those changes. 
+; values change, the bmr-* reactions trigger. In turn, other targets
+; can react to those changes. 
 data: make reactor! [
 	; Prime the fields from the middle of our value ranges. Empirical
 	; choices for the defaults. They are magic numbers, duped in the 
@@ -291,7 +289,7 @@ data: make reactor! [
 ; a field for sex, and fields to enter values directly. We could do that
 ; as well, but there is value in different approaches.
 
-view/no-wait [
+view [
 	style label: text 50
 	style out-lbl: text 75 right
 	
@@ -327,7 +325,7 @@ view/no-wait [
 	; data/bmr-19* refs in each react block. This is needed because the
 	; reference to the nested value (e.g. data/bmr-1918/female) does *not*
 	; work by itself. That is, we're telling Red to monitor a field *within*
-	; a reactive formula source and which doesn't work (currently).
+	; a reactive formula source, which doesn't work (currently).
 	; I'm sure we'll see more capabilities built on top of the base reactive
 	; system in the future. For example, the ability to define styles that
 	; contain reaction blocks, and a way to reference dynamic sources. In
@@ -349,9 +347,6 @@ view/no-wait [
 		return
 
 ]
-
-; Start the UI event loop
-do-events
 
 ;-------------------------------------------------------------------------------
 ; Conclusion
