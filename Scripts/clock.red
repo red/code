@@ -100,7 +100,7 @@ context [
 		show clock
 	]
 
-	size-handler: insert-event-func [
+	size-handler: insert-event-func 'resize-clock [
 		if all [event/window = win event/type = 'resizing clock/state][
 			clock/size: face/size
 			draw-clock/resize clock
