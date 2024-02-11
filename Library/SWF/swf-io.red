@@ -99,7 +99,7 @@ swf: context [
 		parse either into [result][clear head result-buffer]
 	]
 
-	tag-names: #(
+	tag-names: #[
 		0    "End"
 		1    "ShowFrame"
 		2    "DefineShape"
@@ -179,7 +179,7 @@ swf: context [
 		91   "DefineFont4"
 		93   "Telemetry"
 		1023 "DefineBitsPtr"
-	)
+	]
 ]
 
 ;swf-test: func[][
