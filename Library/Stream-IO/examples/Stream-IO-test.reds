@@ -23,7 +23,10 @@ Red/System [
 #include %../Stream-IO-read.reds
 #include %../Stream-IO-write.reds
 
-name: #u16 "test-io.bin"
+#either OS = 'Linux [
+    name: "test-io.bin" ][
+    name: #u16 "test-io.bin" 
+]
 file: simple-io/open-file name 0 true
 print-line ["file handle: " as int-ptr! file]
 
