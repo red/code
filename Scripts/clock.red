@@ -28,13 +28,13 @@ context [
 	poly: [line-width 2 fill-pen black polygon _ _ _ _ fill-pen off]
 
 	draw-handle: function [
-		coords [block!] center [pair!] r-mid [number!] r-max [number!] angle [integer!] offset 
-		/square r-min [integer!]
+		coords [block!] center [pair! point2D!] r-mid [number!] r-max [number!] angle [integer! float!] offset 
+		/square r-min [integer! float!]
 	][
-		coords/1: either square [center + as-pair (r-min  * cosine angle) (r-min * sine angle)][center]
-		coords/3: center + as-pair (r-max * cosine angle) (r-max * sine angle)
-		coords/2: center + as-pair (r-mid * cosine (angle - offset)) (r-mid * sine (angle - offset))
-		coords/4: center + as-pair (r-mid * cosine (angle + offset)) (r-mid * sine (angle + offset))	
+		coords/1: either square [center + as-point2D (r-min * cosine angle) (r-min * sine angle)][center]
+		coords/3: center + as-point2D (r-max * cosine angle) (r-max * sine angle)
+		coords/2: center + as-point2D (r-mid * cosine (angle - offset)) (r-mid * sine (angle - offset))
+		coords/4: center + as-point2D (r-mid * cosine (angle + offset)) (r-mid * sine (angle + offset))	
 	]
 
 	draw-clock: function [
@@ -44,8 +44,8 @@ context [
 	][
 		time: now/time
 		center: face/size / 2
-		radius-in:  to integer! center/x - (10% * center/x)
-		radius-out: to integer! center/x - (5% * center/x)
+		radius-in:  center/x - (10% * center/x)
+		radius-out: center/x - (5% * center/x)
 		radius-mid: (radius-out - radius-in) / 2 + radius-in
 		big: 	 radius-in * 95%
 		big-mid: radius-in * 80%
@@ -72,8 +72,8 @@ context [
 					append canvas poly
 					draw-handle/square skip tail canvas -6 center radius-mid radius-out angle 1.5 radius-in
 				][
-					line/2: center + as-pair (radius-in * cosine angle) (radius-in * sine angle)
-					line/3: center + as-pair (radius-out * cosine angle) (radius-out * sine angle)
+					line/2: center + as-point2D (radius-in  * cosine angle) (radius-in  * sine angle)
+					line/3: center + as-point2D (radius-out * cosine angle) (radius-out * sine angle)
 					append canvas line
 				]
 				360 = angle: angle + 6
@@ -87,7 +87,7 @@ context [
 			append canvas thin
 
 		]
-		angle: to integer! time/hour + (time/minute / 60.0) * 30 - 90
+		angle: time/hour + (time/minute / 60.0) * 30 - 90
 		draw-handle small-handle center sml-mid sml angle 7
 
 		angle: time/minute * 6 - 90
@@ -95,7 +95,7 @@ context [
 
 		angle: time/second * 6 - 90
 		sec-handle/6: center
-		sec-handle/7: center + as-pair (big * cosine angle) (big * sine angle)
+		sec-handle/7: center + as-point2D (big * cosine angle) (big * sine angle)
 
 		show clock
 	]
