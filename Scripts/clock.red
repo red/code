@@ -113,7 +113,9 @@ context [
 	win: layout/tight [
 		title "Amiga Clock"
 		on-close [remove-event-func :size-handler]
-		clock: base 400x400 amiga-blue rate 0:0:1 on-time [draw-clock clock]
+		clock: base 400x400 amiga-blue 
+			on-created [draw-clock clock]
+			rate 0:0:1 on-time [draw-clock clock]
 	]
 	
 	view/flags win [resize]
