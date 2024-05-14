@@ -28,6 +28,9 @@ view [
 			0x0 canvas/size
 		]
 	]
+	btn "Save to PNG" [
+		save/as request-file/save canvas/draw/image 'png
+	]
 	return
-	canvas: image 400x330
+	canvas: image 550x400
 ]
