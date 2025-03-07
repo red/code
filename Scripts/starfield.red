@@ -36,7 +36,7 @@ get-new-location: func [/init return: [point3D!]][
 		either init [random size/x / 2][size/x / 2]		;-- radius
 ]
 
-make-stars: func [/local list return: [block!]][
+make-stars: func [return: [block!] /local list][
 	list: make block! num * 10
 	loop num [
 		append stars object [
