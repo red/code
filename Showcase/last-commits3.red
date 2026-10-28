@@ -12,14 +12,17 @@ Red [
 		the web URL for the commit, stores it in the text-list (encoding them as
 		issue! values to not be displayed). On double-clicking one of the commit
 		log, the corresponding webpage on Github will get opened.
+		
+		`first split ... newline` is there to extract the first line only from
+		the commit log.
 	}
 ]
 
 view [
-    text-list data collect [
-        foreach event load https://api.github.com/repos/red/red/commits [
-            keep event/commit/message
-            keep to-issue event/html_url
-        ]
-    ] on-dbl-click [browse to-url face/data/(event/picked * 2)]
+	text-list data collect [
+		foreach event load https://api.github.com/repos/red/red/commits [
+			keep first split event/commit/message newline
+			keep to-issue event/html_url
+		]
+	] on-dbl-click [browse to-url face/data/(event/picked * 2)]
 ]
