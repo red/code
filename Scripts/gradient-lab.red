@@ -17,12 +17,12 @@ to-color: function [r g b][
 	color
 ]
 
-to-percent: func [color [integer!]][to percent! (to float! color) / 256]
+to-col-percent: func [color [integer!]][to percent! (to float! color) / 256]
 
 set-sliders: func [color [tuple!]][
-	R/data: to-percent color/1
-	G/data: to-percent color/2
-	B/data: to-percent color/3
+	R/data: to-col-percent color/1
+	G/data: to-col-percent color/2
+	B/data: to-col-percent color/3
 ]
 
 to-text: function [val][form to integer! 0.5 + 255 * any [val 0]]
